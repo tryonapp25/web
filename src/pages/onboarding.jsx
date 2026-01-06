@@ -243,13 +243,11 @@ export default function Onbroading() {
       const res = await http.post(`/webpage/waitlist`, {email: email.trim()});
       if(res.data.success){
         setEmail("");
+        alert(`Thanks! We’ll reach out to: ${email}`);
       }
     }
     catch(err){
       alert(err);
-    }
-    finally{
-      alert(`Thanks! We’ll reach out to: ${email}`);
     }
   }
 
