@@ -19,7 +19,7 @@ export default function App() {
       <BrowserRouter>
         <main>
           <Routes>
-            <Route path="/" element={<Onboarding />} />
+            <Route path="/web" element={<Onboarding />} />
             {/* <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
