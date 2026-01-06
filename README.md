@@ -21,3 +21,5 @@ Command	Loaded env
 - vite	.env.development
 - npm run build	.env.production
 GitHub Pages deploy	.env.production
+
+- npm run deploy
