@@ -1,0 +1,219 @@
+/* Overlay */
+.cps-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 16, 28, 0.60);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: 9999;
+}
+
+/* Modal */
+.cps-modal {
+  width: min(980px, 100%);
+  max-height: 86vh;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.25);
+}
+
+/* Header */
+.cps-header {
+  padding: 18px 18px 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+}
+
+.cps-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.cps-subtitle {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Close button */
+.cps-iconBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.cps-iconBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+}
+
+/* Body */
+.cps-body {
+  padding: 16px 18px;
+  overflow: auto;
+}
+
+/* Grid */
+.cps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+/* Card */
+.cps-card {
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.cps-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.10);
+}
+
+.cps-card.active {
+  border-color: rgba(37, 99, 235, 0.55);
+  box-shadow: 0 20px 40px rgba(37, 99, 235, 0.14);
+}
+
+/* Thumbnail */
+.cps-thumbWrap {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.cps-thumb {
+  width: 100%;
+  height: 125px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Radio indicator */
+.cps-radio {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.98);
+  background: rgba(15, 23, 42, 0.28);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+}
+
+.cps-radio.on {
+  background: #2563eb;
+}
+
+.cps-radio.on::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: #fff;
+  border-radius: 999px;
+}
+
+/* Pose name */
+.cps-name {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Token usage area (professional and centered) */
+.cps-usageWrap {
+  padding: 0 18px 14px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Footer */
+.cps-footer {
+  padding: 14px 18px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+}
+
+.cps-previewLabel {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cps-previewValue {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #0f172a;
+}
+
+.cps-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Buttons */
+.cps-btn {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.cps-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.10);
+}
+
+.cps-btn.ghost {
+  background: transparent;
+}
+
+.cps-btn.primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.cps-btn.primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

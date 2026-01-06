@@ -1,0 +1,49 @@
+.flash {
+  position: fixed;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: white;
+  z-index: 9999;
+  animation: slideDownUp 3s ease-in-out forwards;
+}
+
+/* Animation */
+@keyframes slideDownUp {
+  0% {
+    top: -70px;
+    opacity: 0;
+  }
+  15% {
+    top: 20px;
+    opacity: 1;
+  }
+  85% {
+    top: 20px;
+    opacity: 1;
+  }
+  100% {
+    top: -70px;
+    opacity: 0;
+  }
+}
+
+/* Colors by type */
+.flash-success {
+  background-color: #22c55e; /* green */
+}
+
+.flash-warn {
+  background-color: #f59e0b; /* orange */
+}
+
+.flash-error {
+  background-color: #ef4444; /* red */
+}
+
+.flash-alert {
+  background-color: #3b82f6; /* blue */
+}

@@ -1,0 +1,350 @@
+.page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  color: #0f172a;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.shell {
+  width: min(900px, 100%);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aiDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #2563eb;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.10);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.95; }
+  50% { transform: scale(0.75); opacity: 0.55; }
+}
+
+.title {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #475569;
+  max-width: 560px;
+  line-height: 1.4;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step {
+  font-size: 12px;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.linkBtn {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.linkBtn:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.progress {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 12px 12px;
+  margin-bottom: 14px;
+}
+
+.progressBar {
+  height: 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 999px;
+  transition: width 250ms ease;
+}
+
+.progressText {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  padding: 16px;
+}
+
+.aiRow {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #1d4ed8;
+  background: #eef2ff;
+  border: 1px solid #dbeafe;
+}
+
+.bubble {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 12px 12px;
+  background: #f8fafc;
+}
+
+.bubbleTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.bubbleName {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.badge {
+  font-size: 12px;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.question {
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 16px;
+  margin-left: 2px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 3px;
+  transform: translateY(2px);
+  animation: blink 900ms steps(1) infinite;
+}
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.inputArea {
+  padding-top: 4px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 12px 12px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  text-align: left;
+}
+.option:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.07);
+}
+
+.option[data-active="1"] {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.optionText {
+  flex: 1;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.radio, .checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid #cbd5e1;
+  background: #ffffff;
+  flex: 0 0 auto;
+}
+.checkbox {
+  border-radius: 5px;
+}
+
+.option[data-active="1"] .radio,
+.option[data-active="1"] .checkbox {
+  border-color: #2563eb;
+  box-shadow: inset 0 0 0 4px #2563eb;
+}
+
+.check {
+  font-weight: 900;
+  color: #2563eb;
+}
+
+.numberRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 12px 12px;
+  font-size: 16px;
+  outline: none;
+  background: #ffffff;
+}
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.12);
+}
+
+.helper {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.error {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnPrimary, .btnSecondary {
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.btnPrimary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+.btnPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.20);
+}
+.btnPrimary:active { transform: translateY(0px); }
+
+.btnSecondary {
+  background: #ffffff;
+  color: #0f172a;
+}
+.btnSecondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+.btnSecondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.footer {
+  margin-top: 12px;
+  padding: 8px 2px;
+}
+
+.footerText {
+  font-size: 12px;
+  color: #64748b;
+}

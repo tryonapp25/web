@@ -1,0 +1,85 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.card img {
+  width: 100%;
+  display: block;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.addmore {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #fff;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.addmore:hover {
+  background: #efefef;
+  transform: translateY(-3px);
+}
+
+
+/* Actions row inside card */
+.actions {
+  padding: 8px 12px 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Light, professional delete button */
+.deleteButton {
+  background: transparent;
+  color: #dc2626;
+
+  border: 1px solid #f3b4b4;
+  border-radius: 10px;
+
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.deleteButton:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+/* Active */
+.deleteButton:active {
+  transform: scale(0.96);
+}
+
+/* Focus (keyboard accessibility) */
+.deleteButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
