@@ -16,7 +16,7 @@ export default function Navbar() {
       <nav className={styles.nav}>
         <a className={styles.brand} href="#top" aria-label="TryOn home">
           <div className={styles.logo} aria-hidden="true">
-            <img className={styles.Icon} src="/logos/logo.png"/>
+            <img className={styles.Icon} src={`${import.meta.env.BASE_URL}logos/logo.png`}/>
           </div>
           <span className={styles.brandText}>TryOn</span>
         </a>

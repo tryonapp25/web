@@ -42,7 +42,7 @@ function FeatureCard({ title, desc, icon }) {
     <div className={styles.card}>
       <div className={styles.cardTop}>
         <div className={styles.cardIcon}>
-          <img className={styles.Icon} src={icon}/>
+          <img className={styles.Icon} src={`${import.meta.env.BASE_URL}${icon}`}/>
         </div>
         <h3 className={styles.cardTitle}>{title}</h3>
       </div>
@@ -261,7 +261,7 @@ export default function Onbroading() {
           <div className={styles.heroLeft}>
             <div className={styles.heroBadges}>
               <Badge>TryOn</Badge>
-              <Badge>Fast • Mobile • Shareable</Badge>
+              <Badge>Real previews • Better decisions</Badge>
             </div>
 
             <h1 className={styles.heroTitle}>
