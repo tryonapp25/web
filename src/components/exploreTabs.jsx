@@ -1,42 +1,64 @@
 import styles from "../styles/ExploreTabs.module.css";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import http from "../http/http";
 import { UserContext } from "../ApiContext/userContext";
 
-export default function ExploreTabs({onSubmit, onError}) {
+export default function ExploreTabs({ onSubmit, onError }) {
   const { publicUser } = useContext(UserContext);
+  const [activeTab, setActiveTab] = useState("history");
 
-  useEffect(()=> {
-    getHistoryGenerations()
-  },[])
-  
-  const getHistoryGenerations = async() => {
-    try{
-      const res = await http.get(`/history/image-generation/user/${publicUser?.uid}`);
-      if(res.data.success){
+  useEffect(() => {
+    // Load default tab on mount
+    getHistoryGenerations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getHistoryGenerations = async () => {
+    setActiveTab("history");
+
+    try {
+      const res = await http.get(
+        `/history/image-generation/user/${publicUser?.uid}`
+      );
+      if (res.data.success) {
         onSubmit({
           id: "history",
-          data: res.data.data || []
+          data: res.data.data || [],
         });
       }
+    } catch (err) {
+      onError(err);
     }
-    catch(err){
-      onError(err)
-    }
-  }
+  };
 
-  const getUserPoses = async() => {
+  const getUserPoses = () => {
+    setActiveTab("poses");
+
     onSubmit({
       id: "poses",
-      data: publicUser?.poses || []
-    })
-  }
-  
+      data: publicUser?.poses || [],
+    });
+  };
+
   return (
     <div className={styles.tabs}>
-      <button className={styles.active} onClick={() => getHistoryGenerations()}>Recent generations</button>
-      <button onClick={() => getUserPoses()}>My avatar</button>
-      {/* <button>My Closet</button> */}
+      <button
+        className={activeTab === "history" ? styles.active : ""}
+        onClick={getHistoryGenerations}
+        type="button"
+      >
+        Recent generations
+      </button>
+
+      <button
+        className={activeTab === "poses" ? styles.active : ""}
+        onClick={getUserPoses}
+        type="button"
+      >
+        My avatar
+      </button>
+
+      {/* <button type="button">My Closet</button> */}
     </div>
   );
 }

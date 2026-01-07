@@ -27,10 +27,11 @@ export default function App() {
             <Route path="/createPoses" element={<CreatePoses />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/tryon" element={<TryOn />} />
             {/*  
             <Route path="/personalStylish" element={<PersonalStylish />} />
             <Route path="/recommendations" element={<Recommendations />} />
-            <Route path="/tryon" element={<TryOn />} />
+            
              */}
           </Routes>
         </main>

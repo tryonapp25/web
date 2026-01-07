@@ -7,6 +7,7 @@ import FlashMessage from "../components/flashMessage";
 const actions = [
   /* {name: "Personal Stylish", navigation: "/personalStylish"},
   {name: "TryOn Preview", navigation: "/tryon"}, */
+  {name: "TryOn Preview", navigation: "/tryon"}
 ];
 
 

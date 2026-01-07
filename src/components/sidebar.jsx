@@ -13,6 +13,7 @@ export default function Sidebar() {
       <nav className={styles.menu}>
         <button className={styles.active} onClick={() => navigate("/home")}>Explore</button>
         <button className={styles.active} onClick={() => navigate("/profile")}>Profile</button>
+        <button className={styles.active} onClick={() => navigate("/payment")}>Tokens</button>
         {publicUser?.poses.length === 0 && <button className={styles.active} onClick={() => navigate("/createPoses")}>Create Poses</button>}
       </nav>
     </aside>

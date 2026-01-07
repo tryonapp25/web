@@ -1,121 +1,239 @@
-import { useMemo, useState } from "react";
+// Payment.jsx
+import { useEffect, useState, useContext, useMemo } from "react";
 import styles from "../styles/PricingPayment.module.css";
-import ConfirmDialog from "../components/confirmDialog"; 
 import Header from "../components/header";
+import { UserContext } from "../ApiContext/userContext";
+import http from "../http/http";
+import FlashMessage from "../components/flashMessage";
 
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+import httpMessage from "../http/httpMessage";
 
-const PRICING = [
-  {
-    id: "starter",
-    pack: "Starter",
-    price: "$1.99",
-    currency: "usd",
-    tokens: 10,
-    desc: "Try TryOn with a few realistic previews.",
-    items: [
-      "10 try-on tokens",
-      "Realistic full-body previews",
-      "Side-by-side outfit comparison",
-      "No charge for failed results",
-    ],
-    highlighted: false,
-    popular: false
-  },
-  {
-    id: "popular",
-    pack: "Popular",
-    price: "$4.99",
-    currency: "usd",
-    tokens: 30,
-    desc: "Best value for everyday outfit decisions.",
-    items: [
-      "30 try-on tokens",
-      "Everything in Starter Pack",
-      "Color & fit guidance",
-      "Context-aware styling",
-    ],
-    highlighted: true,
-    popular: true
-  },
-  {
-    id: "pro",
-    pack: "Pro",
-    price: "$9.99",
-    currency: "usd",
-    tokens: 80,
-    desc: "For frequent shoppers and creators.",
-    items: [
-      "80 try-on tokens",
-      "Everything in Popular Pack",
-      "Faster processing priority",
-      "Early access to new features",
-    ],
-    highlighted: false,
-    popular: false
-  },
-];
+const defaultMessage = {
+  visible: false,
+  type: "",
+  msg: ""
+}
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function Spinner({ size = 16 }) {
-  return <span className={styles.spinner} style={{ width: size, height: size }} />;
+  return (
+    <span
+      className={styles.spinner}
+      style={{ width: size, height: size }}
+      aria-label="Loading"
+    />
+  );
+}
+
+/** Stripe Checkout Form (Payment Element) */
+function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSuccess }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [message, setMessage] = useState("");
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setMessage("");
+    setLoadingOuter(true);
+
+    // If you want to handle success without redirect, keep redirect: "if_required"
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Change to your success page
+        return_url: window.location.origin + "/payment-success",
+      },
+      redirect: "if_required",
+    });
+
+    if (error) {
+      setMessage(error.message || "Payment failed.");
+      setLoadingOuter(false);
+      return;
+    }
+
+    // If no redirect required and no error -> success
+    setLoadingOuter(false);
+    onClose();
+    onSuccess(selected)
+  };
+
+  return (
+    <form className={styles.form} onSubmit={onSubmit}>
+      <div className={styles.modalSub}>
+        {selected?.pack} · {selected?.tokens} tokens ·{" "}
+        {(selected?.currency || "usd").toLowerCase() === "usd" ? "$" : "DKK"}
+        {selected?.price}
+      </div>
+
+      {/* This renders the secure card/wallet UI */}
+      <PaymentElement />
+
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.cancelBtn}
+          onClick={onClose}
+          disabled={loadingOuter}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          className={styles.payBtn}
+          disabled={!stripe || !elements || loadingOuter}
+        >
+          {loadingOuter ? (
+            <>
+              <Spinner />
+              Processing…
+            </>
+          ) : (
+            "Pay"
+          )}
+        </button>
+      </div>
+
+      {message && <p className={styles.errorText}>{message}</p>}
+      <p className={styles.finePrint}>
+        Secure checkout powered by Stripe. Your card details never touch our
+        server.
+      </p>
+    </form>
+  );
 }
 
 export default function Payment() {
+  const { publicUser, setPublicUser } = useContext(UserContext);
+
+  const [pricing, setPricing] = useState([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+
   const [selected, setSelected] = useState(null);
   const [openPay, setOpenPay] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  // demo “payment form”
-  const [email, setEmail] = useState("");
-  const [card, setCard] = useState("");
-  const [exp, setExp] = useState("");
-  const [cvc, setCvc] = useState("");
+  const [loading, setLoading] = useState(false); // used for both create intent + confirm
+  const [clientSecret, setClientSecret] = useState("");
 
-  const highlightedIndex = useMemo(
-    () => PRICING.findIndex((p) => p.highlighted),
-    []
-  );
+  const [message, setMessage] = useState(defaultMessage);
 
-  const onChoose = (plan) => {
-    setSelected(plan);
-    onPay()
-  };
+  // Fetch token pricing from your backend
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        const res = await http.get(`/token-price`);
+        if (res.data?.success) {
+          const data = res.data.data || [];
+          setPricing(data);
 
-  const resetForm = () => {
-    setEmail("");
-    setCard("");
-    setExp("");
-    setCvc("");
-  };
+          const hi = data.findIndex((x) => x.highlighted === true);
+          setHighlightedIndex(hi >= 0 ? hi : 0);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load pricing.");
+      }
+    };
+
+    fetchPricing();
+  }, []);
 
   const onClose = () => {
-    if (loading) return;
     setOpenPay(false);
-    resetForm();
+    setClientSecret("");
   };
 
-  const onPay = async () => {
-    if (!selected) return;
+  // IMPORTANT: pass plan directly (don’t rely on async setSelected)
+  const onChoose = async (plan) => {
+    setSelected(plan);
+    await createPaymentIntent(plan);
+  };
+
+  const createPaymentIntent = async (plan) => {
+    if (!plan) return;
 
     try {
       setLoading(true);
 
-      // TODO: replace with your real payment endpoint (Stripe/PayPal/etc)
-      await new Promise((r) => setTimeout(r, 900));
-      resetForm()
-      alert(`Payment success! You purchased ${selected.name} (${selected.tokens} tokens).`);
+      // Your backend should return: { data: { clientSecret: "pi_..._secret_..." } }
+      const res = await http.post(`/user/payment/create-intent`, {
+        user: publicUser,
+        package: plan,
+      });
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || "Create intent failed");
+      }
+
+      const { clientSecret } = res.data.data || {};
+      if (!clientSecret) throw new Error("Missing clientSecret from backend.");
+
+      setClientSecret(clientSecret);
+      setOpenPay(true);
     } catch (e) {
+      console.error(e);
+      alert(e?.message || "Payment failed.");
+    } finally {
       setLoading(false);
-      alert("Payment failed.");
-    }
-    finally{
-        setLoading(false)
     }
   };
+
+
+  const HandlePaymentSuccess = async (paymentData) => {
+    if(!paymentData){
+      setMessage({
+        visible: true,
+        type: "warn",
+        msg: "Faild to update payment."
+      });
+      return
+    };
+
+    try{
+      const res = await http.put(`/user/payment/${paymentData?.paymentIntentId || selected?.paymentIntentId}/success`,{
+        user: publicUser,
+        package: selected
+      });
+      if(res.data.success){
+        setPublicUser(res.data.data);
+        setMessage({visible: true, type: "success", msg: res.data.data.message})
+      }
+    }
+    catch(err){
+      setMessage({
+        visible: true,
+        type: "error",
+        message: httpMessage(err)
+      });
+    }
+  }
+
+  // Elements options must be stable; useMemo helps avoid re-mount loops
+  const elementsOptions = useMemo(() => {
+    if (!clientSecret) return null;
+    return {
+      clientSecret,
+      // Optional appearance config:
+      // appearance: { theme: "stripe" },
+    };
+  }, [clientSecret]);
 
   return (
     <div className={styles.page}>
       <div className={styles.wrap}>
-        <Header/>
+        <Header />
+
         <div className={styles.head}>
           <div>
             <h1 className={styles.title}>Buy Tokens</h1>
@@ -126,42 +244,51 @@ export default function Payment() {
         </div>
 
         <div className={styles.grid}>
-          {PRICING.map((p, idx) => (
-            <div
-              key={p.pack}
-              className={`${styles.card} ${p.highlighted ? styles.highlight : ""}`}
-              aria-label={p.pack}
-            >
-              {idx === highlightedIndex && (
-                <div className={styles.ribbon}>Most Popular</div>
-              )}
-
-              <div className={styles.cardTop}>
-                <h3 className={styles.plan}>{p.pack}</h3>
-                <div className={styles.tokens}>{p.tokens} tokens</div>
-              </div>
-
-              <div className={styles.priceRow}>
-                <div className={styles.price}>{p.price}</div>
-                <div className={styles.per}>one-time</div>
-              </div>
-
-              <p className={styles.desc}>{p.desc}</p>
-
-              <ul className={styles.list}>
-                {p.items.map((it) => (
-                  <li key={it} className={styles.item}>
-                    <span className={styles.check}>✓</span>
-                    <span>{it}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                className={p.highlighted ? styles.primaryBtn : styles.secondaryBtn}
-                onClick={() => onChoose(p)}
+          {pricing.length > 0 &&
+            pricing.map((p, idx) => (
+              <div
+                key={p.id || p.pack}
+                className={`${styles.card} ${
+                  p.highlighted ? styles.highlight : ""
+                }`}
+                aria-label={p.pack}
               >
-                {loading ? (
+                {idx === highlightedIndex && (
+                  <div className={styles.ribbon}>Most Popular</div>
+                )}
+
+                {idx !== highlightedIndex && (
+                  <div className={styles.cardTop}>
+                    <h3 className={styles.plan}>{p.pack}</h3>
+                    <div className={styles.tokens}>{p.tokens} tokens</div>
+                  </div>
+                )}
+
+                <div className={styles.priceRow}>
+                  <div className={styles.price}>
+                    {(p.currency || "usd").toLowerCase() === "usd" ? "$" : "DKK"}
+                    {p.price}
+                  </div>
+                  <div className={styles.per}>one-time</div>
+                </div>
+
+                <p className={styles.description}>{p.description}</p>
+
+                <ul className={styles.list}>
+                  {(p.items || []).map((it) => (
+                    <li key={it} className={styles.item}>
+                      <span className={styles.check}>✓</span>
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  className={p.highlighted ? styles.primaryBtn : styles.secondaryBtn}
+                  onClick={() => onChoose(p)}
+                  disabled={loading}
+                >
+                  {loading ? (
                     <>
                       <Spinner />
                       Processing…
@@ -169,100 +296,53 @@ export default function Payment() {
                   ) : (
                     `Choose ${p.pack}`
                   )}
-              </button>
-
-            </div>
-          ))}
+                </button>
+              </div>
+            ))}
         </div>
+        
+        <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
       </div>
 
-      {/* Payment modal /}
-      {openPay && selected && (
+      {/* Payment modal */}
+      {openPay && selected && elementsOptions && (
         <div className={styles.overlay} onClick={onClose}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHead}>
               <div>
                 <h2 className={styles.modalTitle}>Checkout</h2>
                 <p className={styles.modalSub}>
-                  {selected.name} · {selected.tokens} tokens · {selected.price}
+                  {selected.pack} · {selected.tokens} tokens ·{" "}
+                  {(selected.currency || "usd").toLowerCase() === "usd"
+                    ? "$"
+                    : "DKK"}
+                  {selected.price}
                 </p>
               </div>
 
-              <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+              <button
+                className={styles.closeBtn}
+                onClick={onClose}
+                aria-label="Close"
+                type="button"
+                disabled={loading}
+              >
                 ✕
               </button>
             </div>
 
-            <div className={styles.form}>
-              <label className={styles.label}>Email</label>
-              <input
-                className={styles.input}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@domain.com"
-                type="email"
-                disabled={loading}
+            <Elements stripe={stripePromise} options={elementsOptions}>
+              <CheckoutForm
+                onClose={onClose}
+                selected={selected}
+                loadingOuter={loading}
+                setLoadingOuter={setLoading}
+                onSuccess={(p) => HandlePaymentSuccess(p)}
               />
-
-              <label className={styles.label}>Card number</label>
-              <input
-                className={styles.input}
-                value={card}
-                onChange={(e) => setCard(e.target.value.replace(/\s/g, ""))}
-                placeholder="4242 4242 4242 4242"
-                inputMode="numeric"
-                disabled={loading}
-              />
-
-              <div className={styles.row2}>
-                <div>
-                  <label className={styles.label}>Expiry</label>
-                  <input
-                    className={styles.input}
-                    value={exp}
-                    onChange={(e) => setExp(e.target.value)}
-                    placeholder="MM/YY"
-                    disabled={loading}
-                  />
-                </div>
-
-                <div>
-                  <label className={styles.label}>CVC</label>
-                  <input
-                    className={styles.input}
-                    value={cvc}
-                    onChange={(e) => setCvc(e.target.value)}
-                    placeholder="123"
-                    inputMode="numeric"
-                    disabled={loading}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.actions}>
-                <button className={styles.cancelBtn} onClick={onClose} disabled={loading}>
-                  Cancel
-                </button>
-
-                <button className={styles.payBtn} onClick={onPay} disabled={loading}>
-                  {loading ? (
-                    <>
-                      <Spinner />
-                      Processing…
-                    </>
-                  ) : (
-                    `Pay ${selected.price}`
-                  )}
-                </button>
-              </div>
-
-              <p className={styles.finePrint}>
-                Secure checkout. Your card details are not stored in this demo UI.
-              </p>
-            </div>
+            </Elements>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

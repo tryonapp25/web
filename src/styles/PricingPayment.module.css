@@ -64,14 +64,17 @@
 
 .ribbon {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 0px;
+  right: 0px;
   font-size: 12px;
   font-weight: 900;
   padding: 6px 10px;
-  border-radius: 999px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius:20px  ;
+  border-top-right-radius: 20px;
   border: 1px solid rgba(11, 15, 25, 0.12);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(96, 76, 206, 0.85);
+  color: #fff;
 }
 
 .cardTop {

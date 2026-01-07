@@ -297,17 +297,18 @@ export default function Onbroading() {
             <div className={styles.heroStats} aria-label="Key highlights">
               <div className={styles.stat}>
                 <div className={styles.statValue}>1–2s</div>
-                <div className={styles.statLabel}>snappy UI feel</div>
+                <div className={styles.statLabel}>preview generation</div>
               </div>
               <div className={styles.stat}>
-                <div className={styles.statValue}>100%</div>
-                <div className={styles.statLabel}>responsive layout</div>
+                <div className={styles.statValue}>Real</div>
+                <div className={styles.statLabel}>honest try-on results</div>
               </div>
               <div className={styles.stat}>
                 <div className={styles.statValue}>0</div>
-                <div className={styles.statLabel}>global CSS leaks</div>
+                <div className={styles.statLabel}>charges for failed previews</div>
               </div>
             </div>
+
           </div>
 
           <div className={styles.heroRight}>

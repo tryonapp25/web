@@ -1,76 +1,112 @@
+/* Overlay */
 .ium-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12, 18, 28, 0.55);
-  display: grid;
-  place-items: center;
-  padding: 20px;
   z-index: 9999;
+
+  background: rgba(11, 15, 25, 0.48);
+  backdrop-filter: blur(5px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+
+  animation: iumOverlayIn 160ms ease-out;
 }
 
+/* Modal */
 .ium-modal {
-  width: min(820px, 100%);
-  max-height: 86vh;
-  background: #fff;
-  border-radius: 16px;
+  width: 100%;
+  max-width: 780px;
+  max-height: min(86vh, 760px);
   overflow: hidden;
-  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.25);
+
+  border-radius: 22px;
+  border: 1px solid rgba(11, 15, 25, 0.14);
+
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(20, 28, 40, 0.08);
+
+  animation: iumModalIn 180ms ease-out;
 }
 
+/* Header */
 .ium-header {
-  padding: 18px 18px 14px;
+  padding: 16px 16px 12px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid rgba(20, 28, 40, 0.08);
+
+  border-bottom: 1px solid rgba(11, 15, 25, 0.08);
+  background: rgba(255, 255, 255, 0.75);
 }
 
 .ium-title {
-  font-size: 16px;
-  font-weight: 650;
-  color: #0f172a;
-  letter-spacing: -0.01em;
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  color: #0b0f19;
 }
 
 .ium-subtitle {
-  margin-top: 4px;
+  margin-top: 6px;
   font-size: 13px;
-  color: #64748b;
+  line-height: 1.6;
+  color: rgba(11, 15, 25, 0.65);
 }
 
+/* Close */
 .ium-iconBtn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(20, 28, 40, 0.10);
-  background: #fff;
+  all: unset;
   cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(11, 15, 25, 0.14);
+  background: rgba(255, 255, 255, 0.75);
+
+  font-weight: 950;
+  color: rgba(11, 15, 25, 0.75);
+
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 
 .ium-iconBtn:hover {
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.10);
   transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(11, 15, 25, 0.10);
+  background: rgba(255, 255, 255, 0.95);
 }
 
+/* Body */
 .ium-body {
-  padding: 16px 18px;
+  padding: 14px 16px 6px;
   overflow: auto;
 }
 
 .ium-label {
   display: block;
   font-size: 12px;
-  color: #64748b;
-  margin-bottom: 6px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(11, 15, 25, 0.55);
+  margin: 0 0 8px;
 }
 
+/* Input row */
 .ium-inputRow {
   display: flex;
   gap: 10px;
@@ -78,127 +114,232 @@
 }
 
 .ium-input {
-  flex: 1;
-  border: 1px solid rgba(20, 28, 40, 0.14);
-  border-radius: 12px;
-  padding: 11px 12px;
-  font-size: 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(11, 15, 25, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+  color: #0b0f19;
   outline: none;
+
+  font-weight: 650;
+  font-size: 14px;
+
+  transition: border 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.ium-input::placeholder {
+  color: rgba(11, 15, 25, 0.45);
 }
 
 .ium-input:focus {
-  border-color: rgba(37, 99, 235, 0.45);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  border-color: rgba(109, 94, 246, 0.55);
+  box-shadow: 0 0 0 4px rgba(109, 94, 246, 0.12);
+  background: rgba(255, 255, 255, 0.92);
 }
 
-.ium-hint {
+/* Hint / Errors */
+.ium-hint,
+.ium-error {
   margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(11, 15, 25, 0.10);
+  background: rgba(255, 255, 255, 0.72);
   font-size: 13px;
-  color: #64748b;
+  line-height: 1.5;
+  color: rgba(11, 15, 25, 0.72);
 }
 
 .ium-error {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.22);
+  background: rgba(239, 68, 68, 0.06);
+  color: rgba(11, 15, 25, 0.85);
 }
 
+/* Preview card */
 .ium-previewCard {
-  margin-top: 14px;
-  border: 1px solid rgba(20, 28, 40, 0.10);
-  border-radius: 14px;
+  margin-top: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(11, 15, 25, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
   overflow: hidden;
-  background: #fff;
 }
 
 .ium-previewHeader {
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(20, 28, 40, 0.08);
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(11, 15, 25, 0.08);
   font-size: 12px;
-  color: #64748b;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(11, 15, 25, 0.55);
+  background: rgba(255, 255, 255, 0.75);
 }
 
 .ium-previewBox {
-  padding: 12px;
-  background: rgba(15, 23, 42, 0.03);
-  display: grid;
-  place-items: center;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(520px 260px at 30% 35%, rgba(95, 112, 255, 0.10), transparent 60%),
+    linear-gradient(180deg, rgba(11, 15, 25, 0.02), rgba(11, 15, 25, 0.01));
 }
 
 .ium-img {
-  max-width: 100%;
-  max-height: 320px;
-  border-radius: 12px;
-  display: block;
+  width: min(100%, 620px);
+  max-height: 360px;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(11, 15, 25, 0.10);
+
+  box-shadow:
+    0 22px 60px rgba(15, 23, 42, 0.18),
+    0 8px 20px rgba(15, 23, 42, 0.10);
 }
 
 .ium-errorBox {
   width: 100%;
-  padding: 18px;
-  background: #fff;
-  border: 1px dashed rgba(185, 28, 28, 0.35);
-  border-radius: 12px;
-  color: #b91c1c;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  background: rgba(239, 68, 68, 0.06);
+  color: rgba(11, 15, 25, 0.85);
   font-size: 13px;
+  line-height: 1.6;
 }
 
+/* Meta row */
 .ium-meta {
-  padding: 10px 12px;
-  border-top: 1px solid rgba(20, 28, 40, 0.08);
+  padding: 12px 14px;
+  border-top: 1px solid rgba(11, 15, 25, 0.08);
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 10px;
 }
 
 .ium-pill {
+  flex: 0 0 auto;
   font-size: 12px;
-  padding: 4px 8px;
+  font-weight: 950;
+  padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.10);
-  color: #1d4ed8;
-  font-weight: 650;
+  border: 1px solid rgba(11, 15, 25, 0.12);
+  background: rgba(11, 15, 25, 0.04);
+  color: rgba(11, 15, 25, 0.8);
 }
 
 .ium-metaUrl {
   font-size: 12px;
-  color: #64748b;
+  color: rgba(11, 15, 25, 0.65);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Footer */
 .ium-footer {
-  padding: 14px 18px;
-  border-top: 1px solid rgba(20, 28, 40, 0.08);
+  margin-top: auto;
+  padding: 14px 16px;
+
+  border-top: 1px solid rgba(11, 15, 25, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
+/* Buttons (match your system) */
 .ium-btn {
-  border: 1px solid rgba(20, 28, 40, 0.12);
-  background: #fff;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: 650;
+  all: unset;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
 
-.ium-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.10);
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 14px;
+
+  font-weight: 950;
+  font-size: 14px;
+
+  border: 1px solid rgba(11, 15, 25, 0.15);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease, background 120ms ease;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ium-btn.primary {
-  border-color: rgba(37, 99, 235, 0.25);
-  background: #2563eb;
-  color: #fff;
+  background: #0b0f19;
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(11, 15, 25, 0.12);
 }
 
-.ium-btn.primary:disabled {
+.ium-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(11, 15, 25, 0.16);
+}
+
+.ium-btn.ghost {
+  background: rgba(255, 255, 255, 0.75);
+  color: #0b0f19;
+}
+
+.ium-btn.ghost:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(11, 15, 25, 0.08);
+}
+
+.ium-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Animations */
+@keyframes iumModalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes iumOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .ium-inputRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ium-footer {
+    flex-direction: column;
+  }
+
+  .ium-btn {
+    width: 100%;
+  }
+
+  .ium-img {
+    max-height: 280px;
+  }
 }

@@ -1,11 +1,10 @@
 .token-card {
   margin-top: 18px;
   border-radius: 16px;
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #fafbff 100%
-  );
+  background:
+  radial-gradient(900px 500px at 15% 20%, rgba(95, 112, 255, 0.18), transparent 55%),
+  radial-gradient(800px 460px at 90% 10%, rgba(0, 209, 178, 0.14), transparent 55%),
+  linear-gradient(180deg, #ffffff, #fbfbff);
   border: 1px solid rgba(15, 23, 42, 0.10);
   box-shadow:
     0 10px 25px rgba(15, 23, 42, 0.06),

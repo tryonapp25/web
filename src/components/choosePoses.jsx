@@ -57,7 +57,7 @@ export default function ChoosePoseModal({
         <div className="cps-header">
           <div>
             <div className="cps-title">{title}</div>
-            <div className="cps-subtitle">Choose one pose to display on your profile.</div>
+            <div className="cps-subtitle">Pick a pose — our AI will render the outfit on your body in that stance.</div>
           </div>
 
           <button className="cps-iconBtn" onClick={onClose} aria-label="Close">

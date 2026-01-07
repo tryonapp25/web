@@ -1,72 +1,139 @@
+/* Page */
 .tlight-page {
   min-height: 100vh;
-  background: #f6f7fb;
-  padding: 28px 16px;
+  background:
+    radial-gradient(900px 520px at 15% 20%, rgba(95, 112, 255, 0.16), transparent 58%),
+    radial-gradient(820px 480px at 90% 10%, rgba(0, 209, 178, 0.12), transparent 58%),
+    linear-gradient(180deg, #ffffff, #fbfbff);
+  color: #0b0f19;
 }
 
+/* Layout */
 .tlight-shell {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
+  padding: 22px 20px 64px;
 }
 
 .tlight-header {
-  margin-bottom: 16px;
-  padding: 18px;
-  border-radius: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  margin-top: 8px;
+  margin-bottom: 18px;
 }
 
 .tlight-title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 780;
-  color: #0f172a;
+  margin: 14px 0 6px;
+  font-size: 40px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .tlight-subtitle {
-  margin-top: 6px;
-  font-size: 13px;
-  color: #64748b;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(11, 15, 25, 0.7);
+  max-width: 70ch;
 }
 
+/* Grid */
 .tlight-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
 
-@media (max-width: 900px) {
-  .tlight-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* Card */
 .tlight-card {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid rgba(15, 23, 42, 0.07);
-  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(11, 15, 25, 0.12);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+  padding: 18px;
 }
 
 .tlight-cardHead {
-  padding: 14px 16px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .tlight-cardTitle {
   font-size: 14px;
-  font-weight: 750;
-  color: #0f172a;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(11, 15, 25, 0.55);
 }
 
+/* Buttons */
+.tlight-btn {
+  all: unset;
+  cursor: pointer;
+  user-select: none;
+
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  font-weight: 900;
+  font-size: 14px;
+
+  border: 1px solid rgba(11, 15, 25, 0.15);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tlight-btn.primary {
+  background: #0b0f19;
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(11, 15, 25, 0.12);
+}
+
+.tlight-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(11, 15, 25, 0.16);
+}
+
+.tlight-btn.ghost {
+  background: rgba(255, 255, 255, 0.75);
+  color: #0b0f19;
+}
+
+.tlight-btn.ghost:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(11, 15, 25, 0.08);
+}
+
+.tlight-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Dropzone */
 .tlight-dropzone {
-  padding: 16px;
   display: block;
+  border-radius: 18px;
+  border: 2px dashed rgba(109, 94, 246, 0.28);
+  background:
+    radial-gradient(420px 240px at 20% 30%, rgba(109, 94, 246, 0.12), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.55));
+  padding: 18px;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.tlight-dropzone:hover {
+  transform: translateY(-1px);
+  border-color: rgba(109, 94, 246, 0.5);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
 }
 
 .tlight-fileInput {
@@ -74,105 +141,151 @@
 }
 
 .tlight-dzInner {
-  border: 1.5px dashed rgba(15, 23, 42, 0.18);
-  border-radius: 14px;
-  padding: 16px;
   display: flex;
-  gap: 12px;
-  cursor: pointer;
-  background: rgba(15, 23, 42, 0.02);
+  align-items: center;
+  gap: 14px;
 }
 
 .tlight-dzIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: rgba(37, 99, 235, 0.12);
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid rgba(11, 15, 25, 0.12);
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
 }
 
 .tlight-dzStrong {
-  font-weight: 780;
+  font-weight: 950;
+  letter-spacing: -0.01em;
 }
 
 .tlight-dzMuted {
+  margin-top: 2px;
   font-size: 12px;
-  color: #64748b;
+  color: rgba(11, 15, 25, 0.65);
 }
 
+/* File meta */
 .tlight-fileMeta {
-  padding: 0 16px 12px;
+  margin-top: 12px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(11, 15, 25, 0.10);
+  background: rgba(11, 15, 25, 0.03);
 }
 
-.tlight-actions {
-  padding: 0 16px 12px;
-}
-
-.tlight-btn {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: 780;
-  cursor: pointer;
-}
-
-.tlight-btn.primary {
-  background: #2563eb;
-  color: #fff;
-}
-
-.tlight-btn.primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.tlight-btn.ghost {
-  background: transparent;
-}
-
-.tlight-message {
-  margin: 0 16px 16px;
-  padding: 12px;
-  border-radius: 14px;
+.tlight-fileName {
   font-size: 13px;
-  background: rgba(15, 23, 42, 0.03);
+  font-weight: 800;
+  color: rgba(11, 15, 25, 0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70%;
 }
 
-.tlight-message.error {
-  background: rgba(185, 28, 28, 0.1);
-  color: #991b1b;
+.tlight-fileSize {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(11, 15, 25, 0.55);
+}
+
+/* Actions */
+.tlight-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Message pill */
+.tlight-message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(11, 15, 25, 0.10);
+  background: rgba(255, 255, 255, 0.75);
+  color: rgba(11, 15, 25, 0.78);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .tlight-message.success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #065f46;
+  border-color: rgba(0, 209, 178, 0.25);
+  background: rgba(0, 209, 178, 0.08);
 }
 
+.tlight-message.error {
+  border-color: rgba(239, 68, 68, 0.22);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* Preview */
 .tlight-preview {
-  padding: 16px;
-}
+  border-radius: 18px;
+  border: 1px solid rgba(11, 15, 25, 0.10);
+  background:
+    radial-gradient(420px 240px at 30% 35%, rgba(95, 112, 255, 0.12), transparent 60%),
+    linear-gradient(180deg, rgba(11, 15, 25, 0.02), rgba(11, 15, 25, 0.01));
+  overflow: hidden;
+  min-height: 330px;
 
-.tlight-previewEmpty {
-  height: 360px;
-  border-radius: 14px;
-  background: rgba(15, 23, 42, 0.03);
-  display: grid;
-  place-items: center;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tlight-previewImg {
-  width: 100%;
-  max-height: 420px;
-  object-fit: contain;
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+  background: #ffffff;
   border-radius: 14px;
+
+  box-shadow:
+    0 22px 60px rgba(15, 23, 42, 0.22),
+    0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+
+.tlight-previewEmpty {
+  text-align: center;
+  padding: 26px;
+}
+
+.tlight-previewBig {
+  font-weight: 950;
+  font-size: 16px;
+}
+
+.tlight-previewSmall {
+  margin-top: 6px;
+  font-size: 13px;
+  color: rgba(11, 15, 25, 0.65);
+  line-height: 1.6;
 }
 
 .tlight-hint {
-  padding: 0 16px 16px;
-  font-size: 12px;
-  color: #64748b;
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(11, 15, 25, 0.65);
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .tlight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tlight-title {
+    font-size: 34px;
+  }
 }
