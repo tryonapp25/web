@@ -4,16 +4,25 @@ import http from "../http/http";
 import { UserContext } from "../ApiContext/userContext";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "../components/flashMessage";
+import httpMessage from "../http/httpMessage";
+import ActivityIndicator from "../components/activityIndicator";
+import { Link } from "react-router-dom";
+
+const defaultMessage = { visible: false, type: "", msg: ""};
 
 export default function Login() {
   const navigate  = useNavigate();
   const { publicUser, setPublicUser } = useContext(UserContext);
   const [email, setEmail] = useState(publicUser?.email || "");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(defaultMessage);
+  const [loading, setLoading] = useState(false)
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
+      setLoading(true);
       const res = await http.post(`/login`,{
         email: email,
         password: password
@@ -25,8 +34,15 @@ export default function Login() {
         navigate("/home")
       }
     }
-    catch(err){
-      alert(err)
+    catch (err) {
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(err) || "Login failed",
+      });
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -54,12 +70,21 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button className={styles.button} type="submit">
-              Sign In
+            <Link to="/">
+              <p className={styles.noAccount}>
+                Don’t have an account?
+              </p>
+            </Link>
+
+            <button className={styles.button} disabled={loading}>
+              {loading ? <ActivityIndicator /> : "Sign In"}
             </button>
+
           </form>
         </div>
       </div>
+
+      <FlashMessage show={message.visible} message={message?.msg} type={message.type} onClose={() => setMessage(defaultMessage)}/>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.css";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,7 +31,7 @@ export default function Navbar() {
 
         <div className={styles.actions}>
           <a className={styles.ghost} href="#get-started">Request access</a>
-          <a className={styles.cta} href="#get-started">Get started</a>
+          <Link to="/login"><a className={styles.cta} href="#get-started">Get started</a></Link>
         </div>
       </nav>
     </div>

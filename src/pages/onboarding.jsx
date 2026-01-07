@@ -1,7 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "../styles/Onbroading.module.css";
 import Navbar from "../components/Navbar";
 import http from "../http/http";
+import WaitlistCard from "../components/waitlistCard";
+import { Link } from "react-router-dom";
 
 function Badge({ children }) {
   return <span className={styles.badge}>{children}</span>;
@@ -98,27 +100,42 @@ function FaqItem({ q, a, open, onToggle }) {
 export default function Onbroading() {
   const [email, setEmail] = useState("");
   const [faqOpen, setFaqOpen] = useState(0);
+  const [waitlistCount, setWaitlistCount] = useState(null);
+  
+  useEffect(()=>{
+    const fetchWaitlist = async () => {
+      try{
+        const res = await http.get(`/webpage/waitlist`);
+        if(res.data.success){
+          setWaitlistCount(res.data.data);
+        }
+      }catch(err){
+        setWaitlistCount(0)
+      }
+    };
+    if(!waitlistCount) fetchWaitlist();
+  },[])
 
   const features = useMemo(
     () => [
       {
         title: "Realistic Virtual Try-On",
-        icon: "/icons/stylingIcon.png",
+        icon: "icons/stylingIcon.png",
         desc: "Preview clothes on your full body with honest results. TryOn avoids fake perfection and tells you when a photo isn’t good enough for accuracy."
       },
       {
         title: "🧠 Personal AI Stylist",
-        icon: "/icons/personal-stylist.png",
+        icon: "icons/personal-stylist.png",
         desc: "Get outfit suggestions from your own clothes. Every recommendation comes with a clear explanation — fit, color, and occasion included."
       },
       {
         title: "☀️ Context-Aware Styling",
-        icon: "/icons/context-aware.png",
+        icon: "icons/context-aware.png",
         desc: "Outfits that match your day. TryOn considers weather, occasion, comfort, and activity so your look always makes sense."
       },
       {
         title: "🔐 Built for Trust",
-        icon: "/icons/trust.png",
+        icon: "icons/trust.png",
         desc: "No charges for failed results. Clear AI limits. Your photos stay private and under your control."
       }
     ],
@@ -273,7 +290,7 @@ export default function Onbroading() {
             </p>
 
             <div className={styles.heroCtas}>
-              <PrimaryButton href="#get-started">Get started</PrimaryButton>
+              <Link to="/login"><PrimaryButton href="#get-started">Get started</PrimaryButton></Link>
               <SecondaryButton href="#features">See features</SecondaryButton>
             </div>
 
@@ -329,6 +346,7 @@ export default function Onbroading() {
                     <span className={styles.previewTag}>Modular</span>
                   </div>
                   <div className={styles.previewBlock} />
+                  <WaitlistCard count={waitlistCount} live={true}/>
                 </div>
               </div>
             </div>

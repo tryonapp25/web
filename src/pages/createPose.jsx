@@ -75,7 +75,7 @@ export default function CreatePoses() {
     const arr = [];
     arr.push(pose?.selectedPose)
    
-    setStatus("trying");
+    setStatus("generating");
     setMessage("Uploading…");
 
     try {
@@ -170,9 +170,9 @@ export default function CreatePoses() {
               <button
                 className="tlight-btn primary"
                 onClick={() => handleGetDefaultPoses()}
-                disabled={!file || status === "trying"}
+                disabled={!file || status === "generating"}
               >
-                {status === "trying" ? "Trying on…" : "Try on"}
+                {status === "generating" ? "Generating image" : "Generate"}
               </button>
             </div>
 

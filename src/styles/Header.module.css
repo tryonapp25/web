@@ -50,11 +50,17 @@
   background-color: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
+  cursor: pointer;
+}
+
+.tokenBox:hover{
+  opacity: 0.8;
 }
 
 .icon {
   font-size: 14px;
   color: #f59e0b; /* soft yellow lightning */
+  
 }
 
 .tokenValue {

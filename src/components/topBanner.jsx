@@ -4,8 +4,8 @@ export default function TopBanner() {
   return (
     <section className={styles.banner}>
       <div>
-        <h2>TryOn Virtual Outfit Preview</h2>
-        <p>Control your frames with 3–10s flexibility</p>
+        <h2>Virtual Outfit Preview</h2>
+        <p>Try on looks in real time with flexible 5–15s frame control.</p>
       </div>
       <button>Experience Now</button>
     </section>

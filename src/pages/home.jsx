@@ -9,17 +9,29 @@ import { UserContext } from "../ApiContext/userContext";
 import { PROFILE_QUESTIONS } from "../questions";
 import Questionnaire from "../components/questionnaire";
 import http from "../http/http";
+import httpMessage from "../http/httpMessage";
 import Header from "../components/header";
 import ChoosePoses from "../components/choosePoses"
+import FlashMessage from "../components/flashMessage";
 import StyleLoading from "../components/styleLoading";
+import { useNavigate } from "react-router-dom";
+
+
+const defaultMessage = {
+  visible: false,
+  type: "",
+  msg: ""
+}
 
 export default function Home() {
+  const navigate = useNavigate();
   const [feedItems, setFeedItems] = useState({});
   const { publicUser, setPublicUser } = useContext(UserContext);
   const [userProfile, setUserProfile] = useState(publicUser?.userProfiles || null);
   const [openChoosePose, setOpenChoosePose] = useState(false);
   const [defaultPoses, setDefaultPoses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(defaultMessage);
 
 
   const CreateUserProfile = async (profile) => {
@@ -32,7 +44,11 @@ export default function Home() {
       }
     }
     catch(err){
-      alert(err)
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(err)
+      })
     }
   }
 
@@ -63,7 +79,11 @@ export default function Home() {
       }));
       }
     } catch (err) {
-      alert("Failed to delete user poses");
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(err)
+      })
     }
   };
 
@@ -83,7 +103,11 @@ export default function Home() {
       }));
       }
     } catch (err) {
-      alert("Failed to delete image generations");
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(err)
+      })
     }
   };
 
@@ -98,7 +122,11 @@ export default function Home() {
       }
     }
     catch(err){
-      console.log(err)
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(err)
+      })
     }
   }
 
@@ -124,13 +152,18 @@ export default function Home() {
       }
     }
     catch(err){
-      alert(err)
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(err)
+      })
     }
     finally{
       setLoading(false);
     }
   }
 
+  if(!publicUser) return navigate("/login")
   if(!userProfile) return <Questionnaire QUESTIONS={PROFILE_QUESTIONS} onSubmit={(d) => CreateUserProfile(d)}/>
   
   return (
@@ -139,16 +172,17 @@ export default function Home() {
 
       <main className={styles.main}>
         <div style={{marginBottom:12}}>
-          <Header userName="Minh" token={8}/>
+          <Header userName={publicUser?.userName} token={8}/>
         </div>
         <TopBanner />
         <QuickActions />
-        <ExploreTabs onSubmit={(d) => setFeedItems(d)} />
+        <ExploreTabs onSubmit={(d) => setFeedItems(d)} onError={(e) => setMessage({visible: true, type:"error", msg: httpMessage(e)})}/>
         <FeedGrid data={feedItems} onDelete={(d) => handleDeleteion(d)} addMore={(d) => handleGetDefaultPoses(d)}/>
       </main>
 
       <StyleLoading label="Generating new pose" visible={loading}/>
-      <ChoosePoses isOpen={openChoosePose} poses={defaultPoses} onClose={()=> setOpenChoosePose(false)} generate={(d) => handleGeneratePose(d)}/>
+      <ChoosePoses isOpen={openChoosePose} poses={defaultPoses} onClose={()=> setOpenChoosePose(false)} generate={(d) => handleGeneratePose(d)} onError={(e) => setMessage({visible: true, type:"error", msg: httpMessage(e)})}/>
+      <FlashMessage show={message.visible} onClose={() => setMessage(defaultMessage)} type={message.type} message={message.msg}/>
     </div>
   );
 }

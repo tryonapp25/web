@@ -4,6 +4,7 @@ import Onboarding from "./pages/onboarding";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Home from "./pages/home";
+import Payment from "./pages/payment";
 import ProfileQuestionnaire from "./pages/profileQuestionnaire";
 import PersonalStylish from "./pages/personalStylish";
 import Profile from "./pages/profile";
@@ -20,15 +21,17 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/" element={<Onboarding />} />
-            {/* <Route path="/home" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/q" element={<ProfileQuestionnaire />} />
+            <Route path="/createPoses" element={<CreatePoses />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/payment" element={<Payment />} />
+            {/*  
             <Route path="/personalStylish" element={<PersonalStylish />} />
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/tryon" element={<TryOn />} />
-            <Route path="/createPoses" element={<CreatePoses />} /> */}
+             */}
           </Routes>
         </main>
       </BrowserRouter>

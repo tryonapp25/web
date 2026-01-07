@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import "../styles/FlashMessage.css";
 
-export default function FlashMessage({ show, type, message, onClose }) {
+export default function FlashMessage({ show, type = "success", message, onClose }) {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(onClose, 3000);

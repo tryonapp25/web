@@ -16,6 +16,7 @@ export default function PreviewImage({
   title = "Set image by URL",
   onClose,
   onSave, // ({ url })
+  showSave = true
 }) {
   const [url, setUrl] = useState(initialUrl || "");
   const [imgError, setImgError] = useState(false);
@@ -127,13 +128,15 @@ export default function PreviewImage({
           <button className="ium-btn ghost" onClick={onClose}>
             Cancel
           </button>
-          <button
-            className="ium-btn primary"
-            onClick={handleSave}
-            disabled={!validUrl || imgError}
-          >
-            Save
-          </button>
+          {showSave &&
+            <button
+              className="ium-btn primary"
+              onClick={handleSave}
+              disabled={!validUrl || imgError}
+            >
+              Save
+            </button>
+          }
         </div>
       </div>
     </div>

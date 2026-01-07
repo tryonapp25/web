@@ -3,12 +3,18 @@ import styles from "../styles/FeedGrid.module.css";
 import { UserContext } from "../ApiContext/userContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "./confirmDialog";
+import PreviewImage from "./previewImage";
 
 
 export default function FeedGrid({ data = {}, onDelete, addMore}) {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const { publicUser} = useContext(UserContext);
+  const [selectedItem, setSelectItem] = useState(null);
+  const [selectedImageUrl, setSelectImageUrl] = useState(null);
+
+
   useEffect(()=> {  
     setItems(data?.data || []);
   },[data])
@@ -25,7 +31,8 @@ export default function FeedGrid({ data = {}, onDelete, addMore}) {
   return (
     <section className={styles.grid}>
       {items.map((item, index) => (
-        <div key={index} className={styles.card}>
+        <>
+          <div key={index} className={styles.card} onClick={() => setSelectImageUrl(item.img)}>
           <img
             src={item.img}
             alt={item.alt || ""}
@@ -35,9 +42,10 @@ export default function FeedGrid({ data = {}, onDelete, addMore}) {
             <span>❤️ {100 + index * 7}</span>
           </div>
           <div className={styles.actions}>
-            <button className={styles.deleteButton} onClick={() => onDelete({id: data?.id, data: item})}>Delete</button>
+            <button className={styles.deleteButton} onClick={() => setSelectItem({id: data?.id, data: item})}>Delete</button>
           </div>
         </div>
+        </>
       ))}
       {data?.id != "history" ?
         <button className={styles.addmore} onClick={() => handleAddmoreButton()}>
@@ -46,6 +54,9 @@ export default function FeedGrid({ data = {}, onDelete, addMore}) {
         : 
         null
       }
+      
+      <PreviewImage initialUrl={selectedImageUrl} isOpen={!selectedImageUrl ? false : true} onClose={() => setSelectImageUrl(null)} onSave={() => setSelectImageUrl(null)} showSave={false}/>
+      <ConfirmDialog open={!selectedItem ? false : true} onCancel={() => setSelectItem(null)} onConfirm={() => {onDelete(selectedItem), setSelectItem(null)}} variant="danger"/>
     </section>
   );
 }

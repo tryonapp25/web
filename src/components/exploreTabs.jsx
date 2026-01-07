@@ -3,8 +3,8 @@ import { useEffect, useContext } from "react";
 import http from "../http/http";
 import { UserContext } from "../ApiContext/userContext";
 
-export default function ExploreTabs({onSubmit}) {
-  const { publicUser, setPublicUser } = useContext(UserContext);
+export default function ExploreTabs({onSubmit, onError}) {
+  const { publicUser } = useContext(UserContext);
 
   useEffect(()=> {
     getHistoryGenerations()
@@ -21,7 +21,7 @@ export default function ExploreTabs({onSubmit}) {
       }
     }
     catch(err){
-      console.log(err);
+      onError(err)
     }
   }
 
@@ -36,7 +36,7 @@ export default function ExploreTabs({onSubmit}) {
     <div className={styles.tabs}>
       <button className={styles.active} onClick={() => getHistoryGenerations()}>Recent generations</button>
       <button onClick={() => getUserPoses()}>My avatar</button>
-      <button>My Closet</button>
+      {/* <button>My Closet</button> */}
     </div>
   );
 }

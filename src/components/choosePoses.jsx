@@ -9,7 +9,8 @@ export default function ChoosePoseModal({
   initialSelectedId = null,
   onClose,
   generate,
-  title = "Select a pose"
+  title = "Select a pose",
+  onError
 }) {
   const [selectedId, setSelectedId] = useState(initialSelectedId);
   const [tokenUsage, setTokenUsage] = useState(null);
@@ -25,7 +26,7 @@ export default function ChoosePoseModal({
         }
       }
       catch(err){
-        alert(err)
+        onError(err)
       }
     }
     getTokenUsage();
