@@ -65,7 +65,7 @@ export default function Home() {
 
   const handleDeleteUserPoses = async (item) => {
     try {
-      const id = item?.id;
+      const id = publicUser?.uid;
       const url = item?.img;
       const res = await http.delete(
         `/user/${id}/poses/${id}/url/${encodeURIComponent(url)}`
@@ -73,10 +73,11 @@ export default function Home() {
 
       if (res.data?.success) {
         setPublicUser(res.data.data);
-       setFeedItems((prev) => ({
-        ...prev,
-        data: (prev?.data || []).filter((x) => x.id !== id),
-      }));
+        console.log(res.data.data)
+        setFeedItems((prev) => ({
+          ...prev,
+          data: (prev?.data?.poses || []).filter((x) => x.id !== id),
+        }));
       }
     } catch (err) {
       setMessage({
@@ -131,14 +132,34 @@ export default function Home() {
   }
 
   const handleGeneratePose = async (data) => {
+    if(publicUser?.poses.length !== 0) return await handleAddPose(data)
+  }
+
+  const handleAddPose = async (data) => {
     const pose = data?.selectedPose;
     for(const item of publicUser?.poses){
-      if(item?.name === pose?.name) return alert("You already has the pose");
+      if(item?.name === pose?.name){
+        setMessage({
+          visible: true,
+          type: "warn",
+          msg: "You already has the pose."
+        })
+        return
+      }
     }
     const arr = [];
     arr.push(data?.selectedPose)
+
+    if(publicUser?.poses.length === 0){
+      setMessage({
+        visible: true,
+        type: "warn",
+        msg: "You dont have any pose to add more."
+      })
+      return
+    }
     try{
-      setOpenChoosePose(true);
+      setOpenChoosePose(false);
       setLoading(true);
 
       const res = await http.post(`/add-poses/nano-banana`, {
