@@ -68,16 +68,17 @@ export default function Home() {
       const id = publicUser?.uid;
       const url = item?.img;
       const res = await http.delete(
-        `/user/${id}/poses/${id}/url/${encodeURIComponent(url)}`
+        `/user/${id}/poses/${item?.id}/url/${encodeURIComponent(url)}`
       );
 
       if (res.data?.success) {
-        setPublicUser(res.data.data);
-        console.log(res.data.data)
-        setFeedItems((prev) => ({
+         setFeedItems((prev) => ({
           ...prev,
-          data: (prev?.data?.poses || []).filter((x) => x.id !== id),
+          data: (prev.data || []).filter(
+            (feedItem) => feedItem.id !== item.id
+          ),
         }));
+        setPublicUser(res.data.data);
       }
     } catch (err) {
       setMessage({
