@@ -31,11 +31,11 @@ export default function FeedGrid({ data = {}, onDelete, addMore}) {
   return (
     <section className={styles.grid}>
       {items.map((item, index) => (
-        <>
-          <div key={index} className={styles.card} onClick={() => setSelectImageUrl(item.img)}>
+        <div key={index} className={styles.card}>
           <img
             src={item.img}
             alt={item.alt || ""}
+            onClick={() => setSelectImageUrl(item.img)}
           />
           <div className={styles.meta}>
             <span>Creator</span>
@@ -45,7 +45,7 @@ export default function FeedGrid({ data = {}, onDelete, addMore}) {
             <button className={styles.deleteButton} onClick={() => setSelectItem({id: data?.id, data: item})}>Delete</button>
           </div>
         </div>
-        </>
+      
       ))}
       {data?.id != "history" ?
         <button className={styles.addmore} onClick={() => handleAddmoreButton()}>
