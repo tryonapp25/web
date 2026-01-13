@@ -11,6 +11,7 @@ import Profile from "./pages/profile";
 import Recommendations from "./pages/recommendations";
 import TryOn from "./pages/tryon";
 import CreatePoses from "./pages/createPose";
+import Products from "./pages/products";
 
 
 
@@ -28,9 +29,10 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/tryon" element={<TryOn />} />
+            <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/products" element={<Products />} />
             {/*  
             <Route path="/personalStylish" element={<PersonalStylish />} />
-            <Route path="/recommendations" element={<Recommendations />} />
             
              */}
           </Routes>

@@ -1,0 +1,184 @@
+/* components/FilterGrid.module.css (dark style, 2-column grid like RN) */
+
+.listWrap {
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 8px 16px;
+}
+
+/* whole tile is clickable */
+.itemWrapper {
+  all: unset;
+  display: block;
+  cursor: pointer;
+}
+
+.card {
+  width: 100%;
+  aspect-ratio: 1 / 1.25; /* TILE_SIZE * 1.25 */
+  border-radius: 14px;
+  overflow: hidden;
+  background: #15161a;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* overlays */
+.topOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.title {
+  flex: 1;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding-right: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.publicBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(92, 92, 92, 0.85);
+  color: #fff;
+}
+
+.publicText {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.bottomOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.creator {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.action {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.count {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.heart {
+  color: #ff3b30;
+}
+
+.useBtn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+
+  /* replacement for LinearGradient */
+  background: linear-gradient(90deg, #7c5cff, #5f70ff);
+}
+
+.useText {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.editRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.meta {
+  flex: 1;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.iconBtn {
+  all: unset;
+  cursor: pointer;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* infinite scroll */
+.sentinel {
+  height: 1px;
+}
+
+.loading {
+  padding: 14px 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* responsive: 3 columns on wide screens (optional) */
+@media (min-width: 920px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

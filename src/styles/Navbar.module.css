@@ -1,16 +1,31 @@
+/* Navbar.module.css — DARK VERSION */
+
+/* If your app already defines these (from Onbroading.module.css), you can remove :root here.
+   Keeping it here makes Navbar work standalone too. */
+:root{
+  --bg: #0B0F19;
+  --bg-2: #0F172A;
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.70);
+  --muted-2: rgba(255, 255, 255, 0.55);
+  --line: rgba(255, 255, 255, 0.12);
+}
+
+/* Wrapper */
 .wrap {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(11, 15, 25, 0.55); /* glass on dark */
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(11, 15, 25, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .scrolled {
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(11, 15, 25, 0.72);
 }
 
+/* Nav layout */
 .nav {
   max-width: 1120px;
   margin: 0 auto;
@@ -21,12 +36,13 @@
   gap: 16px;
 }
 
+/* Brand */
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #0b0f19;
+  color: var(--text);
   font-weight: 900;
 }
 
@@ -34,11 +50,11 @@
   width: 26px;
   height: 26px;
   border-radius: 10px;
-  border: 1px solid rgba(11, 15, 25, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   background:
-    radial-gradient(14px 14px at 35% 35%, rgba(95, 112, 255, 0.35), transparent 60%),
-    radial-gradient(14px 14px at 70% 70%, rgba(0, 209, 178, 0.25), transparent 60%),
-    rgba(11, 15, 25, 0.04);
+    radial-gradient(14px 14px at 35% 35%, rgba(139, 124, 255, 0.45), transparent 60%),
+    radial-gradient(14px 14px at 70% 70%, rgba(0, 209, 178, 0.30), transparent 60%),
+    rgba(255, 255, 255, 0.06);
 }
 
 .Icon {
@@ -47,11 +63,11 @@
   border-radius: 14px;
 }
 
-
 .brandText {
   letter-spacing: -0.02em;
 }
 
+/* Links */
 .links {
   display: flex;
   gap: 25px;
@@ -59,16 +75,17 @@
 }
 
 .links a {
-  color: rgba(11, 15, 25, 0.72);
+  color: var(--muted);
   text-decoration: none;
   font-weight: 650;
   font-size: 14px;
 }
 
 .links a:hover {
-  color: rgba(11, 15, 25, 0.95);
+  color: var(--text);
 }
 
+/* Actions */
 .actions {
   display: flex;
   gap: 10px;
@@ -79,24 +96,38 @@
   display: inline-flex;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(11, 15, 25, 0.12);
-  background: rgba(255, 255, 255, 0.7);
-  color: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
   text-decoration: none;
   font-weight: 750;
   font-size: 14px;
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.ghost:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
 }
 
 .cta {
   display: inline-flex;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(11, 15, 25, 0.14);
-  background: #0b0f19;
-  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(11, 15, 25, 0.95);
   text-decoration: none;
   font-weight: 750;
   font-size: 14px;
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.cta:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 840px) {

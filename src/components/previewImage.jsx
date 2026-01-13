@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import "../styles/PreviewImage.css";
+import ActivityIndicator from "./activityIndicator";
+import FlashMessage from "../components/flashMessage";
+import http from "../http/http";
+import httpMessage from "../http/httpMessage";
+import { useNavigate } from "react-router-dom";
 
 function isValidHttpUrl(value) {
   try {
@@ -10,6 +15,12 @@ function isValidHttpUrl(value) {
   }
 }
 
+const defaultMessage = {
+  visible: false,
+  type: "",
+  msg: ""
+}
+
 export default function PreviewImage({
   isOpen,
   initialUrl = "",
@@ -18,8 +29,11 @@ export default function PreviewImage({
   onSave, // ({ url })
   showSave = true
 }) {
+  const navigate = useNavigate();
   const [url, setUrl] = useState(initialUrl || "");
   const [imgError, setImgError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [ message, setMessage] = useState(defaultMessage);
 
   useEffect(() => {
     if (isOpen) {
@@ -53,6 +67,29 @@ export default function PreviewImage({
     const cleaned = url.trim();
     onSave?.({ url: cleaned });
   };
+
+
+  const handleSerchforProduct = async() => {
+    if(loading) return;
+    try{
+      setLoading(true);
+      const res = await http.post(`/user/cloud-vision/search-product`,{url: url});
+      if(res.data.success){
+        const {url, img} = res.data.data[0];
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    }
+    catch(err){
+      setMessage({
+        visible: true,
+        msg: httpMessage(err),
+        type: "error"
+      })
+    }
+    finally{
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="ium-overlay" onMouseDown={handleOverlayMouseDown}>
@@ -128,7 +165,7 @@ export default function PreviewImage({
           <button className="ium-btn ghost" onClick={onClose}>
             Cancel
           </button>
-          {showSave &&
+          {showSave ?
             <button
               className="ium-btn primary"
               onClick={handleSave}
@@ -136,9 +173,19 @@ export default function PreviewImage({
             >
               Save
             </button>
+            :
+            <button
+              className="ium-btn primary"
+              onClick={() => handleSerchforProduct()}
+              disabled={!validUrl || imgError}
+            >
+              {loading ? <ActivityIndicator/> : "Search product"}
+            </button>
           }
         </div>
       </div>
+
+      <FlashMessage show={message.visible} onClose={()=> setMessage(defaultMessage)} type={message.type} message={message.msg}/>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import http from "../http/http";
 import WaitlistCard from "../components/waitlistCard";
 import { Link } from "react-router-dom";
+import FilterGrid from "../components/extraComponents/filterGrid";
 
 function Badge({ children }) {
   return <span className={styles.badge}>{children}</span>;
@@ -101,6 +102,7 @@ export default function Onbroading() {
   const [email, setEmail] = useState("");
   const [faqOpen, setFaqOpen] = useState(0);
   const [waitlistCount, setWaitlistCount] = useState(null);
+  const [filters, setFilters] = useState([]);
   
   useEffect(()=>{
     const fetchWaitlist = async () => {
@@ -114,144 +116,126 @@ export default function Onbroading() {
       }
     };
     if(!waitlistCount) fetchWaitlist();
-  },[])
+    if(filters.length === 0) handleGetFilters()
+  },[]);
 
-  const features = useMemo(
-    () => [
-      {
-        title: "Realistic Virtual Try-On",
-        icon: "icons/stylingIcon.png",
-        desc: "Preview clothes on your full body with honest results. TryOn avoids fake perfection and tells you when a photo isn’t good enough for accuracy."
-      },
-      {
-        title: "🧠 Personal AI Stylist",
-        icon: "icons/personal-stylist.png",
-        desc: "Get outfit suggestions from your own clothes. Every recommendation comes with a clear explanation — fit, color, and occasion included."
-      },
-      {
-        title: "☀️ Context-Aware Styling",
-        icon: "icons/context-aware.png",
-        desc: "Outfits that match your day. TryOn considers weather, occasion, comfort, and activity so your look always makes sense."
-      },
-      {
-        title: "🔐 Built for Trust",
-        icon: "icons/trust.png",
-        desc: "No charges for failed results. Clear AI limits. Your photos stay private and under your control."
+  const handleGetFilters = async () => {
+    try{
+      const res = await http.get(`/filters-example`);
+      if(res.data.success){
+        setFilters(res.data.data);
       }
-    ],
-    []
-  );
+    }
+    catch(err){
 
-  const steps = useMemo(
-    () => [
-      { k: "01", t: "Open TryOn", d: "Use it instantly on any device." },
-      { k: "02", t: "Pick an Outfit", d: "Select what you want to try on." },
-      { k: "03", t: "See It On You", d: "Preview and compare before you decide." }
+    }
+  }
 
-    ],
-    []
-  );
-
-  const testimonials = useMemo(
-    () => [
-      {
-        name: "Store Owner",
-        role: "Online Retail",
-        quote:
-          "TryOn reduced hesitation at checkout by giving customers clearer visual confidence before buying."
-      },
-      {
-        name: "Fashion Creator",
-        role: "Digital Media",
-        quote:
-          "It’s fast, clean, and mobile-first. Previewing and sharing looks feels natural, not gimmicky."
-      },
-      {
-        name: "Customer",
-        role: "Smart Shopper",
-        quote:
-          "I donl"
-      }
-    ],
-    []
-  );
+  // ✅ FEATURES (AI Filters + Creator Marketplace)
+  const features = [
+    {
+      title: "Trending AI Filters",
+      icon: "icons/stylingIcon.png",
+      desc: "Explore the most-used community filters—cinematic, film, vintage, clean, and more. One tap to apply."
+    },
+    {
+      title: "Instant Preview",
+      icon: "icons/personal-stylist.png",
+      desc: "Upload a photo and preview the filter in seconds. Realistic results—no over-sharpening, no fake looks."
+    },
+    {
+      title: "Create Your Own Filter",
+      icon: "icons/context-aware.png",
+      desc: "Creators can build filters using prompts + settings, publish them, and share with the community."
+    },
+    {
+      title: "Creator Earnings & Analytics",
+      icon: "icons/trust.png",
+      desc: "Track uses, likes, saves, and trends. Earn revenue when others use your filters—transparent and fair."
+    }
+  ];
 
 
-  const pricing = useMemo(
-    () => [
-      {
-        name: "Starter Pack",
-        price: "$1.99",
-        tokens: 10,
-        desc: "Try TryOn with a few realistic previews.",
-        items: [
-          "10 try-on tokens",
-          "Realistic full-body previews",
-          "Side-by-side outfit comparison",
-          "No charge for failed results"
-        ],
-        highlighted: false
-      },
-      {
-        name: "Popular Pack",
-        price: "$4.99",
-        tokens: 30,
-        desc: "Best value for everyday outfit decisions.",
-        items: [
-          "30 try-on tokens",
-          "Everything in Starter Pack",
-          "Color & fit guidance",
-          "Context-aware styling"
-        ],
-        highlighted: true
-      },
-      {
-        name: "Pro Pack",
-        price: "$9.99",
-        tokens: 80,
-        desc: "For frequent shoppers and creators.",
-        items: [
-          "80 try-on tokens",
-          "Everything in Popular Pack",
-          "Faster processing priority",
-          "Early access to new features"
-        ],
-        highlighted: false
-      }
-    ],
-    []
-  );
+  // ✅ HOW IT WORKS (Filters flow)
+  const steps = [
+    { k: "01", t: "Pick a Filter", d: "Choose from trending, new, or creator collections." },
+    { k: "02", t: "Upload a Photo", d: "Use any selfie or photo—your image stays yours." },
+    { k: "03", t: "Generate & Share", d: "Apply the filter, download the result, and share it anywhere." }
+  ];
 
 
-  const faqs = useMemo(
-    () => [
-      {
-        q: "Do I need to install an app to use TryOn?",
-        a: "You can use TryOn on the web or install it as a mobile app. Your experience stays the same across devices."
-      },
-      {
-        q: "What does one token give me?",
-        a: "One token gives you one realistic try-on preview. You’re only charged when a result is successfully generated."
-      },
-      {
-        q: "What happens if a preview fails?",
-        a: "If a photo isn’t suitable or a result can’t be generated, the token is not deducted."
-      },
-      {
-        q: "Do my tokens expire?",
-        a: "No. Tokens never expire and stay in your account until you use them."
-      },
-      {
-        q: "Are my photos stored safely?",
-        a: "Yes. Your images are securely stored and only used to generate your previews. You stay in full control."
-      },
-      {
-        q: "Can I delete my generated images?",
-        a: "Yes. You can delete your previews at any time directly from your account."
-      }
-    ],
-    []
-  );
+  // ✅ PRICING (Tokens for image generations/edits)
+  const pricing = [
+    {
+      name: "Starter Pack",
+      price: "$1.99",
+      tokens: 10,
+      desc: "Try a few filters and see the quality.",
+      items: [
+        "10 generation tokens",
+        "Access to trending filters",
+        "High-quality results",
+        "No charge for failed generations"
+      ],
+      highlighted: false
+    },
+    {
+      name: "Popular Pack",
+      price: "$4.99",
+      tokens: 30,
+      desc: "Best value for regular use.",
+      items: [
+        "30 generation tokens",
+        "Everything in Starter Pack",
+        "Faster processing priority",
+        "Save favorites + collections"
+      ],
+      highlighted: true
+    },
+    {
+      name: "Pro Pack",
+      price: "$9.99",
+      tokens: 80,
+      desc: "For creators and power users.",
+      items: [
+        "80 generation tokens",
+        "Everything in Popular Pack",
+        "Early access to new filters",
+        "Creator tools + advanced settings"
+      ],
+      highlighted: false
+    }
+  ];
+
+
+  // ✅ FAQ (AI filters + privacy + creator earnings)
+  const faqs = [
+    {
+      q: "Do I need to install an app?",
+      a: "You can use the platform on the web and optionally install it as an app. Your account and filters stay the same across devices."
+    },
+    {
+      q: "What does one token give me?",
+      a: "One token gives you one successful AI filter generation (one output image). You’re only charged when the result is successfully generated."
+    },
+    {
+      q: "What happens if generation fails?",
+      a: "If the image can’t be generated, your token is not deducted."
+    },
+    {
+      q: "Can I create and publish my own filters?",
+      a: "Yes. Creators can build filters, publish them publicly or privately, and track usage."
+    },
+    {
+      q: "How do creators earn money?",
+      a: "Creators earn based on how often their filters are used. Usage counts, analytics, and payouts are transparent in the creator dashboard."
+    },
+    {
+      q: "Are my photos private?",
+      a: "Yes. Your photos are only used to generate your result. You control your uploads and can delete generated images anytime."
+    }
+  ];
+
 
 
   async function onSubmit(e) {
@@ -278,15 +262,14 @@ export default function Onbroading() {
           <div className={styles.heroLeft}>
             <div className={styles.heroBadges}>
               <Badge>TryOn</Badge>
-              <Badge>Real previews • Better decisions</Badge>
+              <Badge>AI filters • Community-made • Creator earnings</Badge>
             </div>
 
             <h1 className={styles.heroTitle}>
-              Virtual try-on See Your Outfit Before You Buy It.
+              "AI Filters You Can Create, Use, and Share."
             </h1>
             <p className={styles.heroSubtitle}>
-              TryOn lets you preview outfits on your real body and get smart styling advice from your own 
-              wardrobe — so you can choose with confidence, not guesswork.
+              Discover trending filters, generate high-quality edits in seconds, and build your own filters to share with the community—and earn when others use them.
             </p>
 
             <div className={styles.heroCtas}>
@@ -308,49 +291,15 @@ export default function Onbroading() {
                 <div className={styles.statLabel}>charges for failed previews</div>
               </div>
             </div>
+            
+            <div style={{marginTop:25}}>
+              <WaitlistCard count={waitlistCount} live={true}/>
+            </div>
 
           </div>
 
           <div className={styles.heroRight}>
-            <div className={styles.previewCard} role="img" aria-label="TryOn preview mock">
-              <div className={styles.previewTop}>
-                <div className={styles.previewDot} />
-                <div className={styles.previewDot} />
-                <div className={styles.previewDot} />
-              </div>
-              <div className={styles.previewBody}>
-                <div className={styles.previewPhone}>
-                  <div className={styles.previewPhoneHeader}>
-                    <span className={styles.previewPill}>TryOn</span>
-                    <span className={styles.previewPillMuted}>Preview</span>
-                  </div>
-                  <div className={styles.previewCanvas} />
-                  <div className={styles.previewRow}>
-                    <div className={styles.previewThumb} />
-                    <div className={styles.previewThumb} />
-                    <div className={styles.previewThumb} />
-                    <div className={styles.previewThumb} />
-                  </div>
-                  <div className={styles.previewActions}>
-                    <div className={styles.previewBtn} />
-                    <div className={styles.previewBtnAlt} />
-                  </div>
-                </div>
-
-                <div className={styles.previewSide}>
-                  <div className={styles.previewLine} />
-                  <div className={styles.previewLineWide} />
-                  <div className={styles.previewLine} />
-                  <div className={styles.previewBadgeRow}>
-                    <span className={styles.previewTag}>Responsive</span>
-                    <span className={styles.previewTag}>Clean UI</span>
-                    <span className={styles.previewTag}>Modular</span>
-                  </div>
-                  <div className={styles.previewBlock} />
-                  <WaitlistCard count={waitlistCount} live={true}/>
-                </div>
-              </div>
-            </div>
+             <FilterGrid data={filters}/>
           </div>
         </div>
       </header>
@@ -360,7 +309,7 @@ export default function Onbroading() {
         <div className={styles.sectionHead}>
           <h2 className={styles.h2}>Features</h2>
           <p className={styles.muted}>
-            A modern layout that you can wire to any backend or try-on engine.
+            Everything you need to discover, apply, and create AI filters—built for community and creators.
           </p>
         </div>
 
@@ -376,7 +325,7 @@ export default function Onbroading() {
         <div className={styles.sectionHead}>
           <h2 className={styles.h2}>How it works</h2>
           <p className={styles.muted}>
-            Keep the flow simple: pick, preview, share.
+            Simple flow: pick a filter, upload a photo, generate and share.
           </p>
         </div>
 
@@ -420,7 +369,7 @@ export default function Onbroading() {
       <section className={styles.sectionAlt} id="pricing">
         <div className={styles.sectionHead}>
           <h2 className={styles.h2}>Pricing</h2>
-          <p className={styles.muted}>Simple tiers—adjust to your business model.</p>
+          <p className={styles.muted}>Token-based pricing—pay only for successful generations.</p>
         </div>
 
         <div className={styles.pricingGrid}>
@@ -434,7 +383,7 @@ export default function Onbroading() {
       <section className={styles.section} id="faq">
         <div className={styles.sectionHead}>
           <h2 className={styles.h2}>FAQ</h2>
-          <p className={styles.muted}>Common questions about this template.</p>
+          <p className={styles.muted}>Common questions about AI filters, privacy, and creator payouts.</p>
         </div>
 
         <div className={styles.faq}>
@@ -455,10 +404,10 @@ export default function Onbroading() {
         <div className={styles.ctaInner}>
           <div>
             <h2 className={styles.ctaTitle}>
-              Try TryOn before everyone else
+              Get early access to the AI filter marketplace
             </h2>
             <p className={styles.ctaSubtitle}>
-              We’re launching soon. Join the waitlist to get early access and special launch discounts.
+              We’re launching soon. Join the waitlist for early access, creator perks, and launch offers.
             </p>
           </div>
 
