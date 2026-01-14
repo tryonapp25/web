@@ -1,8 +1,3 @@
-/* Onbroading.module.css — DARK VERSION (full file)
-   Keeps your class names; converts colors to dark theme tokens.
-*/
-
-/* ===== THEME TOKENS ===== */
 :root{
   /* Dark theme */
   --bg: #0B0F19;
@@ -347,6 +342,32 @@
 .sectionAlt {
   padding: 64px 20px;
 }
+
+/* AppPublicCard section wrapper */
+.appPublicCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+
+
+}
+
+
+
+/* small screens: give it breathing room */
+@media (max-width: 640px) {
+  .appPublicCard {
+    padding: 40px 14px;
+  }
+
+  .appPublicCard > div {
+    border-radius: 18px;
+    padding: 14px;
+  }
+}
+
 
 .section {
   background: var(--bg);

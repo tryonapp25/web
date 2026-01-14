@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./index.css"
 import { UserProvider } from "./ApiContext/userContext";
 import Onboarding from "./pages/onboarding";
 import Login from "./pages/login";

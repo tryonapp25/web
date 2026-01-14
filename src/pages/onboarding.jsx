@@ -5,6 +5,7 @@ import http from "../http/http";
 import WaitlistCard from "../components/waitlistCard";
 import { Link } from "react-router-dom";
 import FilterGrid from "../components/extraComponents/filterGrid";
+import AppPublicCard from "../components/extraComponents/appPublicCard";
 
 function Badge({ children }) {
   return <span className={styles.badge}>{children}</span>;
@@ -342,6 +343,21 @@ export default function Onbroading() {
         </div>
       </section>
 
+      <section className={styles.sectionAlt} >
+        <div className={styles.appPublicCard}>
+         <div style={{width:"80%"}}>
+            <AppPublicCard
+              title="TryOn Mobile"
+              subtitle="Discover trending filters, generate high-quality edits in seconds"
+              phoneLeftSrc="icons/phoneScreen1.png"
+              phoneRightSrc="icons/phoneScreen2.png"
+              appStoreHref="https://apple.com"
+              googlePlayHref="https://play.google.com"
+            />
+         </div>
+        </div>
+      </section>
+
      {/* 
       <section className={styles.section} id="testimonials">
         <div className={styles.sectionHead}>
@@ -364,6 +380,7 @@ export default function Onbroading() {
           ))}
         </div>
       </section> */}
+
 
       {/* PRICING */}
       <section className={styles.sectionAlt} id="pricing">
