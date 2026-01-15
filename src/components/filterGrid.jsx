@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { IoHeart, IoHeartOutline, IoChatbubbleOutline, IoSparklesOutline, IoGlobeOutline, IoLockClosedOutline, IoCreateOutline } from "react-icons/io5";
-import styles from "../../styles/FilterGrid.module.css";
+import styles from "../styles/FilterGrid.module.css";
 
 
 const formatCount = (n) => {
@@ -164,7 +164,7 @@ export default function FilterGrid({
         key={String(item.id)}
         item={item}
         onToggleLike={onToggleLike}
-        onPress={onPressItem}
+        onPress={(item) => onPressItem(item)}
         onOpenComment={onOpenComment}
         disableAction={disableAction}
         onPressEdit={onPressEdit}

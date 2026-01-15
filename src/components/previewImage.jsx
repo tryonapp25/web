@@ -15,11 +15,17 @@ function isValidHttpUrl(value) {
   }
 }
 
+function isDataImageUrl(value) {
+  const v = (value || "").trim();
+  // data:image/png;base64,AAAA...
+  return /^data:image\/(png|jpeg|jpg|webp|gif);base64,[A-Za-z0-9+/=\s]+$/i.test(v);
+}
+
 const defaultMessage = {
   visible: false,
   type: "",
-  msg: ""
-}
+  msg: "",
+};
 
 export default function PreviewImage({
   isOpen,
@@ -27,13 +33,13 @@ export default function PreviewImage({
   title = "Set image by URL",
   onClose,
   onSave, // ({ url })
-  showSave = true
+  showSave = true,
 }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // (unused, keep if you plan to use)
   const [url, setUrl] = useState(initialUrl || "");
   const [imgError, setImgError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [ message, setMessage] = useState(defaultMessage);
+  const [message, setMessage] = useState(defaultMessage);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,7 +56,15 @@ export default function PreviewImage({
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, onClose]);
 
-  const validUrl = useMemo(() => isValidHttpUrl(url.trim()), [url]);
+  const trimmed = useMemo(() => (url || "").trim(), [url]);
+
+  // Accept BOTH: http(s) URLs and data:image/...;base64,... strings
+  const validSource = useMemo(() => {
+    return isValidHttpUrl(trimmed) || isDataImageUrl(trimmed);
+  }, [trimmed]);
+
+  // For "Search product" endpoint: only allow http(s) (backend/cloud vision likely needs a URL)
+  const validHttpOnly = useMemo(() => isValidHttpUrl(trimmed), [trimmed]);
 
   if (!isOpen) return null;
 
@@ -64,32 +78,37 @@ export default function PreviewImage({
   };
 
   const handleSave = () => {
-    const cleaned = url.trim();
-    onSave?.({ url: cleaned });
+    onSave?.({ url: initialUrl });
   };
 
-
-  const handleSerchforProduct = async() => {
-    if(loading) return;
-    try{
-      setLoading(true);
-      const res = await http.post(`/user/cloud-vision/search-product`,{url: url});
-      if(res.data.success){
-        const {url, img} = res.data.data[0];
-        window.open(url, "_blank", "noopener,noreferrer");
-      }
+  const handleSerchforProduct = async () => {
+    if (loading) return;
+    if (!validHttpOnly) {
+      setMessage({
+        visible: true,
+        msg: "Search product requires a public http(s) URL (base64 data URLs won’t work).",
+        type: "warn",
+      });
+      return;
     }
-    catch(err){
+
+    try {
+      setLoading(true);
+      const res = await http.post(`/user/cloud-vision/search-product`, { url: trimmed });
+      if (res.data.success) {
+        const { url: productUrl } = res.data.data[0];
+        window.open(productUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (err) {
       setMessage({
         visible: true,
         msg: httpMessage(err),
-        type: "error"
-      })
-    }
-    finally{
+        type: "error",
+      });
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="ium-overlay" onMouseDown={handleOverlayMouseDown}>
@@ -97,7 +116,9 @@ export default function PreviewImage({
         <div className="ium-header">
           <div>
             <div className="ium-title">{title}</div>
-            <div className="ium-subtitle">Paste an https:// image URL to preview and save.</div>
+            <div className="ium-subtitle">
+              Paste an https:// image URL or a base64 data:image/... string to preview and save.
+            </div>
           </div>
           <button className="ium-iconBtn" onClick={onClose} aria-label="Close">
             ✕
@@ -106,17 +127,19 @@ export default function PreviewImage({
 
         <div className="ium-body">
           <label className="ium-label" htmlFor="imageUrlInput">
-            Image URL
+            Image URL / Base64
           </label>
 
           <div className="ium-inputRow">
-            <input
+            {/* Use textarea so base64 is usable */}
+            <textarea
               id="imageUrlInput"
               className="ium-input"
               value={url}
               onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
+              placeholder="https://example.com/image.jpg OR data:image/jpeg;base64,/9j/..."
               autoFocus
+              rows={4}
             />
             <button
               className="ium-btn ghost"
@@ -130,10 +153,13 @@ export default function PreviewImage({
             </button>
           </div>
 
-          {!url.trim() ? (
-            <div className="ium-hint">Paste a URL to see a preview.</div>
-          ) : !validUrl ? (
-            <div className="ium-error">Please enter a valid http(s) URL.</div>
+          {!trimmed ? (
+            <div className="ium-hint">Paste a URL or base64 data URL to see a preview.</div>
+          ) : !validSource ? (
+            <div className="ium-error">
+              Please enter a valid http(s) image URL or a base64 data URL like{" "}
+              <code>data:image/jpeg;base64,...</code>.
+            </div>
           ) : (
             <div className="ium-previewCard">
               <div className="ium-previewHeader">Preview</div>
@@ -142,20 +168,22 @@ export default function PreviewImage({
                 {!imgError ? (
                   <img
                     className="ium-img"
-                    src={url.trim()}
+                    src={trimmed}
                     alt="Preview"
                     onError={() => setImgError(true)}
                   />
                 ) : (
                   <div className="ium-errorBox">
-                    Couldn’t load this image. Check the URL or try another one.
+                    Couldn’t load this image. Check the URL/base64 string and try again.
                   </div>
                 )}
               </div>
 
               <div className="ium-meta">
                 <span className="ium-pill">{imgError ? "Invalid image" : "Looks good"}</span>
-                <span className="ium-metaUrl" title={url.trim()}>{url.trim()}</span>
+                <span className="ium-metaUrl" title={trimmed}>
+                  {trimmed}
+                </span>
               </div>
             </div>
           )}
@@ -165,27 +193,29 @@ export default function PreviewImage({
           <button className="ium-btn ghost" onClick={onClose}>
             Cancel
           </button>
-          {showSave ?
-            <button
-              className="ium-btn primary"
-              onClick={handleSave}
-              disabled={!validUrl || imgError}
-            >
+
+          {showSave ? (
+            <button className="ium-btn primary" onClick={handleSave} disabled={!validSource || imgError}>
               Save
             </button>
-            :
+          ) : (
             <button
               className="ium-btn primary"
-              onClick={() => handleSerchforProduct()}
-              disabled={!validUrl || imgError}
+              onClick={handleSerchforProduct}
+              disabled={!validHttpOnly || imgError}
             >
-              {loading ? <ActivityIndicator/> : "Search product"}
+              {loading ? <ActivityIndicator /> : "Search product"}
             </button>
-          }
+          )}
         </div>
       </div>
 
-      <FlashMessage show={message.visible} onClose={()=> setMessage(defaultMessage)} type={message.type} message={message.msg}/>
+      <FlashMessage
+        show={message.visible}
+        onClose={() => setMessage(defaultMessage)}
+        type={message.type}
+        message={message.msg}
+      />
     </div>
   );
 }

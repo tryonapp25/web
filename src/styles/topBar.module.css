@@ -1,0 +1,156 @@
+/* ===== TOP BAR ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 15, 25, 0.92),
+      rgba(11, 15, 25, 0.78)
+    );
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ===== SEARCH ===== */
+.searchWrap {
+  flex: 1;
+  max-width: 580px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.searchIcon {
+  color: rgba(255, 255, 255, 0.60);
+}
+
+.searchInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.40);
+}
+
+/* ===== SEARCH RIGHT ICON ===== */
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+
+  color: rgba(255, 255, 255, 0.80);
+  transition: background 120ms ease;
+}
+
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.scanGlyph {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ===== RIGHT ACTIONS ===== */
+.actions {
+  display: none;
+  align-items: center;
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .actions {
+    display: flex;
+  }
+}
+
+.subscribeBtn {
+  padding: 10px 16px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 215, 90, 0.92);
+
+  font-weight: 900;
+  font-size: 14px;
+  color: rgba(11, 15, 25, 0.95);
+  cursor: pointer;
+
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.subscribeBtn:hover {
+  background: #ffe28a;
+  transform: translateY(-1px);
+}
+
+.link {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.link:hover {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+
+  font-weight: 900;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+
+/* ===== MOBILE ===== */
+@media (max-width: 1024px) {
+  .topbar {
+    padding: 14px 16px;
+  }
+}

@@ -1,0 +1,331 @@
+/* ===== CARD ===== */
+.card {
+  margin-top: 12px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.inner {
+  padding: 16px;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tabActive {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+.tabIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+  color: var(--text);
+}
+
+/* ===== BODY ===== */
+.body {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 14px;
+  min-height: 230px;
+}
+
+@media (max-width: 720px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== UPLOAD ===== */
+.uploadWrap {
+  display: grid;
+}
+
+.uploadBox {
+  width: 170px;
+  height: 170px;
+  border-radius: 18px;
+
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+
+  display: grid;
+  place-items: center;
+}
+
+.filterImage{
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.uploadIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+/* ===== CANVAS ===== */
+.canvas {
+  /* stacking without absolute positioning */
+  display: grid;
+  grid-template-areas: "stack";
+  place-items: stretch;
+
+  border-radius: 18px;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+
+  min-height: 210px;
+}
+
+/* every child goes in the same grid cell */
+.canvasBg,
+.canvasImg,
+.imgInput,
+.centerUpload,
+.edit {
+  grid-area: stack;
+}
+
+/* your gradient background */
+.canvasBg {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(
+      520px 240px at 10% 30%,
+      rgba(139, 124, 255, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      520px 240px at 90% 20%,
+      rgba(0, 209, 178, 0.14),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.02)
+    );
+}
+
+
+.canvasImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 2;
+}
+
+.imgInput {
+  display: none;
+}
+
+/* centered upload button */
+.centerUpload {
+  place-self: center;
+  z-index: 4;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  color: #fff;
+
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+  user-select: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.centerUpload:hover {
+  background: rgba(0, 0, 0, 0.70);
+}
+
+
+.edit {
+  place-self: end;
+  margin: 14px;
+  z-index: 5;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+
+  color: #fff;
+  font-weight: 900;
+  font-size: 14px;
+
+  cursor: pointer;
+  user-select: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.edit:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* optional: nicer hover ring */
+.canvas:hover {
+  border-color: rgba(139, 124, 255, 0.35);
+}
+
+/* ===== WARNING ===== */
+.warning {
+  margin-top: 35px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 215, 90, 0.85);
+}
+
+.warning a {
+  color: rgba(255, 215, 90, 0.95);
+  text-decoration: underline;
+}
+
+/* ===== CONTROLS ===== */
+.controls {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+@media (max-width: 720px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.dropRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  font-weight: 800;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.dropdown:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ===== PRIMARY ACTION ===== */
+.animateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 18px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 215, 90, 0.92);
+
+  font-weight: 950;
+  color: rgba(11, 15, 25, 0.95);
+  cursor: pointer;
+
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+.animateBtn:hover {
+  background: #ffe28a;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+
+  font-size: 13px;
+  color: var(--muted);
+}

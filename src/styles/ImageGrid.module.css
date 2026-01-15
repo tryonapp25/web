@@ -1,0 +1,90 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 0 8px 16px;
+}
+
+/* Make the whole tile clickable like TouchableOpacity */
+.itemWrapper {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+
+  /* spacing is handled by grid gap */
+}
+
+/* Card sizing: use aspect-ratio to match TILE_SIZE * 1.25 */
+.card {
+  width: 100%;
+  aspect-ratio: 1 / 1.25;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #15161a;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bottomOverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.meta {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* Optional like button styles */
+.likeBtn {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.likeText {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.heart {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.heartLiked {
+  color: #ff3b30;
+}
+
+/* Small screens: keep 2 columns like RN, but you can switch to 1 if desired */
+@media (max-width: 360px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

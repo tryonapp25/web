@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "../styles/Weather.module.css";
 import http from "../http/http";
 import { useNavigate } from "react-router-dom";
-import StyleLoading from "../components/styleLoading";
+import StyleLoading from "../styleLoading";
 
 // Fallback coords if user denies location (Berlin)
 const FALLBACK = { lat: 52.52, lon: 13.41 };

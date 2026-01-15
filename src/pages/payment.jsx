@@ -1,7 +1,6 @@
 // Payment.jsx
 import { useEffect, useState, useContext, useMemo } from "react";
 import styles from "../styles/PricingPayment.module.css";
-import Header from "../components/header";
 import { UserContext } from "../ApiContext/userContext";
 import http from "../http/http";
 import FlashMessage from "../components/flashMessage";
@@ -125,6 +124,7 @@ export default function Payment() {
 
   const [loading, setLoading] = useState(false); // used for both create intent + confirm
   const [clientSecret, setClientSecret] = useState("");
+  const [paymentData, setPaymentData] = useState(null);
 
   const [message, setMessage] = useState(defaultMessage);
 
@@ -132,7 +132,7 @@ export default function Payment() {
   useEffect(() => {
     const fetchPricing = async () => {
       try {
-        const res = await http.get(`/token-price`);
+        const res = await http.get(`/token-pricing`);
         if (res.data?.success) {
           const data = res.data.data || [];
           setPricing(data);
@@ -176,10 +176,11 @@ export default function Payment() {
         throw new Error(res.data?.message || "Create intent failed");
       }
 
-      const { clientSecret } = res.data.data || {};
+      const { clientSecret } = res.data.data;
       if (!clientSecret) throw new Error("Missing clientSecret from backend.");
 
       setClientSecret(clientSecret);
+      setPaymentData(res.data.data);
       setOpenPay(true);
     } catch (e) {
       console.error(e);
@@ -190,7 +191,7 @@ export default function Payment() {
   };
 
 
-  const HandlePaymentSuccess = async (paymentData) => {
+  const HandlePaymentSuccess = async () => {
     if(!paymentData){
       setMessage({
         visible: true,
@@ -201,13 +202,13 @@ export default function Payment() {
     };
 
     try{
-      const res = await http.put(`/user/payment/${paymentData?.paymentIntentId || selected?.paymentIntentId}/success`,{
+      const res = await http.put(`/user/payment/${paymentData?.paymentIntentId}/success`,{
         user: publicUser,
         package: selected
       });
       if(res.data.success){
         setPublicUser(res.data.data);
-        setMessage({visible: true, type: "success", msg: res.data.data.message})
+        setMessage({visible: true, type: "success", msg: res.data.message})
       }
     }
     catch(err){
@@ -232,7 +233,7 @@ export default function Payment() {
   return (
     <div className={styles.page}>
       <div className={styles.wrap}>
-        <Header />
+   
 
         <div className={styles.head}>
           <div>

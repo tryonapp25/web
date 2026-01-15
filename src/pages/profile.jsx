@@ -1,166 +1,170 @@
-import { useContext, useMemo, useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import styles from "../styles/Profile.module.css";
 import { UserContext } from "../ApiContext/userContext";
-import Questionnaire from "../components/questionnaire";
-import { PROFILE_QUESTIONS } from "../questions";
 import http from "../http/http";
-import Header from "../components/header";
-import styles from "../styles/profile.module.css";
+import httpMessage from "../http/httpMessage";
+import FlashMessage from "../components/flashMessage";
+import FilterGrid from "../components/filterGrid";
+import LoadingModal from "../components/loading";
+import Topbar from "../homeComponents/topbar";
+
+
 
 export default function Profile() {
-  const { publicUser, setPublicUser } = useContext(UserContext);
-  const [profile, setProfile] = useState(publicUser?.userProfiles || null);
+    const { publicUser, setPublicUser } = useContext(UserContext);
+    const [username, setUsername] = useState(publicUser?.userName);
+    const [email, setEmail] = useState(publicUser?.email);
+    const [loading, setLoading] = useState(false);
+    const [filters, setFilters] = useState([]);
+    const [message, setMessage] = useState({ visible:false, msg:"", type:"" });
 
-  const displayName = useMemo(() => {
-    // adjust based on your user model if you have name fields
-    return publicUser?.userName || publicUser?.username || "User";
-  }, [publicUser]);
+    const fetchMyFilters = async (uid) => {
+      try {
+          setLoading(true);
+          const res = await http.get(`/user/${uid}/public-filters`);
+          if (res.data?.success) setFilters(res.data.data || []);
+      } catch (err) {
+          setMessage({ visible: true, msg: httpMessage(err), type: "error" });
+      } finally {
+          setLoading(false);
+      }
+    };
 
-  const initialLetter = (displayName || "U").trim().charAt(0).toUpperCase();
+    useEffect(() => {
+    fetchMyFilters(publicUser?.uid);
+    }, []);
 
-  const UpdateUserProfile = async (nextProfile) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!onSave) return;
+
+        try {
+        setLoading(true);
+        await onSave({ username, email });
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    const validate = () => {
+      if (!(username ?? "").trim()) {
+        Alert.alert("Missing name", "Please enter your full name.");
+        return false;
+      }
+  
+      const e = (email ?? "").trim();
+      if (!e) {
+        Alert.alert("Missing email", "Please enter your email.");
+        return false;
+      }
+  
+      if (!/^\S+@\S+\.\S+$/.test(e)) {
+        Alert.alert("Invalid email", "Please enter a valid email address.");
+        return false;
+      }
+  
+      setMessage({ visible:false, msg:"", type:"" })
+      return true;
+    };
+
+  const onSave = async () => {
+    if (!validate()) return;
     try {
-      const res = await http.put(`/user/${publicUser?.uid}/profiles`, nextProfile);
+      publicUser.userName = username;
+      publicUser.email = email;
+
+      const res = await http.put(`/user`, publicUser);
       if (res.data.success) {
         setPublicUser(res.data.data);
-        setProfile(res.data.data.userProfiles);
-        alert("save userProfile successfully");
+        setUsername(res.data.data.userName);
+        setEmail(res.data.data.email);
+        setMessage({visible:true, type:"success", msg: res.data.message || "Update profile successfully."})
+        return;
       }
     } catch (err) {
-      alert(err);
+      setMessage({visible:true, type:"success", msg: httpMessage(err)})
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (!profile) {
-    return (
-      <div className={styles.page}>
-        <Header />
-        <div className={styles.container}>
-          <Questionnaire QUESTIONS={PROFILE_QUESTIONS} onSubmit={(d) => UpdateUserProfile(d)} />
-        </div>
-      </div>
-    );
-  }
+return (
+  <section className={styles.page}>
+    <Topbar />
 
-  return (
-    <div className={styles.page}>
-      <Header />
-
-      <div className={styles.container}>
-        {/* Top row */}
-        <div className={styles.header}>
+    <div className={styles.container}>
+      {/* PROFILE CARD */}
+      <form className={styles.card} onSubmit={handleSubmit}>
+        <div className={styles.cardTop}>
           <div>
-            <h1 className={styles.title}>Profile Summary</h1>
-            <p className={styles.subtitle}>
-              Your preferences help us personalize recommendations.
-            </p>
+            <h1 className={styles.title}>Profile</h1>
+            <p className={styles.sub}>Update your public details.</p>
           </div>
 
-          <button className={styles.editBtn} onClick={() => setProfile(null)}>
-            Edit
+          <button
+            type="submit"
+            className={styles.primaryBtn}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
 
-        {/* Profile hero */}
-        <div className={styles.profileHero}>
-          <div className={styles.avatar} aria-hidden="true">
-            {initialLetter}
+        <div className={styles.formGrid}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="username">
+              Username
+            </label>
+            <input
+              id="username"
+              className={styles.input}
+              value={username || ""}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Your username"
+              autoComplete="username"
+            />
           </div>
 
-          <div className={styles.heroText}>
-            <h2 className={styles.name}>{displayName}</h2>
-            <p className={styles.meta}>
-              {profile.genderStyle || "—"}
-              {profile.colorContrast ? ` · ${profile.colorContrast}` : ""}
-              {profile.currency ? ` · ${profile.currency}` : ""}
-            </p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <div className={styles.statValue}>{profile.age ?? "—"}</div>
-            <div className={styles.statLabel}>Age</div>
-          </div>
-
-          <div className={styles.stat}>
-            <div className={styles.statValue}>
-              {profile.height ? `${profile.height}cm` : "—"}
-            </div>
-            <div className={styles.statLabel}>Height</div>
-          </div>
-
-          <div className={styles.stat}>
-            <div className={styles.statValue}>
-              {profile.weight ? `${profile.weight}kg` : "—"}
-            </div>
-            <div className={styles.statLabel}>Weight</div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className={styles.input}
+              value={email || ""}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              inputMode="email"
+            />
           </div>
         </div>
 
-        {/* Sections card */}
-        <div className={styles.card}>
-          <Section title="Basics">
-            <Row label="Gender style" value={profile.genderStyle} />
-            <Row label="Style confidence" value={profile.styleConfidence} />
-            <Row label="Color contrast" value={profile.colorContrast} />
-            <Row label="Currency" value={profile.currency} />
-          </Section>
-
-          <Divider />
-
-          <Section title="Style Preferences">
-            <Row label="Style interests" value={profile.styleInterests} kind="interest" />
-            <Row label="Liked colors" value={profile.likedColors} kind="positive" />
-            <Row label="Disliked colors" value={profile.dislikedColors} kind="negative" />
-          </Section>
-
-          <Divider />
-
-          <Section title="Brands">
-            <Row label="Preferred brands" value={profile.preferredBrands} kind="interest" />
-            <Row label="Avoid brands" value={profile.avoidBrands} kind="negative" />
-          </Section>
+        {/* optional helper row */}
+        <div className={styles.hintRow}>
+          <span className={styles.hint}>
+            Changes affect what’s shown publicly.
+          </span>
         </div>
+      </form>
+
+      <div className={styles.sectionDivider} />
+
+      <div className={styles.filtersSection}>
+        <div className={styles.filtersHead}>
+          <h2 className={styles.h2}>Your Public Filters</h2>
+          <p className={styles.sub2}>Manage and preview what you’ve shared.</p>
+        </div>
+
+        <FilterGrid data={filters} />
       </div>
     </div>
-  );
-}
 
-function Section({ title, children }) {
-  return (
-    <div className={styles.section}>
-      <h3 className={styles.sectionTitle}>{title}</h3>
-      <div className={styles.sectionBody}>{children}</div>
-    </div>
-  );
-}
+    <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage({ visible:false, msg:"", type:"" })}/>
+    <LoadingModal open={loading}/>
+  </section>
+);
 
-function Divider() {
-  return <div className={styles.divider} />;
-}
 
-function Row({ label, value, kind = "neutral" }) {
-  const isArray = Array.isArray(value);
-  const hasValue = isArray ? value.length > 0 : value !== undefined && value !== null && value !== "";
-
-  return (
-    <div className={styles.row}>
-      <span className={styles.label}>{label}</span>
-
-      <span className={`${styles.value} ${styles[kind]}`}>
-        {!hasValue ? (
-          <span className={styles.empty}>—</span>
-        ) : isArray ? (
-          value.map((v, i) => (
-            <span className={styles.tag} key={`${v}-${i}`}>
-              {v}
-            </span>
-          ))
-        ) : (
-          <span className={styles.single}>{value}</span>
-        )}
-      </span>
-    </div>
-  );
 }

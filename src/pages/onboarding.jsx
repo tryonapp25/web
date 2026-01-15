@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar";
 import http from "../http/http";
 import WaitlistCard from "../components/waitlistCard";
 import { Link } from "react-router-dom";
-import FilterGrid from "../components/extraComponents/filterGrid";
-import AppPublicCard from "../components/extraComponents/appPublicCard";
+import FilterGrid from "../components/filterGrid";
+import AppPublicCard from "../homeComponents/appPublicCard";
 
 function Badge({ children }) {
   return <span className={styles.badge}>{children}</span>;
