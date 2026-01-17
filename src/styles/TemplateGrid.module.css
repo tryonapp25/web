@@ -1,0 +1,78 @@
+:root{
+  /* Dark theme */
+  --bg: #0B0F19;
+  --bg-2: #0F172A;
+
+  --card: rgba(255, 255, 255, 0.06);
+  --card-2: rgba(255, 255, 255, 0.08);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.70);
+  --muted-2: rgba(255, 255, 255, 0.55);
+
+  --line: rgba(255, 255, 255, 0.12);
+
+  --purple: #8B7CFF;
+  --purple-2: #6D5EF6;
+
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  --radius: 18px;
+  --radius-lg: 26px;
+  --max: 1120px;
+}
+
+/* ===== PAGE ===== */
+.page {
+  min-height: 100vh;
+  padding: 2rem 1.25rem;
+  color: var(--text);
+  background:
+    radial-gradient(900px 500px at 15% 20%, rgba(139, 124, 255, 0.18), transparent 55%),
+    radial-gradient(800px 460px at 90% 10%, rgba(0, 209, 178, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+}
+
+/* ===== GRID ===== */
+/* ===== GRID ===== */
+.grid {
+  max-width: 9999px;              /* let it spread */
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 520px); /* BIGGER */
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: start;
+}
+
+/* ===== CARD ===== */
+.card {
+  width: 520px;                   /* BIGGER */
+  height: 690px;                  /* keep 3/4-ish ratio */
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+/* ===== TEMPLATE SCALE ===== */
+.scaleWrap {
+  position: relative;
+  z-index: 1;
+
+  width: 980px;
+  height: 1306px;
+
+  transform: scale(0.531);        /* 520 / 980 */
+  transform-origin: top left;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 2700px) { .grid { grid-template-columns: repeat(4, 520px); } }
+@media (max-width: 2150px) { .grid { grid-template-columns: repeat(3, 520px); } }
+@media (max-width: 1600px) { .grid { grid-template-columns: repeat(2, 520px); } }
+@media (max-width: 1080px) { .grid { grid-template-columns: 520px; } }

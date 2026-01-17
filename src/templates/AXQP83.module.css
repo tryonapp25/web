@@ -1,0 +1,261 @@
+/* =============================
+   STAGE / PAGE
+============================= */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #faf7f2;
+  border-radius: 24px;
+  color: #111;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  cursor: pointer;
+
+  /* 🔑 critical fixes */
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* all children respect width */
+.stage * {
+  box-sizing: border-box;
+}
+
+/* floating ingredients background */
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/ingredients-bg.png") center/cover no-repeat;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* =============================
+   HEADER
+============================= */
+.header {
+  position: relative;
+  padding: 36px 48px 12px;
+  text-align: center;
+  z-index: 2;
+}
+
+.brandLine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  font-size: 14px;
+}
+
+.logoDot {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #ffde72, #f04b3f);
+  border: 2px solid rgba(0,0,0,0.15);
+}
+
+.titleWrap {
+  position: relative;
+  margin-top: 12px;
+}
+
+.bigPizza {
+  font-size: 120px;
+  font-weight: 900;
+  line-height: 1;
+  color: #e12b2b;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.10);
+}
+
+.scriptMenu {
+  margin-top: -34px;
+  font-size: 86px;
+  font-weight: 700;
+  color: #f3b21b;
+  font-family: ui-serif, "Brush Script MT", "Segoe Script", cursive;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* =============================
+   GRID
+============================= */
+.grid {
+  position: relative;
+  z-index: 2;
+  padding: 18px 56px 160px; /* space for footer */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 34px 28px;
+}
+
+.item {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+  margin-inline: auto;
+}
+
+/* =============================
+   PIZZA CIRCLE
+============================= */
+.pizzaCircle {
+  width: 190px;
+  height: 190px;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 18px 30px rgba(0,0,0,0.18);
+  border: 6px solid rgba(255,255,255,0.85);
+  background: #fff;
+}
+
+.pizzaCircle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =============================
+   PRICE CARD
+============================= */
+.priceBox {
+  width: 235px;
+  max-width: 235px;
+  border-radius: 18px;
+  background: #f5b52a;
+  box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+  padding: 12px 14px;
+}
+
+.itemName {
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #6b2f00;
+}
+
+.priceRows {
+  display: grid;
+  gap: 6px;
+  font-weight: 800;
+  color: #4b2400;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* =============================
+   EDITABLE INPUTS
+============================= */
+.input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed rgba(255,255,255,0.35);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  line-height: 1.25;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+
+.input:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.input:focus {
+  border-style: solid;
+  border-color: #fff;
+  background: rgba(255,255,255,0.14);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.18);
+}
+
+.bigPizza .input,
+.itemName .input {
+  font-weight: 700;
+}
+
+.scriptMenu .input {
+  font-style: italic;
+}
+
+/* =============================
+   EDIT BUTTON
+============================= */
+.editButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editButton.active {
+  border-color: rgba(255,255,255,0.85);
+}
+
+/* =============================
+   ADD / REMOVE ROW
+============================= */
+.addRowButton {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px dashed rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+}
+
+.removeRowButton {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255,255,255,0.18);
+  cursor: pointer;
+}
+
+/* =============================
+   UPLOAD BUTTON
+============================= */
+.uploadButton {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  border: 1px dashed rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+}
+
+/* =============================
+   EDIT MODE SAFETY
+============================= */
+.editing .addRowButton:hover,
+.editing .uploadButton:hover,
+.editing .editButton:hover,
+.editing .removeRowButton:hover {
+  transform: none;
+}

@@ -1,0 +1,362 @@
+:root {
+  --bg: #121212;
+  --orange: #d67a2c;
+  --panel: #1b1b1b;
+  --text: #f2f2f2;
+  --muted: #cfcfcf;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.stage {
+  width: 100%;          /* ✅ fill the card */
+  height: 100%;         /* ✅ fill the card */
+  aspect-ratio: auto;   /* ✅ stop forcing viewport ratio */
+  margin: 0;
+  content: "";
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 10%, #1f1f1f, #101010 55%, #0b0b0b),
+    linear-gradient(180deg, #141414, #0b0b0b);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.stage:not(.editing) .input {
+  border-color: transparent;
+}
+
+
+
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/bg.png") center / cover no-repeat;
+  opacity: 0.35;
+}
+
+.topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 18px;
+  display: flex;
+  justify-content: center;
+  z-index: 3;
+}
+
+.brand {
+  background: #b45a1f;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.title {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(42px, 7vw, 72px);
+  font-weight: 800;
+  color: #e09a25;
+  transform: skewX(-8deg);
+  font-family: ui-serif, Georgia, serif;
+  z-index: 3;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Sections */
+.section {
+  position: absolute;
+  width: 44%;
+  z-index: 3;
+}
+
+.section h3 {
+  margin: 0 0 10px;
+  color: var(--orange);
+  letter-spacing: 0.6px;
+}
+
+.lines {
+  display: grid;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.dots {
+  position: relative;
+}
+
+.dots::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.35);
+  z-index: -1;
+}
+
+.name {
+  padding-right: 10px;
+}
+
+.price {
+  color: #e09a25;
+  font-weight: 700;
+}
+
+/* Positions */
+.index0 {
+  right: 40px;
+  top: 255px;
+}
+
+.index1 {
+  left: 40px;
+  top: 560px;
+  width: 42%;
+}
+
+.index2 {
+  right: 40px;
+  bottom: 160px;
+}
+
+/* Pizza images */
+.pizzaSlot {
+  position: absolute;
+  z-index: 4;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  outline: 2px solid rgba(255, 255, 255, 0.06);
+  background: #000;
+}
+
+.pizzaSlot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.slot0 {
+  left: 55px;
+  top: 185px;
+  width: 320px;
+  height: 320px;
+}
+
+.slot1 {
+  right: 45px;
+  top: 470px;
+  width: 360px;
+  height: 360px;
+}
+
+.slot2 {
+  left: 55px;
+  bottom: 70px;
+  width: 340px;
+  height: 340px;
+}
+
+.hint {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  font-size: 12px;
+  opacity: 0.75;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 6;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .slot1 {
+    left: 20px;
+    top: 170px;
+    width: 220px;
+    height: 220px;
+  }
+
+  .slot2 {
+    right: 20px;
+    top: 420px;
+    width: 240px;
+    height: 240px;
+  }
+
+  .slot3 {
+    left: 20px;
+    bottom: 90px;
+    width: 240px;
+    height: 240px;
+  }
+
+  .regular,
+  .medium,
+  .premium {
+    width: 45%;
+  }
+}
+
+
+/* CSS */
+.editBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 25px;
+  height: 25px;
+  background-color: red;
+  color: white;
+  z-index: 1022;
+}
+
+
+.editButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  height: 36px;
+  padding: 0 14px;
+
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+
+  cursor: pointer;
+  z-index: 9999;
+
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+
+.editButton:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(-1px);
+}
+
+.editButton:active {
+  transform: translateY(0);
+}
+
+.editButton.active {
+  background: #2ecc71;
+  color: #0b3d1f;
+  border-color: #2ecc71;
+}
+
+.editButton.active:hover {
+  background: #27ae60;
+}
+
+
+/* Upload button */
+.uploadButton {
+  position: absolute;
+  inset: 0; /* full cover */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+
+  transition: background 0.2s ease;
+}
+
+.uploadButton:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+
+/* Base editable input */
+.input {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  padding: 4px 8px;
+
+  font: inherit;
+  color: inherit;
+  line-height: 1.2;
+
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Focus / active edit */
+.input:focus {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Hover hint (only when editable) */
+.input:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Price field smaller + right aligned */
+.price .input {
+  width: 70px;
+  text-align: right;
+  padding-right: 6px;
+}
+
+/* Section title / heading inputs */
+.brand .input,
+.title .input,
+.section h3 .input {
+  font-weight: 600;
+}
+
+/* Remove default number arrows (if you use type=number later) */
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
