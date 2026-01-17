@@ -9,6 +9,8 @@ import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import TemplatePage from "./pages/templatePage";
 import MenuPage from "./pages/menu";
+import TemplatePayment from "./pages/templatePayment";
+import RenderProductionMenu from "./pages/renderProductionMenu";
 
 
 export default function App() {
@@ -22,9 +24,11 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/payment-template" element={<TemplatePayment />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/menuPage" element={<MenuPage />} />
-            <Route path="/code/:code/template/:id" element={<TemplatePage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/:type/template/:id" element={<TemplatePage />} /> 
+            <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
             
           </Routes>
         </main>
@@ -32,3 +36,5 @@ export default function App() {
     </UserProvider>
   );
 }
+
+// https://www.canva.com/design/DAG-s06k6QU/bF-91urykVfp8HFFlzRSqg/edit?ui=eyJBIjp7fX0

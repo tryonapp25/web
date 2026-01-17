@@ -5,8 +5,7 @@ import { useState } from "react";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 
-export default function PizzaTemplate1({ data, pressable, editable = false, onPress }) {
-  const navigate = useNavigate();
+export default function PizzaTemplate1({ data, pressable, editable = false, onPress, onSave }) {
   if (!data) return null;
 
   const [contents, setContents] = useState(data?.contents || []);
@@ -68,6 +67,10 @@ export default function PizzaTemplate1({ data, pressable, editable = false, onPr
     );
   };
 
+  const handleSaveButton = () => {
+    onSave(data)
+  }
+
   return (
     <div className={styles.stage} onClick={handlePress} role="button" tabIndex={0}>
       {editable && (
@@ -77,9 +80,10 @@ export default function PizzaTemplate1({ data, pressable, editable = false, onPr
           onClick={(e) => {
             e.stopPropagation();
             setIsEditable((p) => !p);
+            handleSaveButton();
           }}
         >
-          {isEditable ? "Done" : "Edit"}
+          {isEditable ? "Save" : "Edit"}
         </button>
       )}
 

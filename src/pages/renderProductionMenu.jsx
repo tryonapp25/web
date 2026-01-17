@@ -1,25 +1,21 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState, useContext } from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams  } from "react-router-dom";
 import styles from "../styles/templatePage.module.css";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
-import FlashMessage from "../components/flashMessage";
 import LoadingModal from "../components/loading";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../ApiContext/userContext";
+
 
 const modules = import.meta.glob("../templates/*.jsx");
 
 
-const defaultMessage = {visible: false, type: "", msg: ""};
-
-export default function TemplatePage() {
+export default function RenderProductionMenu() {
   const navigate = useNavigate()
   const {type, id } = useParams();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
-  const {publicUser} = useContext(UserContext);
-  const [message, setMessage] = useState(defaultMessage);
+
 
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -52,33 +48,10 @@ export default function TemplatePage() {
   }, [key]);
 
 
-  if (!publicUser && !loading) return <NoFoundTemplate onGoback={() => navigate("/menu")}/>
-
-
   if (!template && !loading) return <NoFoundTemplate onGoback={() => navigate("/menu")}/>
-
-
   if (!Template) return <NoFoundTemplate onGoback={() => navigate("/menu")}/>
 
-  // the save buton in the template //
-  const handleClickSaveButton = (tem) => {
-    if(tem?.type !== "production") return;
-    handleUpdateProductionTemplate(tem);
-  };
-
-  const handleUpdateProductionTemplate = async (data) => {
-    try{
-      const res = await http.put(`/production/templates`, data);
-      if(res.data.success){
-        setMessage({visible:true, type:"success", msg: res.data.message || "update template successfully."})
-      }
-    }
-    catch(err){
-      setMessage({visible:true, type:"error", msg: httpMessage(err)})
-    }
-  }
-
-
+  
   return (
     <div
       style={{
@@ -92,13 +65,11 @@ export default function TemplatePage() {
       <div className={styles.card}>
         <div className={styles.scaleWrap}>
           <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
-            <Template data={template} editable={true} onSave={(tem) => handleClickSaveButton(tem)}/>
+            <Template data={template} editable={true} onSave={(tem) => console.log(tem)}/>
           </Suspense>
         </div>
       </div>
-
       <LoadingModal open={loading} title="Menu" subtitle="Loading template..."/>
-      <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
     </div>
   );
 }

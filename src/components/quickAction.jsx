@@ -6,7 +6,7 @@ const cx = (...c) => c.filter(Boolean).join(" ");
 const defaultMessage = {visible: false,type: "",msg: ""}
 
 export default function QuickAction({onPress}) {
-  const [tab, setTab] = useState("templtes");
+  const [tab, setTab] = useState("templates");
  
   return (
     <section className={styles.exploreWrap}>

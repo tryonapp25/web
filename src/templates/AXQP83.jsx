@@ -5,7 +5,7 @@ import { useState } from "react";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 
-export default function PizzaTemplate2({ data, pressable, editable = false, onPress }) {
+export default function PizzaTemplate2({ data, pressable, editable = false, onPress, onSave }) {
   const navigate = useNavigate();
   if (!data) return null;
 
@@ -63,6 +63,10 @@ export default function PizzaTemplate2({ data, pressable, editable = false, onPr
     );
   };
 
+  const handleSaveButton = () => {
+    onSave(data)
+  }
+
 
   return (
     <div
@@ -78,9 +82,10 @@ export default function PizzaTemplate2({ data, pressable, editable = false, onPr
           onClick={(e) => {
             e.stopPropagation();
             setIsEditable((p) => !p);
+            handleSaveButton();
           }}
         >
-          {isEditable ? "Done" : "Edit"}
+          {isEditable ? "Save" : "Edit"}
         </button>
       )}
 

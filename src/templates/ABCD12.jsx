@@ -1,9 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import styles from "./ABCD12.module.css";
 import Model3D from "../components/3dModel";
-import { useNavigate } from "react-router-dom";
-import httpMessage from "../http/httpMessage";
-import http from "../http/http";
 
 function PlateImage({ model }) {
   return (
@@ -18,9 +15,7 @@ function PlateImage({ model }) {
   );
 }
 
-export default function Template1({ data, pressable, editable = false, onPress }) {
-  const navigate = useNavigate();
-
+export default function Template1({ data, pressable, editable = false, onPress, onSave }) {
   // local editable copy
   const [draft, setDraft] = useState(data);
   const [isEditing, setIsEditing] = useState(false);
@@ -43,7 +38,10 @@ export default function Template1({ data, pressable, editable = false, onPress }
 
   const stop = (e) => e.stopPropagation();
 
-  
+  const handleSaveButton = () => {
+    if(!isEditing) return;
+    onSave(draft)
+  }
 
   return (
     <div className={styles.page} onClick={handlePress}>
@@ -71,9 +69,10 @@ export default function Template1({ data, pressable, editable = false, onPress }
               onClick={(e) => {
                 stop(e);
                 setIsEditing((v) => !v); // ⬅ toggle
+                handleSaveButton()
               }}
             >
-              {isEditing ? "Done" : "Edit"}
+              {isEditing ? "Save" : "Edit"}
             </button>
           )}
         </header>

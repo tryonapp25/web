@@ -61,8 +61,8 @@ export default function Sidebar() {
         <Item
           icon={LayoutGrid}
           label="3D Menu"
-          active={isActive("/MenuPage")}
-          onPress={() => navigate("/MenuPage")}
+          active={isActive("/menu")}
+          onPress={() => navigate("/menu")}
         />
       </div>
 
