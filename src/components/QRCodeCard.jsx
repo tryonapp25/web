@@ -1,10 +1,6 @@
-import React, { useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
-export default function QRCodeCard({ value }) {
-  const [qrSize] = useState(200);
-  const [fontSize] = useState(16);
-
+export default function QRCodeCard({ value, qrSize=200 }) {
   return (
       <div style={styles.card}>
         <h2 style={styles.title}>QR Code Preview</h2>
@@ -17,12 +13,8 @@ export default function QRCodeCard({ value }) {
             fgColor="#111827"
           />
         </div>
-
-        <p style={{ ...styles.previewText, fontSize }}>
-          Preview Text
-        </p>
         <p style={styles.value}>
-          {value || "(empty)"}
+          {value || "No value."}
         </p>
       </div>
 

@@ -5,7 +5,7 @@ import {useNavigate } from "react-router-dom";
 import FlashMessage from "./flashMessage";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
-import QRCodeCard from "./QRCodeCard";
+import QrCodeModal from "./QrCodeModal";
 
 const defaultMessage = {visible: false, type: "", msg: ""};
 
@@ -14,22 +14,29 @@ const modules = import.meta.glob("../templates/*.jsx"); //"../templates/*/*.jsx"
 export default function TemplateGrid({ templates = [] }) {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [message, setMessage] = useState(defaultMessage);
   const [data, setData] = useState(templates || []);
+
 
   useEffect(()=> {
     setData(templates);
   },[templates])
 
   const handleSelectTemplate = (tem) => {
+    setSelectedTemplate(tem);
     if(tem?.type === "production") {
-      navigate(`/${tem?.type}/template/${tem?.id}?code=${tem?.code}`);
+      setOpenConfirmModal(true);
       return;
     };
-    setSelectedTemplate(tem);
     setOpenModal(true);
   };
+
+  const handleClickEditTemplate = (tem) => {
+    navigate(`/${tem?.type}/template/${tem?.id}?code=${tem?.code}`);
+  }
 
   // Build a stable lookup: filePath -> LazyComponent
   const lazyByPath = useMemo(() => {
@@ -70,6 +77,9 @@ export default function TemplateGrid({ templates = [] }) {
     catch(err){
       setMessage({visible:true, type:"success", msg: httpMessage(err)})
     }
+    finally{
+      setOpenConfirmModal(false)
+    }
   }
 
   return (
@@ -103,24 +113,16 @@ export default function TemplateGrid({ templates = [] }) {
                     >
                       <div
                         style={{
-                          padding: "6px 14px",
-                          backgroundColor: "#B91C1C",
-                          color: "#fff",
+                          padding: "6px 10px",
+                          color: "#333",
                           borderRadius: "999px",
-                          fontSize: "12px",
+                          fontSize: "18px",
                           cursor: "pointer",
                           textAlign: "center",
                           transition: "all 0.2s ease",
                         }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#991B1B")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#B91C1C")
-                        }
-                        onClick={() => handleSetTemplateStatus(item, item.isPublic)}
                       >
-                        {item?.isPublic ? "Set to Private" : "Set to Public"}
+                        {item?.isPublic ? "Public" : "Private"}
                       </div>
                     </div>
                   )}
@@ -144,8 +146,16 @@ export default function TemplateGrid({ templates = [] }) {
         onConfirm={handleBuy}
         onCancel={handlePreview}
       />
-
+      <QrCodeModal 
+        template={selectedTemplate}
+        open={openConfirmModal} 
+        onClose={() => setOpenConfirmModal(false)}
+        onEdit={(tem) => handleClickEditTemplate(tem)}
+        onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
+      />
       <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
     </div>
   );
 }
+
+

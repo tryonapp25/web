@@ -28,7 +28,7 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/:type/template/:id" element={<TemplatePage />} /> 
-            <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
+            <Route path="/tryon/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
             
           </Routes>
         </main>

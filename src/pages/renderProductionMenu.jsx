@@ -15,6 +15,7 @@ export default function RenderProductionMenu() {
   const {type, id } = useParams();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
+  const publicCode = searchParams.get("public");
 
 
   const [template, setTemplate] = useState(null);
@@ -24,12 +25,13 @@ export default function RenderProductionMenu() {
     const fetchTemplate = async () => {
       try {
         setLoading(true);
-        const res = await http.get(`/${type}/code/${code}/template/${id}`);
+        const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
         if (res.data.success){
           setTemplate(res.data.data)
         };
+        console.log(res.data)
       } catch (err) {
-        console.log(httpMessage(err))
+        alert(httpMessage(err))
       } finally {
         setLoading(false);
       }
