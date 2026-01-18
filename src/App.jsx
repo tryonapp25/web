@@ -25,7 +25,7 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/tryon/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
+            <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/payment" element={<Payment />} />
