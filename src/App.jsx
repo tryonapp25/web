@@ -16,7 +16,6 @@ import RenderProductionMenu from "./pages/renderProductionMenu";
 export default function App() {
   return (
     <UserProvider>
-      <BrowserRouter>
         <main>
           <Routes>
             <Route path="/" element={<Onboarding />} />
@@ -32,7 +31,6 @@ export default function App() {
             
           </Routes>
         </main>
-      </BrowserRouter>
     </UserProvider>
   );
 }

@@ -12,7 +12,7 @@ export default function QrCodeModal({
 }) {
   if (!open) return null;
 
-  const [qrValue, setQrValue] = useState(`${import.meta.env.BASE_URL}tryon/menu/${template?.type}/template/${template?.id}?code=${template.code}&public=${template?.publicCode?.String}`) 
+  const [qrValue] = useState(`${import.meta.env.BASE_URL}#tryon/menu/${template?.type}/template/${template?.id}?code=${template.code}&public=${template?.publicCode?.String}`) 
 
   return (
     <div style={styless.overlay}>
