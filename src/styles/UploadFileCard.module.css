@@ -1,0 +1,434 @@
+/* UploadFileCard.module.css */
+
+/* Theme vars (match your dark style) */
+:root {
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.62);
+  --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.wrap {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+/* ===== CARD ===== */
+.card {
+  width: 100%;
+  max-width: 980px;
+  margin-top: 12px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.inner {
+  padding: 16px;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.tabActive {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--text);
+}
+
+.tabIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+  color: var(--text);
+}
+
+/* ===== BODY ===== */
+.body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 14px;
+  min-height: 260px;
+}
+
+@media (max-width: 720px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftCol {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.rightCol {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+/* ===== UPLOAD ===== */
+.uploadWrap {
+  display: grid;
+}
+
+.uploadBox {
+  width: 230px;
+  height: 190px;
+  border-radius: 18px;
+
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+
+  display: grid;
+  place-items: center;
+  padding: 10px;
+}
+
+@media (max-width: 720px) {
+  .uploadBox {
+    width: 100%;
+  }
+}
+
+.filterImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+
+  color: var(--muted);
+  padding: 12px;
+  text-align: center;
+}
+
+.uploadIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.fileBadge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 950;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.fileName {
+  width: 100%;
+  font-weight: 900;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dot {
+  opacity: 0.55;
+}
+
+/* ===== CANVAS ===== */
+.canvas {
+  display: grid;
+  grid-template-areas: "stack";
+  place-items: stretch;
+
+  border-radius: 18px;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+
+  min-height: 260px;
+}
+
+.canvasBg,
+.canvasImg,
+.imgInput,
+.centerUpload,
+.edit,
+.previewEmpty {
+  grid-area: stack;
+}
+
+.canvasBg {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(520px 240px at 10% 30%, rgba(139, 124, 255, 0.18), transparent 60%),
+    radial-gradient(520px 240px at 90% 20%, rgba(0, 209, 178, 0.14), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+}
+
+.canvasImg {
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: block;
+}
+
+/* If your Model3D needs full height, wrap it with a div in JS that is 100% height. */
+.canvasImg :global(canvas),
+.canvasImg :global(.threeCanvas),
+.canvasImg :global(.modelViewer) {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.imgInput {
+  display: none;
+}
+
+.centerUpload {
+  place-self: center;
+  z-index: 4;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  color: #fff;
+
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+  user-select: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.centerUpload:hover {
+  background: rgba(0, 0, 0, 0.70);
+}
+
+.edit {
+  place-self: end;
+  margin: 14px;
+  z-index: 5;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+
+  color: #fff;
+  font-weight: 900;
+  font-size: 14px;
+
+  cursor: pointer;
+  user-select: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.edit:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.canvas:hover {
+  border-color: rgba(139, 124, 255, 0.35);
+}
+
+/* Empty state inside preview */
+.previewEmpty {
+  place-self: center;
+  z-index: 3;
+  text-align: center;
+  padding: 16px;
+  max-width: 340px;
+  color: var(--muted);
+}
+
+.previewIcon {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.previewTitle {
+  font-weight: 950;
+  color: var(--text);
+}
+
+.previewHint {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+/* ===== WARNING ===== */
+.warning {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 215, 90, 0.85);
+}
+
+.warning a {
+  color: rgba(255, 215, 90, 0.95);
+  text-decoration: underline;
+}
+
+/* ===== CONTROLS ===== */
+.controls {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+@media (max-width: 720px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.dropRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+
+  font-weight: 900;
+  color: var(--text);
+  cursor: pointer;
+
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.dropdown:hover {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-1px);
+}
+
+/* ===== PRIMARY ACTION ===== */
+.animateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 18px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 215, 90, 0.92);
+
+  font-weight: 950;
+  color: rgba(11, 15, 25, 0.95);
+  cursor: pointer;
+
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+}
+
+.animateBtn:hover {
+  background: #ffe28a;
+  transform: translateY(-1px);
+}
+
+.animateBtn[data-disabled="true"],
+.animateBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.2);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+
+  font-size: 13px;
+  color: var(--muted);
+}

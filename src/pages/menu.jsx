@@ -7,6 +7,7 @@ import httpMessage  from "../http/httpMessage";
 import TemplateGrid from "../components/templateGrid";
 import LoadingModal from "../components/loading";
 import QuickAction from "../components/quickAction";
+import UploadFileCard from "../components/uploadFile";
 import { UserContext } from "../ApiContext/userContext";
 
 
@@ -89,6 +90,7 @@ export default function MenuPage() {
           <div ref={generatorRef}>
               <HeroTitle />
           </div>
+          <UploadFileCard/>
           <div style={{marginLeft:"28px"}}>
             <QuickAction onPress={(t) => setTab(t)}/>
           </div>

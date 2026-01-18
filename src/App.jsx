@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css"
 import { UserProvider } from "./ApiContext/userContext";
+import ProtectedRoute from "./ApiContext/protectedRoute";
+
+
 import Onboarding from "./pages/onboarding";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
@@ -22,12 +25,15 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/payment-template" element={<TemplatePayment />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/menu" element={<MenuPage />} />
-            <Route path="/:type/template/:id" element={<TemplatePage />} /> 
             <Route path="/tryon/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
+            {/*Protect routers */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/payment-template" element={<TemplatePayment />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/menu" element={<MenuPage />} />
+              <Route path="/:type/template/:id" element={<TemplatePage />} /> 
+            </Route>
             
           </Routes>
         </main>
