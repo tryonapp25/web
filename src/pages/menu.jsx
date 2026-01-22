@@ -34,7 +34,7 @@ export default function MenuPage() {
       handleGetTemplates();
     }
     else{
-      handleGetUserTemaplate(publicUser?.uid);
+      handleGetUserProductionTemaplate(publicUser?.uid);
     }
   },[tab]);
   
@@ -54,11 +54,11 @@ export default function MenuPage() {
     }
   }
 
-  const handleGetUserTemaplate = async (uid) => {
+  const handleGetUserProductionTemaplate = async (uid) => {
     try{
       setLoading(true);
       setTemplates([]);
-      const res = await http.get(`/user/${uid}/templates`);
+      const res = await http.get(`/production/user/${uid}/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
       }
