@@ -70,6 +70,97 @@
   transform-origin: top left;
 }
 
+/* Status badge */
+.badgeWrap {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+}
+
+.badge {
+  padding: 10px 16px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.badge[data-public="true"] {
+  background: rgba(34, 211, 238, 0.12);
+  color: rgba(196, 255, 252, 0.95);
+}
+
+.badge[data-public="false"] {
+  background: rgba(248, 113, 113, 0.12);
+  color: rgba(255, 222, 222, 0.95);
+}
+
+/* ===== “PDF page” wrapper (the actual page look) =====
+   PdfPageWrapper will control A4 ratio, scaling, etc.
+   We just give it a nice frame + correct sizing.
+*/
+.pdfWrap {
+  /* keep a page feel in the grid */
+  width: 100%;
+  aspect-ratio: 210 / 297; /* A4 */
+  border-radius: 16px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.loading {
+  padding: 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ===== Not found ===== */
+.notFoundWrap {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-soft);
+}
+
+.notFoundCard {
+  padding: 22px;
+  text-align: center;
+}
+
+.notFoundIcon {
+  font-size: 30px;
+}
+
+.notFoundTitle {
+  margin: 10px 0 6px;
+  font-size: 16px;
+}
+
+.notFoundText {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.notFoundBtn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+}
+
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 2700px) { .grid { grid-template-columns: repeat(4, 520px); } }

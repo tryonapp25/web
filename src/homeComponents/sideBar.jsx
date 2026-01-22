@@ -1,14 +1,15 @@
 import styles from "../styles/sidebar.module.css";
 import {
-  Home,
-  Video,
   Image,
+  FilePlus,
   Star,
   Download,
   LayoutGrid,
   Plus,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useContext, useState } from "react";
+import {UserContext} from "../ApiContext/userContext";
 
 function Item({ icon: Icon, label, active, onPress }) {
   return (
@@ -31,6 +32,7 @@ function Item({ icon: Icon, label, active, onPress }) {
 export default function Sidebar() {
   const navigate = useNavigate();
   const { pathname } = useLocation(); // ✅ current route
+  const {publicUser}  = useContext(UserContext)
 
   const isActive = (path) =>
     pathname === path || pathname.startsWith(path + "/");
@@ -64,6 +66,15 @@ export default function Sidebar() {
           active={isActive("/menu")}
           onPress={() => navigate("/menu")}
         />
+
+        {publicUser?.role === "admin" &&
+          <Item
+            icon={FilePlus}
+            label="Create Template"
+            active={isActive("/create-template")}
+            onPress={() => navigate("/create-template")}
+          />
+        }
       </div>
 
       <div className={styles.divider} />

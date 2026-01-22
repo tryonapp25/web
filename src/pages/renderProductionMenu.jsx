@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams  } from "react-router-dom";
-import styles from "../styles/templatePage.module.css";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";

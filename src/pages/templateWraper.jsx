@@ -1,48 +1,52 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState, useContext } from "react";
-import { useParams, useSearchParams  } from "react-router-dom";
-import styles from "../styles/templatePage.module.css";
+import React, {
+  useEffect,
+  useRef,
+  useMemo,
+  useState,
+  useContext,
+  lazy,
+  Suspense,
+} from "react";
+import styles from "../styles/TemplateWraper.module.css";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 import LoadingModal from "../components/loading";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ApiContext/userContext";
+import PdfPageWrapper from "../components/pdfPageWrapper";
+
 
 const modules = import.meta.glob("../templates/*.jsx");
+const defaultMessage = { visible: false, type: "", msg: "" };
 
-
-const defaultMessage = {visible: false, type: "", msg: ""};
-
-export default function TemplatePage() {
-  const navigate = useNavigate()
-  const {type, id } = useParams();
+export default function TemplateWraper() {
+  const viewerRef = useRef(null);
+  const navigate = useNavigate();
+  const { type, id } = useParams();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
-  const {publicUser} = useContext(UserContext);
-  const [message, setMessage] = useState(defaultMessage);
+  const { publicUser } = useContext(UserContext);
 
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(defaultMessage);
 
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
         setLoading(true);
         const res = await http.get(`/${type}/code/${code}/template/${id}`);
-        if (res.data.success){
-          setTemplate(res.data.data)
-        };
+        if (res.data.success) setTemplate(res.data.data);
       } catch (err) {
-        console.log(httpMessage(err))
+        console.log(httpMessage(err));
       } finally {
         setLoading(false);
       }
     };
-
     fetchTemplate();
-  }, [id]);
+  }, [id, type, code]);
 
-  // ✅ don’t build a key until we actually have template data
   const key = template ? `../templates/${template?.code}.jsx` : null;
 
   const Template = useMemo(() => {
@@ -51,14 +55,12 @@ export default function TemplatePage() {
     return loader ? lazy(loader) : null;
   }, [key]);
 
-
-  if (!publicUser && !loading) return <NoFoundTemplate onGoback={() => navigate("/menu")}/>
-
-
-  if (!template && !loading) return <NoFoundTemplate onGoback={() => navigate("/menu")}/>
-
-
-  if (!Template) return <NoFoundTemplate onGoback={() => navigate("/menu")}/>
+  if (!publicUser && !loading)
+    return <NoFoundTemplate onGoback={() => navigate("/menu")} />;
+  if (!template && !loading)
+    return <NoFoundTemplate onGoback={() => navigate("/menu")} />;
+  if (!Template)
+    return <NoFoundTemplate onGoback={() => navigate("/menu")} />;
 
   // the save buton in the template //
   const handleClickSaveButton = (tem) => {
@@ -78,33 +80,35 @@ export default function TemplatePage() {
     }
   }
 
-
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor:"#333"
-      }}
-    >
-      <div className={styles.card}>
-        <div className={styles.scaleWrap}>
-          <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
-            <Template data={template} editable={true} onSave={(tem) => handleClickSaveButton(tem)}/>
-          </Suspense>
-        </div>
-      </div>
+    <div ref={viewerRef}>
+      
+      <PdfPageWrapper>
+        <Suspense
+          fallback={
+            <LoadingModal
+              open={true}
+              title="Menu"
+              subtitle="Loading template..."
+            />
+          }
+        >
+        <Template data={template} editable={true} onSave={(tem) => handleClickSaveButton(tem)}/>
+        </Suspense> 
+      </PdfPageWrapper>
 
-      <LoadingModal open={loading} title="Menu" subtitle="Loading template..."/>
-      <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
+      <LoadingModal open={loading} title="Menu" subtitle="Loading template..." />
+      <FlashMessage
+        show={message.visible}
+        type={message.type}
+        message={message.msg}
+        onClose={() => setMessage(defaultMessage)}
+      />
     </div>
   );
 }
 
-
-function NoFoundTemplate({onGoback}){
+function NoFoundTemplate({ onGoback }) {
   return (
     <div className={styles.notFoundWrap}>
       <div className={styles.notFoundCard}>
@@ -113,11 +117,7 @@ function NoFoundTemplate({onGoback}){
         <p className={styles.notFoundText}>
           The menu template you’re looking for doesn’t exist or was removed.
         </p>
-
-        <button
-          className={styles.notFoundBtn}
-          onClick={() => onGoback()}
-        >
+        <button className={styles.notFoundBtn} onClick={onGoback}>
           Go Back
         </button>
       </div>

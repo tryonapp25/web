@@ -1,0 +1,88 @@
+.page {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  background: #0f1115;
+  color: #e9edf1;
+}
+
+/* LEFT */
+.left {
+  background: #11141a;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.textarea {
+  flex: 1;
+  resize: none;
+  border-radius: 12px;
+  padding: 12px;
+  background: #0b0d12;
+  color: #e9edf1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  outline: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.textarea:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hint {
+  font-size: 12px;
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+/* RIGHT */
+.right {
+  background:
+    radial-gradient(circle at center, #141821 0%, #0f1115 60%);
+  overflow: auto;                 /* allow scrolling */
+}
+
+/* NEW: canvas layer */
+.canvas {
+  min-height: 100%;
+  min-width: 100%;
+
+  display: flex;
+  align-items: center;            /* vertical center */
+  justify-content: center;        /* horizontal center */
+
+  padding: 48px;                  /* space around page */
+  box-sizing: border-box;
+}
+
+/* Optional: force PDF/page to not stretch */
+.canvas > * {
+  width: fit-content;
+  max-width: 100%;
+}
+
+
+.preview {
+  background: #000;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

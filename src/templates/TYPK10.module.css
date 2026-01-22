@@ -1,0 +1,117 @@
+/* ===== Page ===== */
+.page {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(1200px 900px at 20% 15%, rgba(202,164,93,.15), transparent 60%),
+    linear-gradient(180deg, #040406, #07080c);
+  color: white;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 32px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: opacity 2s;
+}
+
+.page:hover{
+  opacity: 0.9;
+}
+
+/* ===== Header ===== */
+.header {
+  text-align: center;
+}
+
+.heading {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  color: #caa45d;
+}
+
+.subWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 12px 0;
+}
+
+.brush {
+  position: absolute;
+  width: 70%;
+  height: 28px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(190,40,40,.95),
+    transparent
+  );
+  border-radius: 999px;
+}
+
+.subheading {
+  position: relative;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.note {
+  margin: 0;
+  font-size: 13px;
+  opacity: .75;
+  font-style: italic;
+}
+
+/* ===== Grid (ALWAYS 4 columns) ===== */
+.grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+/* ===== Item ===== */
+.item {
+  text-align: center;
+}
+
+.imgWrap {
+  display: grid;
+  place-items: center;
+}
+
+.img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.img :global(canvas) {
+  width: 100% !important;
+  height: 100% !important;
+  transform: scale(.95);
+}
+
+.name {
+  margin-top: 10px;
+  font-weight: 900;
+  color: #caa45d;
+  font-size: 14px;
+  letter-spacing: .04em;
+}
+
+.price {
+  margin-top: 2px;
+  font-weight: 800;
+  font-size: 14px;
+  color: rgba(255,255,255,.95);
+}

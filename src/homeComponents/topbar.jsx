@@ -25,7 +25,7 @@ export default function Topbar() {
           placeholder="Search"
         />
         <IconButton label="Scan">
-          <div className={styles.scanGlyph} />
+          <div className={styles.scanGlyph} onClick={() => navigate("/menu")} />
         </IconButton>
       </div>
 

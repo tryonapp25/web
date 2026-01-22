@@ -1,49 +1,43 @@
+// TemplateGrid.jsx
 import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import styles from "../styles/TemplateGrid.module.css";
 import ConfirmDialog from "./confirmDialog";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FlashMessage from "./flashMessage";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import QrCodeModal from "./QrCodeModal";
 
-const defaultMessage = {visible: false, type: "", msg: ""};
 
-const modules = import.meta.glob("../templates/*.jsx"); //"../templates/*/*.jsx"
+const defaultMessage = { visible: false, type: "", msg: "" };
+const modules = import.meta.glob("../templates/*.jsx");
 
 export default function TemplateGrid({ templates = [] }) {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
-
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [message, setMessage] = useState(defaultMessage);
   const [data, setData] = useState(templates || []);
 
-
-  useEffect(()=> {
-    setData(templates);
-  },[templates])
+  useEffect(() => setData(templates), [templates]);
 
   const handleSelectTemplate = (tem) => {
     setSelectedTemplate(tem);
-    if(tem?.type === "production") {
+    if (tem?.type === "production") {
       setOpenConfirmModal(true);
       return;
-    };
+    }
     setOpenModal(true);
   };
 
   const handleClickEditTemplate = (tem) => {
     navigate(`/${tem?.type}/template/${tem?.id}?code=${tem?.code}`);
-  }
+  };
 
-  // Build a stable lookup: filePath -> LazyComponent
   const lazyByPath = useMemo(() => {
     const map = {};
-    for (const path of Object.keys(modules)) {
-      map[path] = lazy(modules[path]);
-    }
+    for (const path of Object.keys(modules)) map[path] = lazy(modules[path]);
     return map;
   }, []);
 
@@ -55,32 +49,33 @@ export default function TemplateGrid({ templates = [] }) {
   const handlePreview = () => {
     setOpenModal(false);
     if (!selectedTemplate?.code || !selectedTemplate?.id) return;
-    navigate(`/${selectedTemplate?.type}/template/${selectedTemplate.id}?code=${selectedTemplate.code}`);
+    navigate(
+      `/${selectedTemplate?.type}/template/${selectedTemplate.id}?code=${selectedTemplate.code}`
+    );
   };
 
   const handleSetTemplateStatus = async (tem, status) => {
-    try{
+    try {
       tem.isPublic = !status;
       const res = await http.put(`/template/status`, tem);
-      if(res.data.success){
-        setMessage({visible:true, type:"success", msg: tem.isPublic ? "Set public template." : "Set private template."});
+      if (res.data.success) {
+        setMessage({
+          visible: true,
+          type: "success",
+          msg: tem.isPublic ? "Set public template." : "Set private template.",
+        });
         setData((prev) =>
           prev.map((item) =>
-            item.id === tem.id
-              ? { ...item, isPublic: !status }
-              : item
+            item.id === tem.id ? { ...item, isPublic: !status } : item
           )
         );
-
       }
+    } catch (err) {
+      setMessage({ visible: true, type: "success", msg: httpMessage(err) });
+    } finally {
+      setOpenConfirmModal(false);
     }
-    catch(err){
-      setMessage({visible:true, type:"success", msg: httpMessage(err)})
-    }
-    finally{
-      setOpenConfirmModal(false)
-    }
-  }
+  };
 
   return (
     <div className={styles.page}>
@@ -88,51 +83,18 @@ export default function TemplateGrid({ templates = [] }) {
         {data.map((item, index) => {
           const path = `../templates/${item?.code}.jsx`;
           const Template = lazyByPath[path];
-
-          if (!Template) return null;
+          if (!Template) return <NoFoundTemplate key={item?.id ?? index} />;
 
           return (
             <div key={item?.id ?? index} className={styles.card}>
-              <div className={styles.scaleWrap}>
-                <Suspense fallback={<div>Loading...</div>}>
-                  {item?.type === "production" && (
-                    <div
-                      style={{
-                        padding: "10px 45px",
-                        borderTopRightRadius: "20px",
-                        borderBottomLeftRadius: "20px",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        width: "fit-content",
-                        backgroundColor: item?.isPublic ? "#E6F7F0" : "#FDECEC",
-                        color: item?.isPublic ? "#0F766E" : "#B91C1C",
-                        position: "absolute",
-                        right: 0,
-                        zIndex: 9999,
-                      }}
-                    >
-                      <div
-                        style={{
-                          padding: "6px 10px",
-                          color: "#333",
-                          borderRadius: "999px",
-                          fontSize: "18px",
-                          cursor: "pointer",
-                          textAlign: "center",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        {item?.isPublic ? "Public" : "Private"}
-                      </div>
-                    </div>
-                  )}
-                  <Template
-                    data={item}
-                    pressable
-                    onPress={handleSelectTemplate}
-                  />
-                </Suspense>
+              <div className={styles.badgeWrap}>
+                {item?.type === "production" && <StatusBadge item={item} />}
               </div>
+          
+                <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
+                  <Template data={item} pressable onPress={handleSelectTemplate} />
+                </Suspense>
+              
             </div>
           );
         })}
@@ -146,16 +108,51 @@ export default function TemplateGrid({ templates = [] }) {
         onConfirm={handleBuy}
         onCancel={handlePreview}
       />
-      <QrCodeModal 
+
+      <QrCodeModal
         template={selectedTemplate}
-        open={openConfirmModal} 
+        open={openConfirmModal}
         onClose={() => setOpenConfirmModal(false)}
         onEdit={(tem) => handleClickEditTemplate(tem)}
         onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
       />
-      <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
+
+      <FlashMessage
+        show={message.visible}
+        type={message.type}
+        message={message.msg}
+        onClose={() => setMessage(defaultMessage)}
+      />
     </div>
   );
 }
 
+function NoFoundTemplate({ onGoback }) {
+  return (
+    <div className={styles.notFoundWrap}>
+      <div className={styles.notFoundCard}>
+        <div className={styles.notFoundIcon}>🍕</div>
+        <h2 className={styles.notFoundTitle}>Template Not Found</h2>
+        <p className={styles.notFoundText}>
+          The menu template you’re looking for doesn’t exist or was removed.
+        </p>
+        <button className={styles.notFoundBtn} onClick={() => onGoback?.()}>
+          Go Back
+        </button>
+      </div>
+    </div>
+  );
+}
 
+const StatusBadge = ({ item }) => {
+  const isPublic = !!item?.isPublic;
+  return (
+    <div
+      className={styles.badge}
+      data-public={isPublic ? "true" : "false"}
+      title={isPublic ? "Public" : "Private"}
+    >
+      {isPublic ? "Public" : "Private"}
+    </div>
+  );
+};
