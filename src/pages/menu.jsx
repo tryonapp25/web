@@ -58,7 +58,7 @@ export default function MenuPage() {
     try{
       setLoading(true);
       setTemplates([]);
-      const res = await http.get(`/production/user/${uid}/templates`);
+      const res = await http.get(`/user/${uid}/production/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
       }
