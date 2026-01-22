@@ -32,7 +32,7 @@ export default function RenderProductionMenu() {
         };
         console.log(res.data)
       } catch (err) {
-        alert(httpMessage(err))
+        //alert(httpMessage(err))
       } finally {
         setLoading(false);
       }
