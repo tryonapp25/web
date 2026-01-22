@@ -139,8 +139,9 @@ export default function CreateTemplate() {
     if(!parsedData?.code || parsedData?.code === "") return setMessage({visible: true, type:"warn", msg:"Template missing code"});
     if(!parsedData?.category || parsedData?.category === "") return setMessage({visible: true, type:"warn", msg:"Template missing category"});
     if(!parsedData?.type || parsedData?.type === "") return setMessage({visible: true, type:"warn", msg:"Template missing type"});
+    if(!parsedData?.price) return setMessage({visible: true, type:"warn", msg:"Template missing price"});
     try{
-      const res = await http.post(`/create/template`, parsedData);
+      const res = await http.post(`/demo/create/template`, parsedData);
       if(res.data.success){
         setMessage({visible: true, type: "success", msg: res.data.message});
       }

@@ -1,12 +1,14 @@
 // TemplateGrid.jsx
-import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState , useContext} from "react";
 import styles from "../styles/TemplateGrid.module.css";
 import ConfirmDialog from "./confirmDialog";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "./flashMessage";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
+import { UserContext } from "../ApiContext/userContext";
 import QrCodeModal from "./QrCodeModal";
+import LoadingModal from "../components/loading";
 
 
 const defaultMessage = { visible: false, type: "", msg: "" };
@@ -14,6 +16,9 @@ const modules = import.meta.glob("../templates/*.jsx");
 
 export default function TemplateGrid({ templates = [] }) {
   const navigate = useNavigate();
+  const {publicUser, setPublicUser} = useContext(UserContext);
+  const [tokens, setTokens] = useState(publicUser?.token?.tokens);
+  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -43,7 +48,24 @@ export default function TemplateGrid({ templates = [] }) {
 
   const handleBuy = async () => {
     setOpenModal(false);
-    navigate("/payment-template");
+    if(selectedTemplate?.price > tokens){
+      setMessage({visible: true, type:"error", msg: "You don't have enough tokens"});
+      return;
+    }
+    try{
+      setLoading(true);
+      const res = await http.post(`/production/create/template`, selectedTemplate);
+      if(res.data.success){
+        setMessage({visible: true, type: "success", msg: res.data.message});
+        setPublicUser(res.data.data);
+      }
+    }
+    catch(err){
+      setMessage(httpMessage(err));
+    }
+    finally{
+      setLoading(false);
+    }
   };
 
   const handlePreview = () => {
@@ -56,6 +78,7 @@ export default function TemplateGrid({ templates = [] }) {
 
   const handleSetTemplateStatus = async (tem, status) => {
     try {
+      setLoading(true);
       tem.isPublic = !status;
       const res = await http.put(`/template/status`, tem);
       if (res.data.success) {
@@ -73,6 +96,7 @@ export default function TemplateGrid({ templates = [] }) {
     } catch (err) {
       setMessage({ visible: true, type: "success", msg: httpMessage(err) });
     } finally {
+      setLoading(false);
       setOpenConfirmModal(false);
     }
   };
@@ -107,6 +131,7 @@ export default function TemplateGrid({ templates = [] }) {
         cancelText="Preview"
         onConfirm={handleBuy}
         onCancel={handlePreview}
+        onClose={() => setOpenModal(false)}
       />
 
       <QrCodeModal
@@ -123,6 +148,8 @@ export default function TemplateGrid({ templates = [] }) {
         message={message.msg}
         onClose={() => setMessage(defaultMessage)}
       />
+
+      <LoadingModal open={loading}/>
     </div>
   );
 }

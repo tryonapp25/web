@@ -11,7 +11,8 @@ export default function ConfirmDialog({
   onConfirm,
   variant = "primary", // danger | primary | success
   onCancel,
-  loading = false
+  loading = false,
+  onClose
 }) {
   useEffect(() => {
     if (open) {
@@ -25,7 +26,7 @@ export default function ConfirmDialog({
   if (!open) return null;
 
   return (
-    <div className={styles.overlay} onClick={onCancel}>
+    <div className={styles.overlay} onClick={onClose}>
       <div
         className={styles.card}
         onClick={(e) => e.stopPropagation()}

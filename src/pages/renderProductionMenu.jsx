@@ -1,8 +1,10 @@
 import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams  } from "react-router-dom";
+import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
+import PdfPageWrapper from "../components/pdfPageWrapper";
 import { useNavigate } from "react-router-dom";
 
 
@@ -35,7 +37,6 @@ export default function RenderProductionMenu() {
         setLoading(false);
       }
     };
-
     fetchTemplate();
   }, [id]);
 
@@ -54,29 +55,19 @@ export default function RenderProductionMenu() {
 
   
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor:"#333"
-      }}
-    >
-      <div className={styles.card}>
-        <div className={styles.scaleWrap}>
-          <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
-            <Template data={template} editable={true} onSave={(tem) => console.log(tem)}/>
-          </Suspense>
-        </div>
-      </div>
+    <div>
+      <PdfPageWrapper>
+        <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
+          <Template data={template} editable={true} onSave={(tem) => console.log(tem)}/>
+        </Suspense>
+      </PdfPageWrapper>
       <LoadingModal open={loading} title="Menu" subtitle="Loading template..."/>
     </div>
   );
 }
 
 
-function NoFoundTemplate({onGoback}){
+function NoFoundTemplate({ onGoback }) {
   return (
     <div className={styles.notFoundWrap}>
       <div className={styles.notFoundCard}>
@@ -85,11 +76,7 @@ function NoFoundTemplate({onGoback}){
         <p className={styles.notFoundText}>
           The menu template you’re looking for doesn’t exist or was removed.
         </p>
-
-        <button
-          className={styles.notFoundBtn}
-          onClick={() => onGoback()}
-        >
+        <button className={styles.notFoundBtn} onClick={onGoback}>
           Go Back
         </button>
       </div>

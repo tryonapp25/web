@@ -1,6 +1,8 @@
 import styles from "../styles/topbar.module.css";
 import { Search } from "lucide-react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../ApiContext/userContext";
 
 
 
@@ -15,6 +17,7 @@ function IconButton({ children, label }) {
 
 export default function Topbar() {
   const navigate = useNavigate();
+  const {publicUser} = useContext(UserContext);
   return (
     <header className={styles.topbar}>
       {/* Search */}
@@ -36,6 +39,7 @@ export default function Topbar() {
         </button>
 
         {/* <button className={styles.link}>Business</button> */}
+        <button className={styles.link}>Tokens {publicUser?.token?.tokens}</button>
         <button className={styles.link}>About us</button>
 
         <button onClick={() => navigate("/profile")} className={styles.avatar}>SA</button>

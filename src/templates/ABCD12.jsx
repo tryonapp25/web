@@ -37,13 +37,9 @@ export default function Template({
 
   // click page
   const handlePress = () => {
-    if (isEditing) {
-      setIsEditing(false); // exit edit mode
-      return;
-    }
-    if (!pressable || !draft?.id) return;
-    onPress?.(data);
-  };
+    if(!pressable) return;
+    onPress(data);
+  }
 
   const stop = (e) => e.stopPropagation();
 

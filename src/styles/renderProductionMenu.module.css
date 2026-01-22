@@ -1,0 +1,39 @@
+/* =========================
+   NOT FOUND STYLES
+   ========================= */
+.notFoundWrap {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notFoundCard {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.notFoundIcon {
+  font-size: 48px;
+}
+
+.notFoundTitle {
+  margin: 16px 0 8px;
+}
+
+.notFoundText {
+  color: #666;
+}
+
+.notFoundBtn {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}

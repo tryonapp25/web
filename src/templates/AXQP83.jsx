@@ -24,10 +24,9 @@ export default function Temolate2({
   }, [data]);
 
   const handlePress = () => {
-    if (!pressable) return;
-    if (!data?.id) return;
-    onPress?.(data);
-  };
+    if(!pressable) return;
+    onPress(data);
+  }
 
 
   const toggleEdit = (e) => {
@@ -50,7 +49,7 @@ export default function Temolate2({
   const cards = (contents || []).slice(0, 6);
 
   return (
-    <div className={styles.stage} onClick={handlePress} role="button" tabIndex={0}>
+    <div className={styles.stage} onClick={() => handlePress()}>
       {editable && (
         <button
           type="button"
@@ -62,7 +61,7 @@ export default function Temolate2({
       )}
 
       {/* HEADER */}
-      <div className={styles.header} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.header}>
         <div className={styles.bigTitle}>
           <div className={styles.bigPizza}>{heading}</div>
           <div className={styles.scriptMenu}>{subheading}</div>
