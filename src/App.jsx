@@ -11,7 +11,6 @@ import Home from "./pages/home";
 import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import MenuPage from "./pages/menu";
-import TemplatePayment from "./pages/templatePayment";
 import RenderProductionMenu from "./pages/renderProductionMenu";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
@@ -30,7 +29,6 @@ export default function App() {
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/payment" element={<Payment />} />
-              <Route path="/payment-template" element={<TemplatePayment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
