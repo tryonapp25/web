@@ -1,58 +1,52 @@
-import React, { useMemo } from "react";
-import styles from "./TYPK10.module.css";
+import { useEffect, useState } from "react";
+import style from "./TYPK10.module.css";
 import Model3D from "../components/3dModel";
 
-function SushiImage({ model }) {
-  return (
-    <div className={styles.imgWrap}>
-      <div className={styles.img}>
-        <Model3D model={model} />
-      </div>
-    </div>
-  );
-}
-
-export default function Template({ data, pressable, onPress }) {
-  const items = useMemo(() => {
-    if (!data?.contents) return [];
-    return data.contents.map((item) => ({
-      title: item.title,
-      model: item.model,
-      price: item.data?.[0]?.price ?? "",
-      note: item.data?.[0]?.name ?? "",
-    }));
-  }, [data]);
-
+export default function Template({ data = [], pressable, onPress }) {
   const onSelectedTemplate = () => {
     if(!pressable) return;
     onPress(data);
   }
-
   return (
-    <div className={styles.page} onClick={onSelectedTemplate}>
-      <header className={styles.header}>
-        <h1 className={styles.heading}>{data?.heading}</h1>
+    <div className={style.page} onClick={onSelectedTemplate}>
+      <header className={style.header}>
+        <h1 className={style.heading}>{data?.heading}</h1>
 
-        <div className={styles.subWrap}>
-          <div className={styles.brush} />
-          <div className={styles.subheading}>{data?.subheading}</div>
+        <div className={style.subWrap}>
+          <div className={style.brush} />
+          <div className={style.subheading}>{data?.subheading}</div>
         </div>
 
-        <p className={styles.note}>
+        <p className={style.note}>
           (2 pcs of sushi or sashimi per order)
         </p>
       </header>
 
-      <section className={styles.grid}>
-        {items.map((item, idx) => (
-          <article key={idx} className={styles.item}>
-            <SushiImage model={item.model} />
+      <main className={style.grid}>
+        {data.contents.map((item, i) => {
+          const firstLine = item.data?.[0]; // { name: "2 pcs", price: "$6.25" }
 
-            <div className={styles.name}>{item.title}</div>
-            <div className={styles.price}>{item.price}</div>
-          </article>
-        ))}
-      </section>
+          return (
+            <div key={i} className={style.card}>
+              <div className={style.imageWrap}>
+                <Model3D model={item.model} />
+              </div>
+
+              <div className={style.name}>{item.title}</div>
+
+              {/* show price */}
+              <div className={style.price}>{firstLine?.price}</div>
+
+              {/* if you also want "2 pcs" shown, uncomment:
+              <div className={style.note}>{firstLine?.name}</div>
+              */}
+            </div>
+          );
+        })}
+      </main>
     </div>
   );
 }
+
+
+

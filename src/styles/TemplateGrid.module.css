@@ -49,14 +49,21 @@
 /* ===== CARD ===== */
 .card {
   width: 520px;                   /* BIGGER */
-  height: 690px;                  /* keep 3/4-ish ratio */
-  overflow: hidden;
+  height: 690px;
+  overflow-y: auto;             /* keep 3/4-ish ratio */
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   position: relative;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none; 
 }
+
+.card::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* ===== TEMPLATE SCALE ===== */
 .scaleWrap {

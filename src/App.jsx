@@ -15,7 +15,7 @@ import TemplatePayment from "./pages/templatePayment";
 import RenderProductionMenu from "./pages/renderProductionMenu";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
-
+import TestTemplate from "./templates/testTemplate"
 
 export default function App() {
   return (

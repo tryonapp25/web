@@ -1,27 +1,35 @@
-/* ===== Page ===== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at top, #2a1f16, #050403);
+}
+/* Page background */
 .page {
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(1200px 900px at 20% 15%, rgba(202,164,93,.15), transparent 60%),
-    linear-gradient(180deg, #040406, #07080c);
-  color: white;
+  max-height: 100vh;
+  min-height: 690px; 
+  background: radial-gradient(circle at top, #2a1f16, #050403);
+  color: #e6d3a3;
+  padding: env(safe-area-inset-top) 18px 40px;
 
-  display: grid;
-  grid-template-rows: auto 1fr;
-  padding: 32px;
-  box-sizing: border-box;
+  overflow-y: auto;
   cursor: pointer;
-  transition: opacity 2s;
+
+  /* hide scrollbar */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE 10+ */
 }
 
-.page:hover{
-  opacity: 0.9;
+/* Chrome, Safari, Edge */
+.page::-webkit-scrollbar {
+  display: none;
 }
 
-/* ===== Header ===== */
+
+/* Header */
 .header {
   text-align: center;
+  margin-bottom: 28px;
 }
 
 .heading {
@@ -59,59 +67,63 @@
   letter-spacing: .12em;
 }
 
+
+
 .note {
-  margin: 0;
+  margin-top: 10px;
   font-size: 13px;
-  opacity: .75;
-  font-style: italic;
+  opacity: 0.7;
 }
 
-/* ===== Grid (ALWAYS 4 columns) ===== */
+/* Grid */
 .grid {
-  margin-top: 28px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
+  gap: 20px;
 }
 
-/* ===== Item ===== */
-.item {
+/* Cards */
+.card {
   text-align: center;
 }
 
-.imgWrap {
-  display: grid;
-  place-items: center;
-}
-
-.img {
-  width: 80px;
-  height: 80px;
+.imageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
-  overflow: hidden;
-
-  box-shadow:
-    0 12px 28px rgba(0,0,0,.6),
-    inset 0 0 0 1px rgba(255,255,255,.08);
+  background: radial-gradient(circle, #1c1c1c, #000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
-.img :global(canvas) {
-  width: 100% !important;
-  height: 100% !important;
-  transform: scale(.95);
+.imageWrap img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
 }
 
 .name {
-  margin-top: 10px;
-  font-weight: 900;
-  color: #caa45d;
-  font-size: 14px;
-  letter-spacing: .04em;
+  font-size: 15px;
+  margin-bottom: 4px;
 }
 
 .price {
-  margin-top: 2px;
-  font-weight: 800;
   font-size: 14px;
-  color: rgba(255,255,255,.95);
+  color: #ffffff;
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

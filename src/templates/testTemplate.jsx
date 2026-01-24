@@ -1,21 +1,16 @@
-import styles from "./AXQP83.module.css";
+import styles from "./TestTemplate.module.css";
 import Model3D from "../components/3dModel";
 
-export default function Template({ data = [], pressable, onPress }) {
+export default function TestTemplate({ data = [], pressable, onPress }) {
   const { contents, heading, subheading } = data;
-
-  const onSelectedTemplate = () => {
-    if(!pressable) return;
-    onPress(data);
-  }
 
   return (
    
-      <div className={styles.page} onClick={onSelectedTemplate}>
-        {/* <button className={styles.editBtn} type="button">
+      <div className={styles.page}>
+        <button className={styles.editBtn} type="button">
           Edit
         </button>
- */}
+
         <header className={styles.header}>
           <h1 className={styles.pizza}>{heading}</h1>
           <div className={styles.menu}>{subheading}</div>
