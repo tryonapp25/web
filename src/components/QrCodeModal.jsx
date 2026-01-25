@@ -39,7 +39,7 @@ export default function QrCodeModal({
             Edit
           </button>
           <button style={styless.publishBtn} onClick={() => onPublish(template)}>
-            {template?.isPublic ? "unPublished" : "Publish"}
+            {template?.isPublic ? "Unpublished" : "Publish"}
           </button>
         </div>
       </div>
