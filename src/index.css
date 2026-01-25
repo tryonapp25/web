@@ -2,5 +2,10 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: transparent; /* whatever your page background should be */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 15, 25, 0.92),
+      rgba(11, 15, 25, 0.78)
+    );
 }

@@ -1,9 +1,3 @@
-
-html, body {
-  margin: 0;
-  padding: 0;
-  background: radial-gradient(circle at top, #2a1f16, #050403);
-}
 /* Page background */
 .page {
   max-height: 100vh;
