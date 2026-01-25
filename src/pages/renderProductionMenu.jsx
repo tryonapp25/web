@@ -6,6 +6,7 @@ import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import { useNavigate } from "react-router-dom";
+import {useIsMobile} from "../utils/deviceCheck";
 
 
 const modules = import.meta.glob("../templates/*.jsx");
@@ -13,6 +14,7 @@ const modules = import.meta.glob("../templates/*.jsx");
 
 export default function RenderProductionMenu() {
   const navigate = useNavigate()
+  const isMobile = useIsMobile();
   const {type, id } = useParams();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
@@ -56,11 +58,17 @@ export default function RenderProductionMenu() {
   
   return (
     <div>
-      <PdfPageWrapper>
+      {isMobile ?
         <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
           <Template data={template} editable={true} onSave={(tem) => console.log(tem)}/>
         </Suspense>
-      </PdfPageWrapper>
+        :
+        <PdfPageWrapper>
+          <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
+            <Template data={template} editable={true} onSave={(tem) => console.log(tem)}/>
+          </Suspense>
+        </PdfPageWrapper>
+        }
       <LoadingModal open={loading} title="Menu" subtitle="Loading template..."/>
     </div>
   );

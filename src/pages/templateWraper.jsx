@@ -14,27 +14,13 @@ import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 import LoadingModal from "../components/loading";
 import { UserContext } from "../ApiContext/userContext";
+import {useIsMobile} from "../utils/deviceCheck";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 
 
 const modules = import.meta.glob("../templates/*.jsx");
 const defaultMessage = { visible: false, type: "", msg: "" };
 
-function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(
-    window.matchMedia(`(max-width: ${breakpoint}px)`).matches
-  );
-
-  useEffect(() => {
-    const media = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    const listener = () => setIsMobile(media.matches);
-
-    media.addEventListener("change", listener);
-    return () => media.removeEventListener("change", listener);
-  }, [breakpoint]);
-
-  return isMobile;
-}
 
 export default function TemplateWraper() {
   const viewerRef = useRef(null);
