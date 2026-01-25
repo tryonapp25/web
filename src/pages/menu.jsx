@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useContext } from "react";
-import styles from "../styles/home.module.css";
+import styles from "../styles/menupage.module.css";
 import Sidebar from "../homeComponents/sideBar";
 import Topbar from "../homeComponents/topbar";
 import http from "../http/http";

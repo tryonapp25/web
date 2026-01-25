@@ -1,20 +1,35 @@
 import { useEffect, useState } from "react";
 import style from "./TYPK10.module.css";
 import Model3D from "../components/3dModel";
+import EditButton from "../components/editButton";
+import TemplateEditor from "./templateEditor";
 
-export default function Template({ data = [], pressable, onPress }) {
+export default function Template({ data = [], pressable, onPress, editable = false  }) {
+  const [template, setTemplate] = useState(data)
+  const [onEdit, setOnEdit] = useState(false);
+
+
   const onSelectedTemplate = () => {
     if(!pressable) return;
     onPress(data);
   }
+
+  const handleUpdateTemplate = async (data) => {
+      setTemplate(data);
+      setOnEdit(false);
+    }
+  
+  if(onEdit) return <TemplateEditor data={template} onChange={(d) => handleUpdateTemplate(d)}/>
+
   return (
     <div className={style.page} onClick={onSelectedTemplate}>
       <header className={style.header}>
-        <h1 className={style.heading}>{data?.heading}</h1>
+        {editable && <EditButton onClick={() => setOnEdit(true)}/>}
+        <h1 className={style.heading}>{template?.heading}</h1>
 
         <div className={style.subWrap}>
           <div className={style.brush} />
-          <div className={style.subheading}>{data?.subheading}</div>
+          <div className={style.subheading}>{template?.subheading}</div>
         </div>
 
         <p className={style.note}>
@@ -23,8 +38,8 @@ export default function Template({ data = [], pressable, onPress }) {
       </header>
 
       <main className={style.grid}>
-        {data.contents.map((item, i) => {
-          const firstLine = item.data?.[0]; // { name: "2 pcs", price: "$6.25" }
+        {template.contents.map((item, i) => {
+          const firstLine = item.template?.[0]; // { name: "2 pcs", price: "$6.25" }
 
           return (
             <div key={i} className={style.card}>

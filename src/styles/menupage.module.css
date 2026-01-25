@@ -1,0 +1,243 @@
+/* home.module.css */
+
+/* ===== THEME ===== */
+:root{
+  /* Dark theme */
+  --bg: #0B0F19;
+  --bg-2: #0F172A;
+
+  --card: rgba(255, 255, 255, 0.06);
+  --card-2: rgba(255, 255, 255, 0.08);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.70);
+  --muted-2: rgba(255, 255, 255, 0.55);
+
+  --line: rgba(255, 255, 255, 0.12);
+
+  --purple: #8B7CFF;
+  --purple-2: #6D5EF6;
+
+  --warn: rgba(245, 158, 11, 0.16);
+  --warn-line: #F59E0B;
+
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  --radius: 18px;
+  --radius-lg: 26px;
+  --max: 1120px;
+}
+
+/* ===== PAGE ===== */
+.page{
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+  overflow-x: hidden; /* prevent accidental horizontal scroll on small screens */
+}
+
+/* shell: sidebar + main */
+.shell{
+  display: grid;
+  grid-template-columns: 272px 1fr;
+  min-height: 100vh;
+}
+
+/* collapse sidebar under 1024 */
+@media (max-width: 1024px){
+  .shell{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== HERO ===== */
+.heroHead{
+  padding: clamp(14px, 3vw, 28px);
+  background-color: transparent;
+}
+
+.pageTitle{
+  margin: 0;
+  font-size: clamp(22px, 2.8vw, 40px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 950;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  display: none;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+@media (min-width: 1024px){
+  .sidebar{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.logoRow{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px;
+}
+
+.logoMark{
+  width: 34px;
+  height: 34px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,0.85);
+}
+
+.logoText{
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  color: rgba(255,255,255,0.92);
+}
+
+.sideSection{
+  padding: 0 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.sideDivider{
+  margin: 16px 12px;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+}
+
+.sideItem{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  border-radius: 18px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.sideItem:hover{
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.10);
+  transform: translateY(-1px);
+}
+
+.sideItemActive{
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: var(--shadow-soft);
+  transform: none;
+}
+
+.sideIcon{
+  color: rgba(255,255,255,0.65);
+}
+.sideIconActive{
+  color: rgba(255,255,255,0.90);
+}
+
+.sideLabel{
+  font-size: 14px;
+  font-weight: 750;
+  color: rgba(255,255,255,0.72);
+}
+.sideLabelActive{
+  color: rgba(255,255,255,0.92);
+}
+
+.sideBottom{
+  margin-top: auto;
+  padding: 16px;
+}
+
+.artboardsRow{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  font-weight: 750;
+}
+
+.addBtn{
+  width: 40px;
+  height: 40px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.85);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.addBtn:hover{
+  background: rgba(255,255,255,0.08);
+}
+
+/* ---------- Main ---------- */
+.main{
+  min-height: 100vh;
+  width: 100%;
+  min-width: 0; /* important: lets children shrink inside grid */
+}
+
+/* optional: keep main content centered on wide screens */
+.main > *{
+  width: 100%;
+}
+
+.content{
+  padding: clamp(14px, 2.2vw, 24px) clamp(12px, 2.2vw, 24px) clamp(26px, 3.2vw, 40px);
+  max-width: 1180px;
+  margin: 0 auto;     /* ✅ center */
+  min-width: 0;       /* ✅ avoid overflow */
+}
+
+/* smaller padding on tablets/phones */
+@media (max-width: 1024px){
+  .content{
+    padding: 18px 16px 30px;
+  }
+}
+
+/* extra-small phones */
+@media (max-width: 420px){
+  .heroHead{
+    padding: 12px;
+  }
+  .content{
+    padding: 14px 12px 24px;
+  }
+}
+
+/* ===== OPTIONAL HELPERS (useful if you add wrappers later) ===== */
+/* If you wrap QuickAction in a div, prefer using a class over inline margin-left */
+.quickWrap{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 clamp(12px, 2.2vw, 24px);
+}
+
+@media (max-width: 720px){
+  .quickWrap{
+    padding: 0 12px;
+  }
+}

@@ -96,13 +96,12 @@ export default function TemplateWraper() {
             />
           }
         >
-          <Template data={template} editable={true} onSave={(tem) => handleClickSaveButton(tem)}/>
+          <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)}/>
         </Suspense> 
         : 
         <PdfPageWrapper>
-          <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}
-          >
-            <Template data={template} editable={true} onSave={(tem) => handleClickSaveButton(tem)}/>
+          <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
+            <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)}/>
           </Suspense> 
         </PdfPageWrapper>
       }

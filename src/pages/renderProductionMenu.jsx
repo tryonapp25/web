@@ -84,7 +84,7 @@ export default function RenderProductionMenu() {
     <Suspense
       fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..." />}
     >
-      <Template data={template} editable={true} onSave={(tem) => console.log(tem)} />
+      <Template data={template} onSave={(tem) => console.log(tem)} />
     </Suspense>
   );
 

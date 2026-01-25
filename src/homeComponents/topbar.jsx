@@ -39,7 +39,11 @@ export default function Topbar() {
         </button>
 
         {/* <button className={styles.link}>Business</button> */}
-        <button className={styles.link}>Tokens {publicUser?.token?.tokens}</button>
+        <button className={styles.tokenBtn}>
+          <span className={styles.tokenIcon} aria-hidden>🪙</span>
+          <span className={styles.tokenLabel}>Tokens</span>
+          <span className={styles.tokenValue}>{publicUser?.token?.tokens ?? 0}</span>
+        </button>
         <button className={styles.link}>About us</button>
 
         <button onClick={() => navigate("/profile")} className={styles.avatar}>SA</button>

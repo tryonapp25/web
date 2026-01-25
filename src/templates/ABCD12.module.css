@@ -1,292 +1,274 @@
-/* OUTER WRAPPER centers the poster */
+/* ---------- Theme ---------- */
 .page {
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
   position: relative;
-  overflow: hidden;
-  box-sizing: border-box;
-
   display: flex;
-  align-items: center;
   justify-content: center;
 
-  container-type: size;
+  /* IMPORTANT: don't vertically center, it can hide header on short screens */
+  align-items: flex-start;
+
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  
+  overflow-y: auto;
+  overflow-x: hidden;
   cursor: pointer;
+
+  /* hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  background: radial-gradient(
+        80% 60% at 50% 15%,
+        rgba(255, 220, 160, 0.10),
+        transparent 55%
+      ),
+    radial-gradient(
+        70% 60% at 50% 90%,
+        rgba(120, 160, 255, 0.08),
+        transparent 60%
+      ),
+    linear-gradient(180deg, #141414 0%, #111112 35%, #0d0f15 100%);
+}
+.page::-webkit-scrollbar {
+  display: none;
 }
 
-/* Background behind poster */
-.bg {
+
+/* soft vignette */
+.page::after {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
-
-  /* nicer depth */
-  background:
-    radial-gradient(1200px 900px at 20% 15%, rgba(202, 164, 93, 0.18), transparent 60%),
-    radial-gradient(900px 700px at 85% 30%, rgba(255, 255, 255, 0.10), transparent 55%),
-    radial-gradient(900px 900px at 50% 100%, rgba(0, 0, 0, 0.55), transparent 60%),
-    linear-gradient(180deg, rgba(8, 10, 14, 1), rgba(10, 12, 18, 1));
+  background: radial-gradient(
+    140% 140% at 50% 50%,
+    transparent 65%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  pointer-events: none;
 }
 
-/* Poster block (A4 portrait) */
+/* container must sit ABOVE bg */
 .container {
   position: relative;
   z-index: 1;
-
-  /* FIT INSIDE viewport (prevents horizontal crop on phones) */
-  width: min(100cqw, calc(100cqh * 210 / 297));
-  aspect-ratio: 210 / 297;
-  height: auto;
-
-  max-width: 100%;
-  max-height: 100%;
-
-  padding: clamp(18px, 2.6cqw, 36px);
+  padding: 18px 10px 18px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: 0;
-
-  border-radius: clamp(18px, 2.4cqw, 34px);
-
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow:
-    0 30px 90px rgba(0,0,0,0.55),
-    inset 0 0 0 1px rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
 }
 
-/* ---------------------------
-   Header
---------------------------- */
+/* ---------- Header ---------- */
 .header {
-  position: relative;
   flex: 0 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: clamp(8px, 1.4cqh, 18px) 0 clamp(10px, 1.8cqh, 22px);
+  padding: 6px 6px 12px;
+  text-align: center;
 }
 
 .title {
   margin: 0;
-  text-align: center;
-
-  color: #caa45d;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-
-  font-size: clamp(44px, 7.6cqw, 74px);
-  text-shadow: 0 2px 18px rgba(0,0,0,.55);
+  letter-spacing: 0.10em;
+  font-weight: 700;
+  font-size: clamp(28px, 6.5vw, 44px);
   line-height: 1.05;
+  color: #c9ac6a;
+  text-transform: uppercase;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
 }
 
-.title::after {
+.subheading {
+  margin: 10px 0 0;
+  font-size: clamp(11px, 2.8vw, 13px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(201, 172, 106, 0.75);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* divider under title */
+.header::after {
   content: "";
   display: block;
-  width: min(92cqw, 100%);
-  height: clamp(4px, 0.6cqh, 8px);
-  margin: clamp(10px, 1.3cqh, 16px) auto 0;
-
-  background: linear-gradient(90deg, transparent, #caa45d, transparent);
+  height: 3px;
   border-radius: 999px;
-  opacity: 0.95;
+  margin: 12px auto 0;
+  width: min(520px, 76%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 172, 106, 0.55),
+    rgba(201, 172, 106, 0.35),
+    transparent
+  );
 }
 
-/* Edit button */
-.editBtn {
-  position: absolute;
-  top: clamp(12px, 1.6cqh, 24px);
-  right: clamp(12px, 1.6cqw, 24px);
-  z-index: 10;
-
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.88);
-
-  padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: transform .12s ease, background .2s ease, border-color .2s ease;
-}
-
-.editBtn:hover {
-  background: rgba(255,255,255,.10);
-  border-color: rgba(255,255,255,.22);
-}
-.editBtn:active { transform: scale(.97); }
-
-/* ---------------------------
-   Grid
---------------------------- */
+/* ---------- Grid: ALWAYS 2x3 ---------- */
 .grid {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-
+  flex: 1 1 auto; /* this makes header always visible */
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  gap: clamp(14px, 2.2cqw, 28px);
-
-  padding-top: clamp(6px, 1cqh, 12px);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 14px;
+  padding: 12px 6px 0;
+  min-height: 0; /* prevents overflow bugs */
 }
 
-
-/* ---------------------------
-   Card
---------------------------- */
-
+/* ---------- Card ---------- */
 .card {
-  min-height: 0;
+  position: relative;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07);
   overflow: hidden;
-
   display: grid;
   grid-template-rows: 1fr auto;
-  gap: clamp(8px, 1.2cqh, 12px);
-  margin-left: 8px;
-  margin-right: 8px;
-
-  padding: clamp(10px, 1.4cqh, 16px) clamp(10px, 1.2cqw, 16px);
-
-  border-radius: clamp(14px, 1.8cqw, 22px);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow:
-    0 16px 40px rgba(0,0,0,0.35),
-    inset 0 0 0 1px rgba(255,255,255,0.04);
-
-  transition: transform .16s ease, background .2s ease, border-color .2s ease;
+  padding: 14px 14px 12px;
+  min-width: 0; /* important in grids */
+  box-sizing: border-box;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(202,164,93,0.22);
+/* subtle inner highlight */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 17px;
+  background: radial-gradient(
+    80% 80% at 30% 20%,
+    rgba(255, 255, 255, 0.06),
+    transparent 55%
+  );
+  pointer-events: none;
 }
 
-/* ---------------------------
-   Plate
---------------------------- */
+/* ---------- Plate ---------- */
 .plateWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 135px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-top: 6px;
 }
 
 .plate {
+  width: min(150px, 30vw);
   aspect-ratio: 1 / 1;
-  min-height: 135px;
-  min-width: 135px;
-  border-radius: 50%;
+  border-radius: 999px;
   position: relative;
-  overflow: hidden;
-
-  background: radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.45),
-    inset 0 0 0 2px rgba(255,255,255,0.10);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.03) 55%,
+    rgba(0, 0, 0, 0.22) 100%
+  );
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.07),
+    inset 0 0 0 10px rgba(0, 0, 0, 0.14),
+    0 18px 28px rgba(0, 0, 0, 0.42);
 }
 
 .model3d {
   position: absolute;
-  inset: 0;
+  inset: 14px;
+  border-radius: 999px;
+  overflow: hidden;
   display: grid;
   place-items: center;
-  overflow: hidden;
-}
-
-.model3d :global(canvas) {
-  width: 80% !important;
-  height: 80% !important;
-  display: block;
-  transform: scale(0.86);
-  transform-origin: center;
 }
 
 .plateShadow {
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(70% 90% at 50% 35%, rgba(255,255,255,0.10), transparent 58%),
-    radial-gradient(80% 80% at 50% 75%, rgba(0,0,0,0.25), transparent 60%);
+  inset: -10px;
+  border-radius: 999px;
+  box-shadow: 0 26px 40px rgba(0, 0, 0, 0.45);
   pointer-events: none;
+  opacity: 0.55;
 }
 
-/* ---------------------------
-   Meta
---------------------------- */
+/* ---------- Meta text area ---------- */
 .meta {
-  min-height: 0;
-  overflow: hidden;
-  padding-left: 6px;
-  
+  position: relative;
+  z-index: 1;
+  padding-top: 12px;
+  min-width: 0;
 }
 
-/* FIXED: valid columns */
+/* FIX: flex row so name can ellipsis, price doesn't push overflow */
 .rowTop {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(46px, 72px) auto;
+  display: flex;
   align-items: baseline;
-  gap: 5px;
+  justify-content: space-between;
+  gap: 10px;
   min-width: 0;
-  margin-bottom: clamp(6px, 1cqh, 12px);
 }
 
 .itemName {
-  font-weight: 900;
-  color: rgba(255,255,255,.95);
-  font-size: clamp(16px, 2.1cqw, 20px);
+  flex: 1 1 auto;
+  min-width: 0;
+
+  font-weight: 700;
+  font-size: clamp(12px, 2.2vw, 14px);
+  color: rgba(255, 255, 255, 0.92);
 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  /* optional "Laks..." vibe, but responsive */
+  max-width: clamp(10ch, 40vw, 18ch);
 }
 
 .pieces {
-  margin-left: 6px;
-  font-weight: 800;
-  opacity: .9;
-}
-
-.leader {
-  height: 1px;
-  width: 100%;
-  transform: translateY(-2px);
-  background-image: radial-gradient(rgba(202,164,93,0.85) 1px, transparent 1px);
-  background-size: 7px 1px;
-  background-repeat: repeat-x;
-  opacity: 0.95;
+  font-size: clamp(11px, 2vw, 14px);
+  opacity: 0.8;
 }
 
 .price {
-  font-weight: 900;
-  color: #caa45d;
+  flex: 0 0 auto;
+  font-weight: 700;
+  font-size: clamp(13px, 2.4vw, 16px);
+  color: #c9ac6a;
   white-space: nowrap;
-  font-size: clamp(16px, 2.1cqw, 20px);
 }
 
 .desc {
-  margin: clamp(5px, 0.8cqh, 8px) 0 0;
-  font-size: clamp(12px, 1.5cqw, 14px);
-  line-height: 1.35;
-  color: rgba(255,255,255,0.82);
+  margin: 6px 0 0;
+  font-size: clamp(10px, 2.2vw, 12px);
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.58);
 
   display: -webkit-box;
-  -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
+
+  min-height: 30px;
 }
 
+/* ---------- Mobile tuning ---------- */
+@media (max-width: 480px) {
+  .container {
+    min-height: 100vh;
+  }
 
+  .card {
+    padding: 12px 10px 10px;
+  }
 
+  .plate {
+    width: min(140px, 32vw);
+  }
+
+  .grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .grid {
+    gap: 10px;
+  }
+  .plate {
+    width: min(128px, 34vw);
+  }
+}

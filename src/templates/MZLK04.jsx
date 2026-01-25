@@ -1,10 +1,15 @@
 // PizzaTemplate1.jsx — Fullscreen (100% x 100%), screenshot-like layout
 import styles from "./MZLK04.module.css";
 import Model3D from "../components/3dModel";
+import EditButton from "../components/editButton";
+import { useState } from "react";
+import TemplateEditor from "./templateEditor";
 
 
-export default function Template({ data = [], pressable, onPress }) {
-  const { subheading, heading, contents } = data;
+export default function Template({ data = [], pressable, onPress, editable = false }) {
+  const [template, setTemplate] = useState(data)
+  const { subheading, heading, contents } = template;
+  const [onEdit, setOnEdit] = useState(false);
 
   const pizzaPosClass = [styles.pizzaTop, styles.pizzaMid, styles.pizzaBottom];
   const blockPosClass = [styles.blockTopRight, styles.blockMidLeft, styles.blockBottomRight];
@@ -14,8 +19,16 @@ export default function Template({ data = [], pressable, onPress }) {
     onPress(data);
   }
 
+  const handleUpdateTemplate = async (data) => {
+    setTemplate(data);
+    setOnEdit(false);
+  }
+
+  if(onEdit) return <TemplateEditor data={data} onChange={(d) => handleUpdateTemplate(d)}/>
+
   return (
     <div className={styles.page} onClick={onSelectedTemplate}>
+        {editable && <EditButton onClick={() => setOnEdit(true)}/>}
         {/* Header */}
         <div className={styles.badge}>{subheading}</div>
         <div className={styles.title}>{heading}</div>

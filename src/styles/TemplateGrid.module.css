@@ -1,3 +1,5 @@
+/* TemplateGrid.module.css */
+
 :root{
   /* Dark theme */
   --bg: #0B0F19;
@@ -26,55 +28,94 @@
 /* ===== PAGE ===== */
 .page {
   min-height: 100vh;
-  padding: 2rem 1.25rem;
+  padding: clamp(16px, 2.2vw, 32px) clamp(12px, 2vw, 20px);
   color: var(--text);
   background:
     radial-gradient(900px 500px at 15% 20%, rgba(139, 124, 255, 0.18), transparent 55%),
     radial-gradient(800px 460px at 90% 10%, rgba(0, 209, 178, 0.14), transparent 55%),
     linear-gradient(180deg, var(--bg), var(--bg-2));
+  overflow-x: hidden; /* avoid horizontal scroll */
 }
 
-/* ===== GRID ===== */
-/* ===== GRID ===== */
+/* ===== GRID =====
+   Responsive auto-fit:
+   - Cards shrink on smaller screens
+   - Cards expand up to a max width on big screens
+*/
 .grid {
-  max-width: 9999px;              /* let it spread */
+  width: 100%;
+  max-width: 2200px; /* keep things sane on ultrawide */
   margin: 0 auto;
+
   display: grid;
-  grid-template-columns: repeat(5, 520px); /* BIGGER */
-  gap: 1.5rem;
+  gap: clamp(12px, 1.4vw, 24px);
+
+  /* Each card min ~260px, max ~520px */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 520px));
+
   justify-content: center;
   align-items: start;
 }
 
-/* ===== CARD ===== */
+/* Optional: slightly wider min on desktop */
+@media (min-width: 1100px){
+  .grid{
+    grid-template-columns: repeat(auto-fit, minmax(360px, 520px));
+  }
+}
+
+/* ===== CARD =====
+   Make card width responsive and keep a nice "page" look
+*/
 .card {
-  width: 520px;                   /* BIGGER */
-  height: 690px;
-  overflow-y: auto;             /* keep 3/4-ish ratio */
+  width: 100%;
+  max-width: 520px;
+
+  aspect-ratio: 210 / 297;     /* ✅ A4 */
+  height: auto;                /* ✅ auto height from width */
+  overflow: hidden;            /* ✅ no half + no scroll */
+
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.10);
   background: rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   position: relative;
-  scrollbar-width: none;        /* Firefox */
-  -ms-overflow-style: none; 
 }
 
 .card::-webkit-scrollbar {
   display: none;
 }
 
-
-/* ===== TEMPLATE SCALE ===== */
+/* ===== TEMPLATE SCALE =====
+   If your templates render at a fixed "design size",
+   keep the wrapper but make it responsive.
+*/
 .scaleWrap {
   position: relative;
   z-index: 1;
 
+  /* original design size */
   width: 980px;
   height: 1306px;
 
-  transform: scale(0.531);        /* 520 / 980 */
+  /* scale to fit the card width (520 max, but smaller on phones) */
+  transform: scale(var(--scale, 0.531));
   transform-origin: top left;
+}
+
+/* On smaller screens, increase scale a bit so it fills the card nicely */
+@media (max-width: 720px){
+  .scaleWrap{
+    /* 0.531 was based on 520/980.
+       On phones your card will be smaller; we can slightly bump scale for readability. */
+    transform: scale(0.56);
+  }
+}
+
+@media (max-width: 420px){
+  .scaleWrap{
+    transform: scale(0.60);
+  }
 }
 
 /* Status badge */
@@ -106,12 +147,8 @@
   color: rgba(255, 222, 222, 0.95);
 }
 
-/* ===== “PDF page” wrapper (the actual page look) =====
-   PdfPageWrapper will control A4 ratio, scaling, etc.
-   We just give it a nice frame + correct sizing.
-*/
+/* ===== “PDF page” wrapper (A4) ===== */
 .pdfWrap {
-  /* keep a page feel in the grid */
   width: 100%;
   aspect-ratio: 210 / 297; /* A4 */
   border-radius: 16px;
@@ -168,9 +205,21 @@
   cursor: pointer;
 }
 
+.notFoundBtn:hover{
+  background: rgba(255, 255, 255, 0.09);
+}
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 2700px) { .grid { grid-template-columns: repeat(4, 520px); } }
-@media (max-width: 2150px) { .grid { grid-template-columns: repeat(3, 520px); } }
-@media (max-width: 1600px) { .grid { grid-template-columns: repeat(2, 520px); } }
-@media (max-width: 1080px) { .grid { grid-template-columns: 520px; } }
+/* ===== EXTRA SMALL TWEAKS ===== */
+@media (max-width: 420px){
+  .badgeWrap{
+    top: 10px;
+    right: 10px;
+  }
+  .badge{
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .card{
+    border-radius: 18px;
+  }
+}

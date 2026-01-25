@@ -1,8 +1,9 @@
-// Template.jsx (or Template.tsx)
-// Keep your existing imports/paths; only the layout + save/edit logic is kept same.
+// Template.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import styles from "./ABCD12.module.css";
 import Model3D from "../components/3dModel";
+import EditButton from "../components/editButton";
+import TemplateEditor from "./templateEditor";
 
 function PlateImage({ model }) {
   return (
@@ -25,9 +26,8 @@ export default function Template({
   onPress,
   onSave,
 }) {
-  // local editable copy
   const [draft, setDraft] = useState(data);
-  const [isEditing, setIsEditing] = useState(false);
+  const [onEdit, setOnEdit] = useState(false);
 
   useEffect(() => {
     setDraft(data);
@@ -35,44 +35,35 @@ export default function Template({
 
   const sections = useMemo(() => draft?.contents ?? [], [draft]);
 
-  // click page
   const handlePress = () => {
-    if(!pressable) return;
-    onPress(data);
-  }
+    if (!pressable) return;
+    onPress?.(data);
+  };
 
   const stop = (e) => e.stopPropagation();
 
-  const handleSaveButton = () => {
-    if (!isEditing) return;
-    onSave?.(draft);
-  };
+  const handleUpdateTemplate = async (data) => {
+    setDraft(data);
+    setOnEdit(false);
+  }
+
+  if(onEdit) return <TemplateEditor data={draft} onChange={(d) => handleUpdateTemplate(d)}/>
 
   return (
     <div className={styles.page} onClick={handlePress}>
       <div className={styles.bg} aria-hidden="true" />
+      {editable && <EditButton onClick={() => setOnEdit(true)}/>}
 
       <main className={styles.container}>
         {/* HEADER */}
         <header className={styles.header}>
           <h1 className={styles.title}>{draft?.heading}</h1>
-
-          {editable && (
-            <button
-              className={styles.editBtn}
-              onClick={(e) => {
-                stop(e);
-                // if we are currently editing, save on click
-                if (isEditing) handleSaveButton();
-                setIsEditing((v) => !v);
-              }}
-            >
-              {isEditing ? "Save" : "Edit"}
-            </button>
-          )}
+          {draft?.subheading ? (
+            <p className={styles.subheading}>{draft.subheading}</p>
+          ) : null}
         </header>
 
-        {/* CONTENT: ALWAYS 2 columns x 3 rows, NO overflow, 100% height */}
+        {/* GRID */}
         <section className={styles.grid}>
           {sections.slice(0, 6).map((section, sIndex) => (
             <article key={sIndex} className={styles.card}>
@@ -83,19 +74,19 @@ export default function Template({
                   <div className={styles.rowTop}>
                     <span className={styles.itemName} title={row?.name ?? ""}>
                       {row?.name}
-                      {row?.quantity && (
-                        <span className={styles.pieces}>({row.quantity})</span>
-                      )}
+                      {row?.quantity ? (
+                        <span className={styles.pieces}> ({row.quantity})</span>
+                      ) : null}
                     </span>
-
-                    <div className={styles.leader} />
 
                     <div className={styles.price}>{row?.price}</div>
                   </div>
 
-                  <p className={styles.desc} title={row?.description ?? ""}>
-                    {row?.description}
-                  </p>
+                  {row?.description ? (
+                    <p className={styles.desc} title={row?.description ?? ""}>
+                      {row?.description}
+                    </p>
+                  ) : null}
                 </div>
               ))}
             </article>
