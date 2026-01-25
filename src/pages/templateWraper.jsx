@@ -14,7 +14,7 @@ import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 import LoadingModal from "../components/loading";
 import { UserContext } from "../ApiContext/userContext";
-import {useIsMobile} from "../utils/deviceCheck";
+import useIsMobile from "../utils/deviceCheck";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 
 

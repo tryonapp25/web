@@ -6,7 +6,7 @@ import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import { useNavigate } from "react-router-dom";
-import {useIsMobile} from "../utils/deviceCheck";
+import useIsMobile from "../utils/deviceCheck";
 
 
 const modules = import.meta.glob("../templates/*.jsx");
@@ -27,7 +27,6 @@ export default function RenderProductionMenu() {
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
-        setLoading(true);
         const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
         if (res.data.success){
           setTemplate(res.data.data)
