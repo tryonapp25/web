@@ -14,7 +14,6 @@ import MenuPage from "./pages/menu";
 import RenderProductionMenu from "./pages/renderProductionMenu";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
-import ARTemplate from "./pages/webARTemplate";
 
 export default function App() {
   return (
@@ -26,7 +25,6 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
-            <Route path="/arTemplate" element={<ARTemplate />} /> 
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/payment" element={<Payment />} />
