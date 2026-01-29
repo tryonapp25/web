@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../styles/BookWraper.module.css";
 
 export default function BookWraper({ data = [], children }) {
@@ -8,15 +8,19 @@ export default function BookWraper({ data = [], children }) {
   const [progress, setProgress] = useState(0);
   const [animating, setAnimating] = useState(false);
 
-  const startX = useRef(0);
-  const pointerId = useRef(null);
   const areaRef = useRef(null);
+
+  // gesture tracking
+  const isDown = useRef(false);
+  const decided = useRef(false);
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const lastX = useRef(0);
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const canNext = index < data.length - 1;
   const canPrev = index > 0;
 
-  // Expect exactly one child renderer: <Template />
   const TemplateEl = React.Children.only(children);
 
   const renderTemplate = (pageData) => {
@@ -28,24 +32,16 @@ export default function BookWraper({ data = [], children }) {
     });
   };
 
-  const begin = (e) => {
-    if (animating) return;
-    if (e.pointerType === "mouse" && e.button !== 0) return;
+  const underIndex =
+    flipDir === "next"
+      ? clamp(index + 1, 0, data.length - 1)
+      : flipDir === "prev"
+      ? clamp(index - 1, 0, data.length - 1)
+      : index;
 
-    pointerId.current = e.pointerId;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    startX.current = e.clientX;
-
-    setDragging(true);
-    setFlipDir(null);
-    setProgress(0);
-  };
-
-  const move = (e) => {
-    if (!dragging || pointerId.current !== e.pointerId) return;
-
-    const rect = areaRef.current.getBoundingClientRect();
-    const dx = e.clientX - startX.current;
+  const updateProgressFromDx = (dx) => {
+    const rect = areaRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
     if (!flipDir && Math.abs(dx) > 5) {
       if (dx < 0 && canNext) setFlipDir("next");
@@ -57,7 +53,52 @@ export default function BookWraper({ data = [], children }) {
     setProgress(p);
   };
 
-  const end = () => {
+  const beginGesture = (x, y) => {
+    if (animating) return;
+    isDown.current = true;
+    decided.current = false;
+    startX.current = x;
+    startY.current = y;
+    lastX.current = x;
+
+    setDragging(true);
+    setFlipDir(null);
+    setProgress(0);
+  };
+
+  const moveGesture = (x, y, nativeEvent) => {
+    if (!isDown.current || !dragging) return;
+
+    const dx = x - startX.current;
+    const dy = y - startY.current;
+    lastX.current = x;
+
+    // decide once: horizontal vs vertical
+    if (!decided.current) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+
+      // Vertical intent -> cancel flipping, allow scroll
+      if (Math.abs(dy) > Math.abs(dx)) {
+        isDown.current = false;
+        setDragging(false);
+        setFlipDir(null);
+        setProgress(0);
+        return;
+      }
+
+      // Horizontal intent -> lock in flip
+      decided.current = true;
+    }
+
+    // IMPORTANT: stop browser scrolling/back-swipe while flipping
+    if (nativeEvent && typeof nativeEvent.preventDefault === "function") {
+      nativeEvent.preventDefault();
+    }
+
+    updateProgressFromDx(dx);
+  };
+
+  const endGesture = () => {
     if (!dragging) return;
 
     const shouldTurn = progress > 0.33 && flipDir;
@@ -87,29 +128,70 @@ export default function BookWraper({ data = [], children }) {
         setFlipDir(null);
         setDragging(false);
         setAnimating(false);
-        pointerId.current = null;
+        isDown.current = false;
+        decided.current = false;
       }
     };
 
     requestAnimationFrame(tick);
   };
 
-  const angle =
-    flipDir === "next" ? -progress * 180 : flipDir === "prev" ? progress * 180 : 0;
+  // ---- Desktop mouse support ----
+  const onMouseDown = (e) => {
+    if (e.button !== 0) return;
+    beginGesture(e.clientX, e.clientY);
+  };
+  const onMouseMove = (e) => {
+    if (!isDown.current) return;
+    moveGesture(e.clientX, e.clientY, e);
+  };
+  const onMouseUp = () => endGesture();
 
-  const underIndex =
-    flipDir === "next"
-      ? clamp(index + 1, 0, data.length - 1)
-      : flipDir === "prev"
-      ? clamp(index - 1, 0, data.length - 1)
-      : index;
+  // ---- Mobile touch support (NON-PASSIVE MOVE!) ----
+  useEffect(() => {
+    const el = areaRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e) => {
+      if (animating) return;
+      const t = e.touches[0];
+      beginGesture(t.clientX, t.clientY);
+    };
+
+    const onTouchMove = (e) => {
+      if (!isDown.current) return;
+      const t = e.touches[0];
+      moveGesture(t.clientX, t.clientY, e);
+    };
+
+    const onTouchEnd = () => endGesture();
+    const onTouchCancel = () => endGesture();
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    // KEY LINE: must be passive:false so preventDefault works
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchcancel", onTouchCancel, { passive: true });
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchCancel);
+    };
+  }, [animating, dragging, flipDir, progress, canNext, canPrev]);
 
   if (!data.length) return null;
 
-  // subtle tilt while dragging for more “physical” feel
+  const angle =
+    flipDir === "next"
+      ? -progress * 180
+      : flipDir === "prev"
+      ? progress * 180
+      : 0;
+
   const bookTilt = dragging ? (flipDir === "next" ? -6 : 6) * progress : 0;
 
-  // dynamic shadow while flipping
   const flipShadow = flipDir
     ? `${(flipDir === "next" ? -1 : 1) * (10 + progress * 30)}px 0 ${
         20 + progress * 80
@@ -122,22 +204,21 @@ export default function BookWraper({ data = [], children }) {
         ref={areaRef}
         className={styles.book}
         style={{ transform: `rotateX(8deg) rotateY(${bookTilt}deg)` }}
-        onPointerDown={begin}
-        onPointerMove={move}
-        onPointerUp={end}
-        onPointerCancel={end}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
       >
         <div className={styles.coverOuter}>
           <div className={styles.coverInner}>
-            {/* Fixed rings (DO NOT flip) */}
-            <p className={styles.pageNumber}>{index + 1} / {data.length}</p>
+            <p className={styles.pageNumber}>
+              {index + 1} / {data.length}
+            </p>
 
-            {/* Under page */}
             <div className={styles.pageUnder}>
               {renderTemplate(data[underIndex])}
             </div>
 
-            {/* Flipping page */}
             <div
               className={`${styles.pageFlip} ${dragging ? styles.dragging : ""}`}
               style={{
@@ -146,9 +227,7 @@ export default function BookWraper({ data = [], children }) {
                 boxShadow: flipShadow,
               }}
             >
-              {/* thickness */}
               <div className={styles.pageEdge} />
-
               <div className={styles.front}>{renderTemplate(data[index])}</div>
               <div className={styles.back}>{renderTemplate(data[underIndex])}</div>
             </div>

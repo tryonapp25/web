@@ -7,7 +7,7 @@
   background: transparent;
 }
 
-/* book container (perspective) */
+/* book container */
 .book{
   position: relative;
   width: 100%;
@@ -16,18 +16,23 @@
   transform-style: preserve-3d;
   transform-origin: center;
   user-select: none;
-  touch-action: pan-y;
+
+  /* IMPORTANT: outer surface should not scroll 
+  overflow: hidden;
+  prevents iOS back-swipe taking over 
+  touch-action: none;
+  overscroll-behavior: contain;
+  */
+
   overflow-y: auto;
-  /* hide scrollbar */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;
 }
 
-
-/* outer cover (gold border) */
+/* outer cover */
 .coverOuter{
   height: 100%;
-  border-radius: 30px;
+  border-radius: 20px;
   background: linear-gradient(180deg, #ffb22d 0%, #d98200 100%);
   padding: 8px;
   box-shadow:
@@ -35,7 +40,7 @@
     0 12px 20px rgba(0,0,0,0.28);
 }
 
-/* inner cover (brown) */
+/* inner cover */
 .coverInner{
   height: 100%;
   border-radius: 22px;
@@ -53,25 +58,10 @@
     inset -10px 0 20px rgba(0,0,0,0.25);
 }
 
-/* ring space (brown spine width) */
 :root{
-  --ring-space: 32px; /* 45-60px usually best */
+  --ring-space: 32px;
 }
 
-/* fixed rings image */
-.rings{
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: auto;
-  z-index: 60;
-  pointer-events: none;
-  user-select: none;
-  filter: drop-shadow(4px 0 6px rgba(0,0,0,.35));
-}
-
-/* paper/spine contact shadow (makes it feel attached) */
 .coverInner::after{
   content:"";
   position:absolute;
@@ -84,7 +74,6 @@
   pointer-events:none;
 }
 
-/* paper stack edge on the right */
 .coverInner::before{
   content:"";
   position:absolute;
@@ -99,7 +88,6 @@
   pointer-events:none;
 }
 
-/* pages area */
 .pageUnder,
 .pageFlip{
   position: absolute;
@@ -110,42 +98,47 @@
   border-radius: 22px;
 }
 
-/* under-page sits slightly back for depth */
 .pageUnder{
   z-index: 40;
   transform: translateZ(-2px) translateX(1px) translateY(1px);
   filter: brightness(0.98);
 }
 
-/* flipping layer */
 .pageFlip{
   z-index: 50;
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-/* during drag disable transitions (optional) */
 .dragging{
   transition: none;
 }
 
-/* faces */
 .front,
 .back{
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
+
+  /* ONLY content scrolls */
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
-  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+
+  /* allow vertical scroll inside content */
+  touch-action: pan-y;
+
+  scrollbar-width: none;
   -ms-overflow-style: none;
+}
+.front::-webkit-scrollbar,
+.back::-webkit-scrollbar{
+  display: none;
 }
 
 .back{
   transform: rotateY(180deg);
 }
 
-/* thickness */
 .pageEdge{
   position: absolute;
   top: 0;
@@ -160,30 +153,23 @@
 
   transform: rotateY(90deg);
   transform-origin: right center;
-
   z-index: 55;
   pointer-events: none;
 }
-
 
 .pageNumber{
   position: absolute;
   top: 12px;
   left: 15px;
   transform: translateX(-50%);
-
   padding: 6px 8px;
   border-radius: 999px;
-
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .08em;
-
   color: #f3e7d0;
-
   background: rgba(0,0,0,.28);
   backdrop-filter: blur(6px);
-
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.06),
     0 6px 14px rgba(0,0,0,.35);
