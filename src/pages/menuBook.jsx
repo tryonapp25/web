@@ -88,7 +88,7 @@ export default function MenuBook() {
         { name: "Medium", price: "$22" },
         { name: "Large", price: "$24" }
       ],
-      model: "http://127.0.0.1:1267/model/name/pizza2"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fpizza2.glb_faac6194-17d7-49f7-8f9c-fd8e1a8807d3.glb?alt=media&token=5ea82992-92cb-435f-8dc3-0cafdfe7471a"
     },
     {
       title: "Hawaiian Pizza",
@@ -97,7 +97,7 @@ export default function MenuBook() {
         { name: "Medium", price: "$22" },
         { name: "Large", price: "$24" }
       ],
-      model: "http://127.0.0.1:1267/model/name/pizza2"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fpizza2.glb_faac6194-17d7-49f7-8f9c-fd8e1a8807d3.glb?alt=media&token=5ea82992-92cb-435f-8dc3-0cafdfe7471a"
     },
     {
       title: "BBQ chicken",
@@ -106,7 +106,7 @@ export default function MenuBook() {
         { name: "Medium", price: "$22" },
         { name: "Large", price: "$24" }
       ],
-      model: "http://127.0.0.1:1267/model/name/pizza2"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fpizza2.glb_faac6194-17d7-49f7-8f9c-fd8e1a8807d3.glb?alt=media&token=5ea82992-92cb-435f-8dc3-0cafdfe7471a"
     },
     {
       title: "Neopolitan Pizza",
@@ -115,7 +115,7 @@ export default function MenuBook() {
         { name: "Medium", price: "$22" },
         { name: "Large", price: "$24" }
       ],
-      model: "http://127.0.0.1:1267/model/name/pizza2"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fpizza2.glb_faac6194-17d7-49f7-8f9c-fd8e1a8807d3.glb?alt=media&token=5ea82992-92cb-435f-8dc3-0cafdfe7471a"
     },
     {
       title: "Pepperoni Pizza",
@@ -124,7 +124,7 @@ export default function MenuBook() {
         { name: "Medium", price: "$22" },
         { name: "Large", price: "$24" }
       ],
-      model: "http://127.0.0.1:1267/model/name/pizza2"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fpizza2.glb_faac6194-17d7-49f7-8f9c-fd8e1a8807d3.glb?alt=media&token=5ea82992-92cb-435f-8dc3-0cafdfe7471a"
     },
     {
       title: "Vege Pizza",
@@ -133,7 +133,7 @@ export default function MenuBook() {
         { name: "Medium", price: "$22" },
         { name: "Large", price: "$24" }
       ],
-      model: "http://127.0.0.1:1267/model/name/pizza2"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fpizza2.glb_faac6194-17d7-49f7-8f9c-fd8e1a8807d3.glb?alt=media&token=5ea82992-92cb-435f-8dc3-0cafdfe7471a"
     }
   ],
 }
