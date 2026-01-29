@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { defaultMessage } from "../config";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
-import LoadingModal from "../components/loading";
 import { fakeTemplate } from "../config";
 
 
