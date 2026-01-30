@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "../styles/BookWraper.module.css";
 
-export default function BookWraper({ data = [], children }) {
+export default function BookWraperTemplate({ data = [], children }) {
   const [index, setIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [flipDir, setFlipDir] = useState(null); // "next" | "prev" | null
@@ -210,6 +210,12 @@ export default function BookWraper({ data = [], children }) {
         onMouseLeave={onMouseUp}
       >
         <div className={styles.coverOuter}>
+
+          <div className={styles.rings} aria-hidden="true">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span key={i} className={styles.ring} />
+            ))}
+          </div>
           <div className={styles.coverInner}>
             <p className={styles.pageNumber}>
               {index + 1} / {data.length}

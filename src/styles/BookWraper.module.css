@@ -1,10 +1,20 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* prefer dvh on mobile */
 .stage{
   width: 100%;
-  height: 100vh;
+  height: 100dvh;   /* or min-height: 100dvh */
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  overflow: hidden; /* optional: prevents outer scroll */
 }
 
 /* book container */
@@ -110,6 +120,7 @@
   will-change: transform;
 }
 
+
 .dragging{
   transition: none;
 }
@@ -173,4 +184,96 @@
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.06),
     0 6px 14px rgba(0,0,0,.35);
+}
+
+/* ✅ Realistic Rings */
+.rings{
+  z-index: 5;
+  position:absolute;
+  left: -48px;        /* outside spine */
+  top: 9%;
+  bottom: 9%;
+  width: 130px;
+
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items:center;
+
+  pointer-events:none;
+}
+
+/* spine shadow */
+.rings::before{
+  content:"";
+  position:absolute;
+  left: 56px;
+  top: -40px;
+  bottom: -40px;
+  width: 12px;
+  background: linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,.15), transparent);
+  filter: blur(6px);
+  opacity:.9;
+}
+
+.ring{
+  position:relative;
+  width: 55px;
+  height: 30px;
+  border-radius: 40px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6f6f6f 0%,
+      #e6e6e6 18%,
+      #ffffff 32%,
+      #bdbdbd 48%,
+      #ffffff 62%,
+      #cfcfcf 78%,
+      #7a7a7a 100%
+    );
+
+  box-shadow:
+    0 10px 14px rgba(0,0,0,.35),
+    inset 0 3px 4px rgba(255,255,255,.9),
+    inset 0 -4px 6px rgba(0,0,0,.25);
+}
+
+/* chrome reflection */
+.ring::before{
+  content:"";
+  position:absolute;
+  left: 10px;
+  right: 10px;
+  top: 6px;
+  height: 6px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent);
+  filter: blur(.4px);
+  opacity:.9;
+}
+
+/* true hole */
+.ring::after{
+  content:"";
+  position:absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 20px;
+  border-radius: 30px;
+
+  background:
+    radial-gradient(ellipse at center,
+      rgba(0,0,0,.85) 0%,
+      rgba(0,0,0,.65) 40%,
+      rgba(0,0,0,.35) 65%,
+      transparent 75%
+    );
+
+  box-shadow:
+    inset 0 4px 6px rgba(0,0,0,.8),
+    inset 0 -2px 4px rgba(255,255,255,.15);
 }

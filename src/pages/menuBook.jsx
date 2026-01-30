@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import BookWraper from "../components/bookWraper";
+import BookWraperTemplate from "../components/bookWraper";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import Template from "../templates/AXQP83"
@@ -142,14 +142,14 @@ export default function MenuBook() {
 
   return (
     isMobile ? (
-      <BookWraper data={templateData}>
+      <BookWraperTemplate data={templateData}>
         <Template/>
-      </BookWraper>
+      </BookWraperTemplate>
     ) : (
       <PdfPageWrapper>
-        <BookWraper data={templateData}>
+        <BookWraperTemplate data={templateData}>
           <Template/>
-        </BookWraper>
+        </BookWraperTemplate>
       </PdfPageWrapper>
     )
   );
