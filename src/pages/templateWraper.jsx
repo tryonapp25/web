@@ -18,7 +18,7 @@ import useIsMobile from "../utils/deviceCheck";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 
 
-const modules = import.meta.glob("../templates/*.jsx");
+const modules = import.meta.glob("../templates/**/*.jsx");
 const defaultMessage = { visible: false, type: "", msg: "" };
 
 
@@ -50,7 +50,7 @@ export default function TemplateWraper() {
     fetchTemplate();
   }, [id, type, code]);
 
-  const key = template ? `../templates/${template?.code}.jsx` : null;
+  const key = template ? `../templates/menu/${template?.code}.jsx` : null;
 
   const Template = useMemo(() => {
     if (!key) return null;

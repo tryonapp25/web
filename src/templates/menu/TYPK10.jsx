@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import style from "./TYPK10.module.css";
-import Model3D from "../components/3dModel";
-import EditButton from "../components/editButton";
+import Model3D from "../../components/3dModel";
+import EditButton from "../../components/editButton";
 import TemplateEditor from "./templateEditor";
 
 export default function Template({ data = [], pressable, onPress, editable = false  }) {

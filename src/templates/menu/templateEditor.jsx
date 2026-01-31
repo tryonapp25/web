@@ -1,10 +1,10 @@
 import styles from "./templateEditor.module.css";
-import EditButom from "../components/editButton";
+import EditButom from "../../components/editButton";
 import { useEffect, useState } from "react";
-import { UpdateTemplate } from "../utils/updateTemplate";
-import FlashMessage from "../components/flashMessage";
-import httpMessage from "../http/httpMessage";
-import LoadingModal from "../components/loading";
+import { UpdateTemplate } from "../../utils/updateTemplate";
+import FlashMessage from "../../components/flashMessage";
+import httpMessage from "../../http/httpMessage";
+import LoadingModal from "../../components/loading";
 
 const defaultMessage = {visible: false, type:"", msg: ""};
 

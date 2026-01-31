@@ -6,7 +6,7 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 
-import Template from "../templates/testTemplate";
+import Template from "../templates/menu/testTemplate";
 
 
   const data = {

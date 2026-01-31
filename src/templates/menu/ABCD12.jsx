@@ -1,8 +1,8 @@
 // Template.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import styles from "./ABCD12.module.css";
-import Model3D from "../components/3dModel";
-import EditButton from "../components/editButton";
+import Model3D from "../../components/3dModel";
+import EditButton from "../../components/editButton";
 import TemplateEditor from "./templateEditor";
 
 function PlateImage({ model }) {

@@ -9,6 +9,8 @@ import LoadingModal from "../components/loading";
 import QuickAction from "../components/quickAction";
 import UploadFileCard from "../components/uploadFile";
 import { UserContext } from "../ApiContext/userContext";
+import MenuBookGrid from "../components/menuBookGrid";
+
 
 
 function HeroTitle() {
@@ -30,14 +32,38 @@ export default function MenuPage() {
 
 
   useEffect(() => {
-    if(tab === "templates"){
-      handleGetTemplates();
-    }
-    else{
-      handleGetUserProductionTemaplate(publicUser?.uid);
+    switch(tab){
+      case "templates":
+        handleGetTemplates();
+        break;
+      case "menu_book":
+        handleGetMenuBooks();
+        break;
+      default:
+        handleGetUserProductionTemaplate(publicUser?.uid);
+        break;
     }
   },[tab]);
-  
+
+  const handleGetMenuBooks = async () => {
+    if(loading) return;
+    try{
+      setLoading(true);
+      setTemplates([]);
+      const res = await http.get(`/demo/menu-book/templates`);
+      console.log(res);
+      if(res.data.success){
+        setTemplates(res.data.data);
+      }
+    }
+    catch(err){
+      console.log(httpMessage(err));
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
   const handleGetTemplates = async () => {
     try{
       setLoading(true)
@@ -95,7 +121,11 @@ export default function MenuPage() {
             <QuickAction onPress={(t) => setTab(t)}/>
           </div>
           <div className={[styles.content, {backgroundColor:"transparent"}]}>
-            <TemplateGrid templates={templates}/>
+            {tab === "menu_book" ? (
+              <MenuBookGrid templates={templates} />
+            ) : (
+              <TemplateGrid templates={templates} />
+            )}
           </div>
         </main>
       </div>

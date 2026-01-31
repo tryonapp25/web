@@ -12,7 +12,8 @@ import LoadingModal from "../components/loading";
 
 
 const defaultMessage = { visible: false, type: "", msg: "" };
-const modules = import.meta.glob("../templates/*.jsx");
+// include templates in root and subfolders (e.g. templates/menu)
+const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function TemplateGrid({ templates = [] }) {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ export default function TemplateGrid({ templates = [] }) {
     <div className={styles.page}>
       <div className={styles.grid}>
         {data.map((item, index) => {
-          const path = `../templates/${item?.code}.jsx`;
+          const path = `../templates/menu/${item?.code}.jsx`;
           const Template = lazyByPath[path];
           if (!Template) return <NoFoundTemplate key={item?.id ?? index} />;
 

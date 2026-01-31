@@ -24,6 +24,13 @@ export default function QuickAction({onPress}) {
         >
           My templates
         </button>
+
+        <button
+          className={cx(styles.exTab, tab === "menu_book" && styles.exTabActive)}
+          onClick={() => {setTab("menu_book"), onPress("menu_book")}}
+        >
+          MenuBook
+        </button>
       </div>
     </section>
   );

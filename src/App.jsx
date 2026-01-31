@@ -14,8 +14,8 @@ import MenuPage from "./pages/menu";
 import RenderProductionMenu from "./pages/renderProductionMenu";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
-import MenuBook from "./pages/menuBook";
-import Book from "./pages/book";
+import MenuBookWraper from "./pages/menuBookWrapper";
+
 
 
 export default function App() {
@@ -28,14 +28,14 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
-            <Route path="book" element={<Book />} /> 
-            <Route path="menu-book" element={<MenuBook />} /> 
+            <Route path="menu-book" element={<MenuBookWraper />} /> 
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/payment" element={<Payment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
+              <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} /> 
               <Route path="/create-template" element={<CreateTemplate />} /> 
             </Route>
             

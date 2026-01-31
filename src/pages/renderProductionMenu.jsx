@@ -6,7 +6,7 @@ import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 
-const modules = import.meta.glob("../templates/*.jsx");
+const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ export default function RenderProductionMenu() {
   }, [type, id, code, publicCode]);
 
   // build key only after template exists
-  const key = template?.code ? `../templates/${template.code}.jsx` : null;
+  const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
 
   const Template = useMemo(() => {
     if (!key) return null;

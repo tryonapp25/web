@@ -1,0 +1,353 @@
+:root{
+  --bg: #0B0F19;
+  --bg-2: #0F172A;
+  --text: rgba(255,255,255,0.92);
+  --muted: rgba(255,255,255,0.70);
+  --card-bg: rgba(255,255,255,0.04);
+  --line: rgba(255,255,255,0.10);
+  --shadow: 0 18px 50px rgba(0,0,0,0.45);
+  --radius: 18px;
+}
+
+.page{
+  min-height: 100vh;
+  padding: clamp(12px, 2.2vw, 28px);
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg), var(--bg-2));
+}
+
+.grid{
+  width: 100%;
+  max-width: 2200px;
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(12px, 1.6vw, 24px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%,320px),520px));
+  justify-content: center;
+  align-items: start;
+}
+
+.card{
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 210 / 297; /* A4-like book preview */
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.preview{
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: block;
+  background: transparent;
+}
+
+/* If inner template needs scaling, consumers can wrap their content in .scaleWrap
+   but we keep the preview area ready to contain BookWraperTemplate */
+
+.meta{
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(0deg, rgba(255,255,255,0.01), transparent);
+}
+
+.title{
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.subtitle{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (min-width: 1100px){
+  .grid{ grid-template-columns: repeat(auto-fit, minmax(360px,520px)); }
+}
+
+@media (max-width: 720px){
+  .card{ border-radius: 14px; }
+}
+
+@media (max-width: 420px){
+  .page{ padding: 12px; }
+  .card{ border-radius: 12px; }
+  .title{ font-size: 13px; }
+  .subtitle{ font-size: 11px; }
+}
+/* TemplateGrid.module.css */
+
+:root{
+  /* Dark theme */
+  --bg: #0B0F19;
+  --bg-2: #0F172A;
+
+  --card: rgba(255, 255, 255, 0.06);
+  --card-2: rgba(255, 255, 255, 0.08);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.70);
+  --muted-2: rgba(255, 255, 255, 0.55);
+
+  --line: rgba(255, 255, 255, 0.12);
+
+  --purple: #8B7CFF;
+  --purple-2: #6D5EF6;
+
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  --radius: 18px;
+  --radius-lg: 26px;
+  --max: 1120px;
+}
+
+/* ===== PAGE ===== */
+.page {
+  min-height: 100vh;
+  padding: clamp(16px, 2.2vw, 32px) clamp(12px, 2vw, 20px);
+  color: var(--text);
+  background:
+    radial-gradient(900px 500px at 15% 20%, rgba(139, 124, 255, 0.18), transparent 55%),
+    radial-gradient(800px 460px at 90% 10%, rgba(0, 209, 178, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+  overflow-x: hidden; /* avoid horizontal scroll */
+}
+
+/* ===== GRID =====
+   Responsive auto-fit:
+   - Cards shrink on smaller screens
+   - Cards expand up to a max width on big screens
+*/
+.grid {
+  width: 100%;
+  max-width: 2200px; /* keep things sane on ultrawide */
+  margin: 0 auto;
+
+  display: grid;
+  gap: clamp(12px, 1.4vw, 24px);
+
+  /* Each card min ~260px, max ~520px */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 520px));
+
+  justify-content: center;
+  align-items: start;
+}
+
+/* Optional: slightly wider min on desktop */
+@media (min-width: 1100px){
+  .grid{
+    grid-template-columns: repeat(auto-fit, minmax(360px, 520px));
+  }
+}
+
+/* ===== CARD =====
+   Make card width responsive and keep a nice "page" look
+*/
+.card {
+  width: 100%;
+  max-width: 520px;
+
+  aspect-ratio: 210 / 297;     /* ✅ A4 */
+  height: auto;                /* ✅ auto height from width */
+  overflow: hidden;            /* ✅ no half + no scroll */
+
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.card::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== TEMPLATE SCALE =====
+   If your templates render at a fixed "design size",
+   keep the wrapper but make it responsive.
+*/
+.scaleWrap {
+  position: relative;
+  z-index: 1;
+
+  /* original design size */
+  width: 980px;
+  height: 1306px;
+
+  /* scale to fit the card width (520 max, but smaller on phones) */
+  transform: scale(var(--scale, 0.531));
+  transform-origin: top left;
+}
+
+/* On smaller screens, increase scale a bit so it fills the card nicely */
+@media (max-width: 720px){
+  .scaleWrap{
+    /* 0.531 was based on 520/980.
+       On phones your card will be smaller; we can slightly bump scale for readability. */
+    transform: scale(0.56);
+  }
+}
+
+@media (max-width: 420px){
+  .scaleWrap{
+    transform: scale(0.60);
+  }
+}
+
+/* Status badge */
+.badgeWrap {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+}
+
+.badge {
+  padding: 10px 16px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.badge[data-public="true"] {
+  background: rgba(34, 211, 238, 0.12);
+  color: rgba(196, 255, 252, 0.95);
+}
+
+.badge[data-public="false"] {
+  background: rgba(248, 113, 113, 0.12);
+  color: rgba(255, 222, 222, 0.95);
+}
+
+/* ===== “PDF page” wrapper (A4) ===== */
+.pdfWrap {
+  width: 100%;
+  aspect-ratio: 210 / 297; /* A4 */
+  border-radius: 16px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.loading {
+  padding: 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ===== Not found ===== */
+.notFoundWrap {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-soft);
+}
+
+.notFoundCard {
+  padding: 22px;
+  text-align: center;
+}
+
+.notFoundIcon {
+  font-size: 30px;
+}
+
+.notFoundTitle {
+  margin: 10px 0 6px;
+  font-size: 16px;
+}
+
+.notFoundText {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.notFoundBtn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.notFoundBtn:hover{
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* ===== EXTRA SMALL TWEAKS ===== */
+@media (max-width: 420px){
+  .badgeWrap{
+    top: 10px;
+    right: 10px;
+  }
+  .badge{
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .card{
+    border-radius: 18px;
+  }
+}
+
+
+
+/* =========================
+   NOT FOUND STYLES
+   ========================= */
+.notFoundWrap {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notFoundCard {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.notFoundIcon {
+  font-size: 48px;
+}
+
+.notFoundTitle {
+  margin: 16px 0 8px;
+}
+
+.notFoundText {
+  color: #666;
+}
+
+.notFoundBtn {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}

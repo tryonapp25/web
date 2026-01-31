@@ -1,7 +1,7 @@
 // PizzaTemplate1.jsx — Fullscreen (100% x 100%), screenshot-like layout
 import styles from "./MZLK04.module.css";
-import Model3D from "../components/3dModel";
-import EditButton from "../components/editButton";
+import Model3D from "../../components/3dModel";
+import EditButton from "../../components/editButton";
 import { useState } from "react";
 import TemplateEditor from "./templateEditor";
 

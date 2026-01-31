@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import styles from "../styles/BookWraper.module.css";
+import styles from "./MNBO33.module.css";
 
-export default function BookWraperTemplate({ data = [], children }) {
+export default function BookTemplate({ data = [], children }) {
   const [index, setIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [flipDir, setFlipDir] = useState(null); // "next" | "prev" | null
