@@ -27,8 +27,7 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} /> 
-            <Route path="menu-book" element={<MenuBookWraper />} /> 
+            <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/payment" element={<Payment />} />
@@ -37,6 +36,7 @@ export default function App() {
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
               <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} /> 
               <Route path="/create-template" element={<CreateTemplate />} /> 
+              <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />
             </Route>
             
           </Routes>

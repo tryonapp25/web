@@ -19,6 +19,13 @@ export default function QuickAction({onPress}) {
         </button>
 
         <button
+          className={cx(styles.exTab, tab === "menu_book" && styles.exTabActive)}
+          onClick={() => {setTab("menu_book"), onPress("menu_book")}}
+        >
+          MenuBooks
+        </button>
+
+        <button
           className={cx(styles.exTab, tab === "mine" && styles.exTabActive)}
           onClick={() => {setTab("mine"), onPress("mine")}}
         >
@@ -26,10 +33,10 @@ export default function QuickAction({onPress}) {
         </button>
 
         <button
-          className={cx(styles.exTab, tab === "menu_book" && styles.exTabActive)}
-          onClick={() => {setTab("menu_book"), onPress("menu_book")}}
+          className={cx(styles.exTab, tab === "mine_menu_book" && styles.exTabActive)}
+          onClick={() => {setTab("mine_menu_book"), onPress("mine_menu_book")}}
         >
-          MenuBook
+          My Menu Books
         </button>
       </div>
     </section>

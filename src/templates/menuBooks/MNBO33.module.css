@@ -15,6 +15,7 @@ html, body {
   justify-content: center;
   align-items: center;
   overflow: hidden; /* optional: prevents outer scroll */
+  cursor: pointer;
 }
 
 /* book container */

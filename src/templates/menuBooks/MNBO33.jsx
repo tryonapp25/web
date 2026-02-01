@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./MNBO33.module.css";
 
-export default function BookTemplate({ data = [], children }) {
+export default function BookTemplate({ data, children, onClick }) {
+  const [contents, setContents] = useState(data?.contents || []);
   const [index, setIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [flipDir, setFlipDir] = useState(null); // "next" | "prev" | null
@@ -18,7 +19,7 @@ export default function BookTemplate({ data = [], children }) {
   const lastX = useRef(0);
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const canNext = index < data.length - 1;
+  const canNext = index < contents.length - 1;
   const canPrev = index > 0;
 
   const TemplateEl = React.Children.only(children);
@@ -34,9 +35,9 @@ export default function BookTemplate({ data = [], children }) {
 
   const underIndex =
     flipDir === "next"
-      ? clamp(index + 1, 0, data.length - 1)
+      ? clamp(index + 1, 0, contents.length - 1)
       : flipDir === "prev"
-      ? clamp(index - 1, 0, data.length - 1)
+      ? clamp(index - 1, 0, contents.length - 1)
       : index;
 
   const updateProgressFromDx = (dx) => {
@@ -120,8 +121,8 @@ export default function BookTemplate({ data = [], children }) {
         if (shouldTurn) {
           setIndex((i) =>
             flipDir === "next"
-              ? clamp(i + 1, 0, data.length - 1)
-              : clamp(i - 1, 0, data.length - 1)
+              ? clamp(i + 1, 0, contents.length - 1)
+              : clamp(i - 1, 0, contents.length - 1)
           );
         }
         setProgress(0);
@@ -181,7 +182,7 @@ export default function BookTemplate({ data = [], children }) {
     };
   }, [animating, dragging, flipDir, progress, canNext, canPrev]);
 
-  if (!data.length) return null;
+  if (!contents.length) return null;
 
   const angle =
     flipDir === "next"
@@ -199,7 +200,7 @@ export default function BookTemplate({ data = [], children }) {
     : "0 0 0 rgba(0,0,0,0)";
 
   return (
-    <div className={styles.stage}>
+    <div className={styles.stage} onClick={() => onClick(data)}>
       <div
         ref={areaRef}
         className={styles.book}
@@ -218,11 +219,11 @@ export default function BookTemplate({ data = [], children }) {
           </div>
           <div className={styles.coverInner}>
             <p className={styles.pageNumber}>
-              {index + 1} / {data.length}
+              {index + 1} / {contents.length}
             </p>
 
             <div className={styles.pageUnder}>
-              {renderTemplate(data[underIndex])}
+              {renderTemplate(contents[underIndex])}
             </div>
 
             <div
@@ -234,8 +235,8 @@ export default function BookTemplate({ data = [], children }) {
               }}
             >
               <div className={styles.pageEdge} />
-              <div className={styles.front}>{renderTemplate(data[index])}</div>
-              <div className={styles.back}>{renderTemplate(data[underIndex])}</div>
+              <div className={styles.front}>{renderTemplate(contents[index])}</div>
+              <div className={styles.back}>{renderTemplate(contents[underIndex])}</div>
             </div>
           </div>
         </div>

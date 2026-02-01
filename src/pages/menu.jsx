@@ -39,11 +39,32 @@ export default function MenuPage() {
       case "menu_book":
         handleGetMenuBooks();
         break;
+      case "mine_menu_book":
+        handleGetUserMenuBooks();
+        break;
       default:
         handleGetUserProductionTemaplate(publicUser?.uid);
         break;
     }
   },[tab]);
+
+  const handleGetUserMenuBooks = async () => {
+    if(loading) return;
+    try{
+      setLoading(true);
+      setTemplates([]);
+      const res = await http.get(`/production/menu-book/templates`);
+      if(res.data.success){
+        setTemplates(res.data.data);
+      }
+    }
+    catch(err){
+      console.log(httpMessage(err));
+    }
+    finally{
+      setLoading(false);
+    }
+  }
 
   const handleGetMenuBooks = async () => {
     if(loading) return;
@@ -51,7 +72,6 @@ export default function MenuPage() {
       setLoading(true);
       setTemplates([]);
       const res = await http.get(`/demo/menu-book/templates`);
-      console.log(res);
       if(res.data.success){
         setTemplates(res.data.data);
       }
@@ -121,7 +141,7 @@ export default function MenuPage() {
             <QuickAction onPress={(t) => setTab(t)}/>
           </div>
           <div className={[styles.content, {backgroundColor:"transparent"}]}>
-            {tab === "menu_book" ? (
+            {tab === "menu_book" || tab === "mine_menu_book" ? (
               <MenuBookGrid templates={templates} />
             ) : (
               <TemplateGrid templates={templates} />

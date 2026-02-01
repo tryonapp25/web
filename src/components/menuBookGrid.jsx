@@ -1,13 +1,28 @@
 
-import React, { Suspense, lazy, useMemo } from "react";
+import React, { Suspense, lazy, useMemo ,useState, useContext} from "react";
 import styles from "../styles/MenuBookGrid.module.css";
+import ConfirmDialog from "./confirmDialog";
+import { useNavigate } from "react-router-dom";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
+import defaultMessage from "../utils/defaultMessage";
+import { UserContext } from "../ApiContext/userContext";
+import FlashMessage from "./flashMessage";
+import QrCodeModal from "./QrCodeModal";
 
-const templateModules = import.meta.glob("../templates/menu/*.jsx");
-const menuBookModules = import.meta.glob("../menuBookTemplates/*.jsx");
+const templateModules = import.meta.glob("../templates/**/*.jsx");
+const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function MenuBookGrid({ templates = []}) {
+    const navigate = useNavigate();
+    const {publicUser, setPublicUser} = useContext(UserContext);
+    const [showModal, setShowModal] = useState(false);
+    const [showProductionModal, setShowProductionModal] = useState(false);
+    const [selectedMenuBook, setSelectedMenuBook] = useState(null);
+    const [message, setMessage] = useState(defaultMessage);
+    const [loading, setLoading] = useState(false);
+
+
 
     const templateMap = useMemo(() => {
         const out = {};
@@ -21,6 +36,46 @@ export default function MenuBookGrid({ templates = []}) {
         return out;
     }, []);
 
+
+    const handleMenuBookSelect = async (menuBook) => {
+        if(!menuBook || !menuBook.id) return;
+        setSelectedMenuBook(menuBook);
+        if(menuBook.type !== "demo") {
+            setShowProductionModal(true);
+            return;
+        }
+        setShowModal(true);
+    };
+
+    const handlePreview = () => {
+        navigate(`/${selectedMenuBook?.type}/menuBook/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}`);
+    };
+
+    const handlebuyMenuBook = async () => {
+        if(publicUser.token.tokens < selectedMenuBook.price) {
+            setMessage({ visible:true, type: "error", msg: "Insufficient tokens. Please top up your account." });
+            setShowModal(false);
+            return;
+        }
+        try {
+            setLoading(true);
+            const response = await http.post(`/menu-book/buy/template/${selectedMenuBook.id}`, publicUser);          
+            if(response?.data.success) {
+               setMessage({ visible:true, type: "success", msg: "Menu Book purchased successfully!" });
+               setPublicUser(response.data.data);
+            }  
+        } catch (error) {
+            setMessage({ visible:true, type: "error", msg: httpMessage(error) });
+        }
+        finally {
+            setLoading(false);
+            setShowModal(false);
+        }
+    };
+
+    const handleEditProductionMenuBook = () => {
+        navigate(`/${selectedMenuBook?.type}/menuBook/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}`);
+    }
   
     return (
         <div className={styles.page}>
@@ -31,22 +86,17 @@ export default function MenuBookGrid({ templates = []}) {
                     const menuBookCode = item?.menuBookCode 
 
                     const templatePath = `../templates/menu/${templateCode}.jsx`;
-                    const menuBookPath = `../menuBookTemplates/${menuBookCode}.jsx`;
+                    const menuBookPath = `../templates/menuBooks/${menuBookCode}.jsx`;
 
                     const LazyTemplate = templateMap[templatePath]
                     const LazyMenuBook = menuBookMap[menuBookPath]
-
-                    const pages = (item.contents || []).map((p) => ({
-                        ...p,
-                        contents: p.contents || p.sections || [],
-                    }));
 
                     return (
                         <div key={item.id ?? index} className={styles.card}>
                             <div className={styles.preview}>
                                 <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
                                     {LazyMenuBook && LazyTemplate ?  (
-                                        <LazyMenuBook data={pages}>
+                                        <LazyMenuBook data={item} onClick={(item) => handleMenuBookSelect(item)}>
                                             <LazyTemplate />
                                         </LazyMenuBook>
                                     ) : (
@@ -63,6 +113,26 @@ export default function MenuBookGrid({ templates = []}) {
                     );
                 })}
             </div>
+
+            <ConfirmDialog
+                open={showModal}
+                title="Do you want to buy this template or preview it?"
+                confirmText="Buy"
+                cancelText="Preview"
+                onCancel={handlePreview}
+                onConfirm={handlebuyMenuBook}
+                onClose={() => setShowModal(false)}
+            />
+
+            <QrCodeModal
+                template={selectedMenuBook}
+                open={showProductionModal}
+                onClose={() => setShowProductionModal(false)}
+                onEdit={(tem) => handleEditProductionMenuBook(tem)}
+                onPublish={(tem) => console.log("Publish", tem)}
+            />
+
+            <FlashMessage show={message.visible} message={message.msg} type={message.type}  onClose={() => setMessage(defaultMessage)} />
         </div>
     );
 }
