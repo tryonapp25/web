@@ -9,11 +9,10 @@ export default function QrCodeModal({
   onEdit,
   onPublish,
   onDownload,
-  template
+  template,
+  qrValue
 }) {
   if (!open) return null;
-
-  const [qrValue] = useState(`${VITE_PUBLIC_TEMPLATE_URL}#menu/${template?.type}/template/${template?.id}?code=${template.code}&public=${template?.publicCode?.String}`) 
 
   return (
     <div style={styless.overlay}>

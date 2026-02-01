@@ -12,6 +12,7 @@ import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import MenuPage from "./pages/menu";
 import RenderProductionMenu from "./pages/renderProductionMenu";
+import RenderProductionMenuBook from "./pages/renderProductionMenuBook";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
 import MenuBookWraper from "./pages/menuBookWrapper";
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
+            <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/payment" element={<Payment />} />

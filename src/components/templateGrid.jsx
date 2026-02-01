@@ -10,6 +10,7 @@ import { UserContext } from "../ApiContext/userContext";
 import QrCodeModal from "./QrCodeModal";
 import LoadingModal from "../components/loading";
 
+const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_PUBLIC_TEMPLATE_URL;
 
 const defaultMessage = { visible: false, type: "", msg: "" };
 // include templates in root and subfolders (e.g. templates/menu)
@@ -141,6 +142,7 @@ export default function TemplateGrid({ templates = [] }) {
         onClose={() => setOpenConfirmModal(false)}
         onEdit={(tem) => handleClickEditTemplate(tem)}
         onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
+        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}#menu/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
       />
 
       <FlashMessage

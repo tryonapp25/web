@@ -2,6 +2,7 @@
 import React, { Suspense, lazy, useMemo ,useState, useContext} from "react";
 import styles from "../styles/MenuBookGrid.module.css";
 import ConfirmDialog from "./confirmDialog";
+import NoFoundTemplate from "./noFoundTemplate";
 import { useNavigate } from "react-router-dom";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
@@ -9,6 +10,9 @@ import defaultMessage from "../utils/defaultMessage";
 import { UserContext } from "../ApiContext/userContext";
 import FlashMessage from "./flashMessage";
 import QrCodeModal from "./QrCodeModal";
+import LoadingModal from "../components/loading";
+
+const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_PUBLIC_TEMPLATE_URL;
 
 const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
@@ -76,6 +80,32 @@ export default function MenuBookGrid({ templates = []}) {
     const handleEditProductionMenuBook = () => {
         navigate(`/${selectedMenuBook?.type}/menuBook/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}`);
     }
+
+
+    const handleSetTemplateStatus = async (menuBook, status) => {
+        try{
+           
+            setLoading(true);
+            menuBook.isPublic = !status;
+            const res = await http.put(`/menu-book/status`, menuBook);
+            if (res.data.success) {
+                setMessage({
+                visible: true,
+                type: "success",
+                msg: menuBook.isPublic ? "Set public menu book." : "Set private menu book."});
+
+                templates.map((item) =>
+                item.id === menuBook.id ? { ...item, isPublic: !status } : item
+            )
+            }
+        }
+            catch(error){
+            setMessage({ visible:true, type: "error", msg: httpMessage(error) });
+        }
+        finally{
+            setLoading(false);
+        }
+    }
   
     return (
         <div className={styles.page}>
@@ -100,7 +130,7 @@ export default function MenuBookGrid({ templates = []}) {
                                             <LazyTemplate />
                                         </LazyMenuBook>
                                     ) : (
-                                        <NoFoundTemplate />
+                                        <NoFoundTemplate onGoback={() => navigate("menu")}/>
                                     )}
                                 </Suspense>
                             </div>
@@ -129,8 +159,11 @@ export default function MenuBookGrid({ templates = []}) {
                 open={showProductionModal}
                 onClose={() => setShowProductionModal(false)}
                 onEdit={(tem) => handleEditProductionMenuBook(tem)}
-                onPublish={(tem) => console.log("Publish", tem)}
+                onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
+                qrValue={`${VITE_PUBLIC_TEMPLATE_URL}#menubook/${selectedMenuBook?.type}/template/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}&public=${selectedMenuBook?.publicCode?.String}`}
             />
+
+            <LoadingModal open={loading}/>
 
             <FlashMessage show={message.visible} message={message.msg} type={message.type}  onClose={() => setMessage(defaultMessage)} />
         </div>
@@ -140,19 +173,3 @@ export default function MenuBookGrid({ templates = []}) {
 
 
 
-function NoFoundTemplate({ onGoback }) {
-  return (
-    <div className={styles.notFoundWrap}>
-      <div className={styles.notFoundCard}>
-        <div className={styles.notFoundIcon}>🍕</div>
-        <h2 className={styles.notFoundTitle}>Template Not Found</h2>
-        <p className={styles.notFoundText}>
-          The menu template you’re looking for doesn’t exist or was removed.
-        </p>
-        <button className={styles.notFoundBtn} onClick={onGoback}>
-          Go Back
-        </button>
-      </div>
-    </div>
-  );
-}
