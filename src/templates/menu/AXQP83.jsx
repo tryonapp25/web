@@ -1,31 +1,22 @@
 import styles from "./AXQP83.module.css";
 import { useState } from "react";
 import Model3D from "../../components/3dModel";
-import TemplateEditor from "./templateEditor";
-import EditButton from "../../components/editButton";
 
 
-export default function Template({ data = [], pressable, onPress, editable = false, onClickModel }) {
+
+export default function Template({ data = [], pressable, onPress,  onClickModel }) {
   const [template, setTemplate] = useState(data || [])
   const { subheading, heading, contents } = template;
-  const [onEdit, setOnEdit] = useState(false);
 
   const onSelectedTemplate = () => {
     if(!pressable) return;
     onPress(data);
   }
 
-  const handleUpdateTemplate = async (data) => {
-    setTemplate(data);
-    setOnEdit(false);
-  }
 
-  if(onEdit) return <TemplateEditor data={data} onChange={(d) => handleUpdateTemplate(d)}/>
 
   return (
       <div className={styles.page} onClick={onSelectedTemplate}>
-        {editable && <EditButton onClick={() => setOnEdit(true)}/>}
-
         <header className={styles.header}>
           <h1 className={styles.pizza}>{heading}</h1>
           <div className={styles.menu}>{subheading}</div>

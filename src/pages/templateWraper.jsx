@@ -17,6 +17,10 @@ import { UserContext } from "../ApiContext/userContext";
 import useIsMobile from "../utils/deviceCheck";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import ModelShowcase from "../components/modelShowcase.jsx";
+import EditButton from "../components/editButton.jsx";
+import TemplateEditor from "../templates/menu/templateEditor.jsx";
+
+import { UpdateTemplate } from "../utils/updateTemplate.js";
 
 
 const modules = import.meta.glob("../templates/**/*.jsx");
@@ -38,6 +42,9 @@ export default function TemplateWraper() {
 
   const [modelOpen, setModelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
+
+  const editable = type === "demo" ? false : true;
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -69,28 +76,50 @@ export default function TemplateWraper() {
   if (!Template)
     return <NoFoundTemplate onGoback={() => navigate("/menu")} />;
 
-  // the save buton in the template //
-  const handleClickSaveButton = (tem) => {
-    if(tem?.type !== "production") return;
-    handleUpdateProductionTemplate(tem);
-  };
 
-  const handleUpdateProductionTemplate = async (data) => {
+  const handleUpdateMenuTemplate = async (data) => {
+    if(data.type === "demo")return setIsEditMode(false);
     try{
-      const res = await http.put(`/production/templates`, data);
-      if(res.data.success){
-        setMessage({visible:true, type:"success", msg: res.data.message || "update template successfully."})
+      setLoading(true);
+      const update = await UpdateTemplate(data);
+      if(update){
+        setTemplate(data);
+        setMessage({visible:true, type:"success", msg: "Save template successfully."});
+        return;
       }
+      setMessage({visible:true, type:"error", msg: "Error to save template."});
     }
     catch(err){
-      setMessage({visible:true, type:"error", msg: httpMessage(err)})
+      setMessage({visible:true, type:"error", msg: "Error to save template."});
     }
+    finally{
+      setIsEditMode(false);
+      setLoading(false);
+    }
+  }
+
+  if (isEditMode && !isMobile) {
+    return (
+      <PdfPageWrapper>
+        <TemplateEditor
+          data={template}
+          onChange={(d) => handleUpdateMenuTemplate(d)}
+        />
+      </PdfPageWrapper>
+    );
+  } else if(isEditMode && isMobile) {
+    return (
+      <TemplateEditor
+        data={template}
+        onChange={(d) => handleUpdateMenuTemplate(d)}
+      />
+    );
   }
 
   return (
     <div ref={viewerRef}>
-      
-      {isMobile ?
+      {editable && <EditButton onClick={() => setIsEditMode(true)}/>}
+      {isMobile && !isEditMode?
         <Suspense
           fallback={
             <LoadingModal
@@ -100,12 +129,12 @@ export default function TemplateWraper() {
             />
           }
         >
-          <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
+          <Template data={template} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
         </Suspense> 
         : 
         <PdfPageWrapper>
           <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
-            <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
+            <Template data={template} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
           </Suspense> 
         </PdfPageWrapper>
       }

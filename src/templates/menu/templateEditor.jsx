@@ -1,17 +1,10 @@
 import styles from "./templateEditor.module.css";
 import EditButom from "../../components/editButton";
 import { useEffect, useState } from "react";
-import { UpdateTemplate } from "../../utils/updateTemplate";
-import FlashMessage from "../../components/flashMessage";
-import httpMessage from "../../http/httpMessage";
-import LoadingModal from "../../components/loading";
 
-const defaultMessage = {visible: false, type:"", msg: ""};
 
-export default function TemplateEditor({ data, onChange }) {
+export default function TemplateEditor({ data = [], onChange}) {
   const [updateData, setUpdateData] = useState(data ?? null);
-  const [message, setMessage] = useState(defaultMessage);
-  const [loading, setLoading] = useState(false);
 
   // keep local state in sync when parent data changes
   useEffect(() => {
@@ -70,30 +63,12 @@ export default function TemplateEditor({ data, onChange }) {
     });
   };
 
-  const handleSaveData = async () => {
-    if(data.type === "demo") return;
-    try{
-      setLoading(true);
-      const update = await UpdateTemplate(updateData);
-      if(update){
-        setMessage({visible:true, type:"success", msg: "Save template successfully."});
-        return;
-      }
-      setMessage({visible:true, type:"error", msg: "Error to save template."});
-    }
-    catch(err){
-      console.log(httpMessage(err));
-      setMessage({visible:true, type:"error", msg: "Error to save template."});
-    }
-    finally{
-      setLoading(false);
-    }
-  }
+
 
   return (
     <div className={styles.editor}>
       <main style={{width:"95%", height:"100%"}}>
-        <EditButom text="Save" onClick={() => handleSaveData()} />
+        <EditButom text="Save" onClick={() => onChange(updateData)} />
 
         <div className={styles.header}>
           <h2 className={styles.title}>Pizza Menu Editor</h2>
@@ -206,9 +181,6 @@ export default function TemplateEditor({ data, onChange }) {
             </div>
           </div>
         ))}
-
-        <LoadingModal title="Saving.." open={loading}/>
-        <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => onChange(updateData)}/>
       </main>
     </div>
   );

@@ -2,8 +2,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import styles from "./ABCD12.module.css";
 import Model3D from "../../components/3dModel";
-import EditButton from "../../components/editButton";
-import TemplateEditor from "./templateEditor";
 
 function PlateImage({ model, onClickModel }) {
   return (
@@ -22,12 +20,10 @@ function PlateImage({ model, onClickModel }) {
 export default function Template({
   data,
   pressable,
-  editable = false,
   onPress,
   onClickModel,
 }) {
   const [draft, setDraft] = useState(data);
-  const [onEdit, setOnEdit] = useState(false);
 
   useEffect(() => {
     setDraft(data);
@@ -42,18 +38,9 @@ export default function Template({
 
   const stop = (e) => e.stopPropagation();
 
-  const handleUpdateTemplate = async (data) => {
-    setDraft(data);
-    setOnEdit(false);
-  }
-
-  if(onEdit) return <TemplateEditor data={draft} onChange={(d) => handleUpdateTemplate(d)}/>
-
   return (
     <div className={styles.page} onClick={handlePress}>
       <div className={styles.bg} aria-hidden="true" />
-      {editable && <EditButton onClick={() => setOnEdit(true)}/>}
-
       <main className={styles.container}>
         {/* HEADER */}
         <header className={styles.header}>

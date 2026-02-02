@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./MNBO33.module.css";
 
 export default function BookTemplate({ data, children, onClick }) {
-  const [contents, setContents] = useState(data?.contents || []);
+  const [contents] = useState(data?.contents || []);
   const [index, setIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [flipDir, setFlipDir] = useState(null); // "next" | "prev" | null

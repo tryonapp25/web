@@ -16,7 +16,7 @@ import RenderProductionMenuBook from "./pages/renderProductionMenuBook";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
 import MenuBookWraper from "./pages/menuBookWrapper";
-import MyCollection from "./pages/collection"
+import MyCollection from "./pages/collection";
 
 
 

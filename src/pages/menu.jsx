@@ -37,11 +37,11 @@ export default function MenuPage() {
 
   useEffect(() => {
     switch(tab){
-      case "templates":
-        handleGetTemplates();
+      case "menu_book":
+        handleGetMenuBooks();
         break;
       default:
-        handleGetMenuBooks();
+        handleGetTemplates();
         break;
     }
   },[tab]);
@@ -103,7 +103,7 @@ export default function MenuPage() {
           </div>
           <UploadFileCard/>
           <div style={{marginLeft:"28px"}}>
-            <QuickAction onPress={(t) => setTab(t)} data={quickAction}/>
+            <QuickAction onPress={(t) => setTab(t)} data={quickAction} activeTab={tab}/>
           </div>
           <div className={[styles.content, {backgroundColor:"transparent"}]}>
             {tab === "menu_book" || tab === "mine_menu_book" ? (

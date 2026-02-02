@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/modelShowcase.module.css";
 import Model3D from "./3dModel";
-import PdfPageWrapper from "./pdfPageWrapper";
-import useIsMobile from "../utils/deviceCheck";
+
 
 
 export default function ModelShowcase({
@@ -10,7 +9,6 @@ export default function ModelShowcase({
   onClose,
   item = data
 }) {
-  const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(open);
   // mount/unmount for fade animation
   useEffect(() => {

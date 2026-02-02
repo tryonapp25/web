@@ -74,15 +74,6 @@ export default function Sidebar() {
           active={isActive("/collection")}
           onPress={() => navigate("/collection")}
         />
-
-        {publicUser?.role === "admin" &&
-          <Item
-            icon={FilePlus}
-            label="Create Template"
-            active={isActive("/create-template")}
-            onPress={() => navigate("/create-template")}
-          />
-        }
       </div>
 
       <div className={styles.divider} />

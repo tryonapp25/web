@@ -12,7 +12,7 @@ import MenuBookGrid from "../components/menuBookGrid";
 
 
 const quickAction = [
-  {tabName: "mine", name: "My templates"},
+  {tabName: "mine", name: "My templates", isActive: true},
   {tabName: "mine_menu_book", name: "My Menu Books"}
 ]
 
@@ -31,7 +31,7 @@ export default function MyCollection() {
   const {publicUser} = useContext(UserContext);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("mine_menu_book")
+  const [tab, setTab] = useState("mine")
 
 
   useEffect(() => {

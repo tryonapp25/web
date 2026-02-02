@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import style from "./TYPK10.module.css";
 import Model3D from "../../components/3dModel";
-import EditButton from "../../components/editButton";
-import TemplateEditor from "./templateEditor";
 
-export default function Template({ data = [], pressable, onPress, editable = false, onClickModel  }) {
-  const [template, setTemplate] = useState(data)
-  const [onEdit, setOnEdit] = useState(false);
+
+export default function Template({ data = [], pressable, onPress, onClickModel  }) {
+  const [template] = useState(data);
 
 
   const onSelectedTemplate = () => {
@@ -14,17 +12,10 @@ export default function Template({ data = [], pressable, onPress, editable = fal
     onPress(data);
   }
 
-  const handleUpdateTemplate = async (data) => {
-      setTemplate(data);
-      setOnEdit(false);
-    }
-  
-  if(onEdit) return <TemplateEditor data={template} onChange={(d) => handleUpdateTemplate(d)}/>
 
   return (
     <div className={style.page} onClick={onSelectedTemplate}>
       <header className={style.header}>
-        {editable && <EditButton onClick={() => setOnEdit(true)}/>}
         <h1 className={style.heading}>{template?.heading}</h1>
 
         <div className={style.subWrap}>
