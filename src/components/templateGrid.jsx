@@ -142,7 +142,7 @@ export default function TemplateGrid({ templates = [] }) {
         onClose={() => setOpenConfirmModal(false)}
         onEdit={(tem) => handleClickEditTemplate(tem)}
         onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
-        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}#menu/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
+        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}menu/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
       />
 
       <FlashMessage

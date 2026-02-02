@@ -160,7 +160,7 @@ export default function MenuBookGrid({ templates = []}) {
                 onClose={() => setShowProductionModal(false)}
                 onEdit={(tem) => handleEditProductionMenuBook(tem)}
                 onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
-                qrValue={`${VITE_PUBLIC_TEMPLATE_URL}#menubook/${selectedMenuBook?.type}/template/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}&public=${selectedMenuBook?.publicCode?.String}`}
+                qrValue={`${VITE_PUBLIC_TEMPLATE_URL}menubook/${selectedMenuBook?.type}/template/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}&public=${selectedMenuBook?.publicCode?.String}`}
             />
 
             <LoadingModal open={loading}/>
