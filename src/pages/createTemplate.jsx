@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, lazy, Suspense } from "react";
 import JSON5 from "json5";
 import styles from "../styles/CreateTemplate.module.css";
 import PdfPageWrapper from "../components/pdfPageWrapper";
@@ -6,7 +6,7 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 
-import Template from "../templates/menu/testTemplate";
+const Template = lazy(() => import("../templates/menu/testTemplate.jsx"));
 
 
   const data = {
@@ -174,7 +174,11 @@ export default function CreateTemplate() {
       <main className={styles.right}>
         <div className={styles.preview}>
           <PdfPageWrapper>
-            {parsedData ? <Template data={parsedData} /> : null}
+            {parsedData ? (
+              <Suspense fallback={<div>Loading…</div>}>
+                <Template data={parsedData} />
+              </Suspense>
+            ) : null}
           </PdfPageWrapper>
         </div>
       </main>

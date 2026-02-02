@@ -18,7 +18,7 @@ import useIsMobile from "../utils/deviceCheck";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import ModelShowcase from "../components/modelShowcase.jsx";
 import EditButton from "../components/editButton.jsx";
-import TemplateEditor from "../templates/menu/templateEditor.jsx";
+const TemplateEditor = lazy(() => import("../templates/menu/templateEditor.jsx"));
 
 import { UpdateTemplate } from "../utils/updateTemplate.js";
 

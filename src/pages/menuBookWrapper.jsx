@@ -9,7 +9,7 @@ import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
 import defaultMessage from "../utils/defaultMessage";
 import EditButton from "../components/editButton";
-import MenuBookEditor from "../templates/menuBooks/MenuBookEditor";
+const MenuBookEditor = lazy(() => import("../templates/menuBooks/MenuBookEditor.jsx"));
 import ModelShowcase from "../components/modelShowcase";
 
 import { UpdateMenuBook } from "../utils/updateTemplate";
