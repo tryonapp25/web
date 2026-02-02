@@ -16,6 +16,7 @@ import RenderProductionMenuBook from "./pages/renderProductionMenuBook";
 import TemplateWraper from "./pages/templateWraper";
 import CreateTemplate from "./pages/createTemplate";
 import MenuBookWraper from "./pages/menuBookWrapper";
+import MyCollection from "./pages/collection"
 
 
 
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="/payment" element={<Payment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/menu" element={<MenuPage />} />
+              <Route path="/collection" element={<MyCollection />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
               <Route path="/create-template" element={<CreateTemplate />} /> 
               <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />

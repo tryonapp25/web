@@ -6,6 +6,7 @@ import {
   Download,
   LayoutGrid,
   Plus,
+  Library 
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
@@ -65,6 +66,13 @@ export default function Sidebar() {
           label="3D Menu"
           active={isActive("/menu")}
           onPress={() => navigate("/menu")}
+        />
+
+        <Item
+          icon={Library}
+          label="My Collection"
+          active={isActive("/collection")}
+          onPress={() => navigate("/collection")}
         />
 
         {publicUser?.role === "admin" &&

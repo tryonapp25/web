@@ -3,41 +3,29 @@ import styles from "../styles/QuickAction.module.css";
 
 
 const cx = (...c) => c.filter(Boolean).join(" ");
-const defaultMessage = {visible: false,type: "",msg: ""}
 
-export default function QuickAction({onPress}) {
+
+
+export default function QuickAction({data = [], onPress}) {
   const [tab, setTab] = useState("templates");
+  if(data.length === 0) return;
  
   return (
     <section className={styles.exploreWrap}>
       <div className={styles.exploreTabs}>
-        <button
-          className={cx(styles.exTab, tab === "templates" && styles.exTabActive)}
-          onClick={() => {setTab("templates"), onPress("templates")}}
-        >
-          Explore
-        </button>
+        {data.map((item, index) => (
+          <button
+            key={index}
+            className={cx(styles.exTab, tab === item.tabName && styles.exTabActive)}
+            onClick={() => {
+              setTab(item.tabName);
+              onPress(item.tabName);
+            }}
+          >
+            {item.name}
+          </button>
+        ))}
 
-        <button
-          className={cx(styles.exTab, tab === "menu_book" && styles.exTabActive)}
-          onClick={() => {setTab("menu_book"), onPress("menu_book")}}
-        >
-          MenuBooks
-        </button>
-
-        <button
-          className={cx(styles.exTab, tab === "mine" && styles.exTabActive)}
-          onClick={() => {setTab("mine"), onPress("mine")}}
-        >
-          My templates
-        </button>
-
-        <button
-          className={cx(styles.exTab, tab === "mine_menu_book" && styles.exTabActive)}
-          onClick={() => {setTab("mine_menu_book"), onPress("mine_menu_book")}}
-        >
-          My Menu Books
-        </button>
       </div>
     </section>
   );

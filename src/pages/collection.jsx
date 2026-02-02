@@ -7,52 +7,50 @@ import httpMessage  from "../http/httpMessage";
 import TemplateGrid from "../components/templateGrid";
 import LoadingModal from "../components/loading";
 import QuickAction from "../components/quickAction";
-import UploadFileCard from "../components/uploadFile";
 import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
 
 
 const quickAction = [
-  {tabName: "templates", name: "Explore"},
-  {tabName: "menu_book", name: "MenuBooks"},
+  {tabName: "mine", name: "My templates"},
+  {tabName: "mine_menu_book", name: "My Menu Books"}
 ]
 
 function HeroTitle() {
   return (
     <div className={styles.heroHead}>
       <h1 className={styles.pageTitle}>
-        3D Menu templates.
+        My Collections.
       </h1>
     </div>
   );
 }
 
-export default function MenuPage() {
+export default function MyCollection() {
   const generatorRef = useRef(null);
   const {publicUser} = useContext(UserContext);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("templates")
+  const [tab, setTab] = useState("mine_menu_book")
 
 
   useEffect(() => {
     switch(tab){
-      case "templates":
-        handleGetTemplates();
+      case "mine_menu_book":
+        handleGetUserMenuBooks();
         break;
       default:
-        handleGetMenuBooks();
+        handleGetUserProductionTemaplate(publicUser?.uid);
         break;
     }
   },[tab]);
 
-  
-  const handleGetMenuBooks = async () => {
+  const handleGetUserMenuBooks = async () => {
     if(loading) return;
     try{
       setLoading(true);
       setTemplates([]);
-      const res = await http.get(`/demo/menu-book/templates`);
+      const res = await http.get(`/production/menu-book/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
       }
@@ -65,10 +63,12 @@ export default function MenuPage() {
     }
   }
 
-  const handleGetTemplates = async () => {
+
+  const handleGetUserProductionTemaplate = async (uid) => {
     try{
-      setLoading(true)
-      const res = await http.get(`/demo/templates`);
+      setLoading(true);
+      setTemplates([]);
+      const res = await http.get(`/user/${uid}/production/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
       }
@@ -80,7 +80,6 @@ export default function MenuPage() {
       setLoading(false);
     }
   }
-
 
   const scrollToGenerator = () => {
     generatorRef.current?.scrollIntoView({
@@ -101,7 +100,6 @@ export default function MenuPage() {
           <div ref={generatorRef}>
               <HeroTitle />
           </div>
-          <UploadFileCard/>
           <div style={{marginLeft:"28px"}}>
             <QuickAction onPress={(t) => setTab(t)} data={quickAction}/>
           </div>

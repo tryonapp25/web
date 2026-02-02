@@ -56,7 +56,7 @@ export default function TemplateGrid({ templates = [] }) {
     }
     try{
       setLoading(true);
-      const res = await http.post(`/production/buy/template`, selectedTemplate);
+      const res = await http.post(`/production/buy/template/uid/${publicUser?.uid}`, selectedTemplate);
       if(res.data.success){
         setMessage({visible: true, type: "success", msg: res.data.message});
         setPublicUser(res.data.data);
