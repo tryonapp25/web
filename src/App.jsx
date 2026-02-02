@@ -19,6 +19,7 @@ import MenuBookWraper from "./pages/menuBookWrapper";
 
 
 
+
 export default function App() {
   return (
     <UserProvider>
@@ -36,7 +37,6 @@ export default function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
-              <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} /> 
               <Route path="/create-template" element={<CreateTemplate />} /> 
               <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />
             </Route>

@@ -5,12 +5,12 @@ import Model3D from "../../components/3dModel";
 import EditButton from "../../components/editButton";
 import TemplateEditor from "./templateEditor";
 
-function PlateImage({ model }) {
+function PlateImage({ model, onClickModel }) {
   return (
     <div className={styles.plateWrap}>
       <div className={styles.plate}>
         <div className={styles.model3d}>
-          <Model3D model={model} />
+          <Model3D model={model} onClick={onClickModel}/>
         </div>
         <div className={styles.plateShadow} />
       </div>
@@ -24,7 +24,7 @@ export default function Template({
   pressable,
   editable = false,
   onPress,
-  onSave,
+  onClickModel,
 }) {
   const [draft, setDraft] = useState(data);
   const [onEdit, setOnEdit] = useState(false);
@@ -67,7 +67,7 @@ export default function Template({
         <section className={styles.grid}>
           {sections.slice(0, 6).map((section, sIndex) => (
             <article key={sIndex} className={styles.card}>
-              <PlateImage model={section?.model} />
+              <PlateImage model={section?.model} onClickModel={() => onClickModel(section)} />
 
               {section?.data?.map((row, rIndex) => (
                 <div key={rIndex} className={styles.meta} onClick={stop}>

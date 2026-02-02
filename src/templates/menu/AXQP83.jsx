@@ -5,7 +5,7 @@ import TemplateEditor from "./templateEditor";
 import EditButton from "../../components/editButton";
 
 
-export default function Template({ data = [], pressable, onPress, editable = false }) {
+export default function Template({ data = [], pressable, onPress, editable = false, onClickModel }) {
   const [template, setTemplate] = useState(data || [])
   const { subheading, heading, contents } = template;
   const [onEdit, setOnEdit] = useState(false);
@@ -39,7 +39,7 @@ export default function Template({ data = [], pressable, onPress, editable = fal
               data-col={(idx % 3) + 1}
             >
               <div className={styles.imageWrap}>
-                <Model3D model={item.model}/>
+                <Model3D model={item.model} onClick={() => onClickModel(item)}/>
               </div>
 
               <div className={styles.card}>

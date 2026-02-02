@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styles from "../styles/Model3D.module.css";
 
-export default function Model3D({ model }) {
+export default function Model3D({ model, onClick }) {
   useEffect(() => {
     if (customElements.get("model-viewer")) return;
 
@@ -12,7 +12,7 @@ export default function Model3D({ model }) {
   }, []);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} onClick={onClick}>
       <model-viewer
         key={model}   // 🔥 forces reset when model changes
         src={model}

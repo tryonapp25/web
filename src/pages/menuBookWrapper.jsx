@@ -28,7 +28,7 @@ export default function MenuBookWraper() {
     const fetchData = async () => {
       setLoading(true);     
       try {
-        const response = await http.get(`/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/menubook/${id}`);
+        const response = await http.get(`/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}`);
         if(response?.data.success) {
           setData(response.data.data);
         }

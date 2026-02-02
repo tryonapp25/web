@@ -16,6 +16,7 @@ import LoadingModal from "../components/loading";
 import { UserContext } from "../ApiContext/userContext";
 import useIsMobile from "../utils/deviceCheck";
 import PdfPageWrapper from "../components/pdfPageWrapper";
+import ModelShowcase from "../components/modelShowcase.jsx";
 
 
 const modules = import.meta.glob("../templates/**/*.jsx");
@@ -34,6 +35,9 @@ export default function TemplateWraper() {
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(defaultMessage);
+
+  const [modelOpen, setModelOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(null);
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -96,15 +100,17 @@ export default function TemplateWraper() {
             />
           }
         >
-          <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)}/>
+          <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
         </Suspense> 
         : 
         <PdfPageWrapper>
           <Suspense fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..."/>}>
-            <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)}/>
+            <Template data={template} editable={type === "demo" ? false : true} onSave={(tem) => handleClickSaveButton(tem)} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
           </Suspense> 
         </PdfPageWrapper>
       }
+
+      <ModelShowcase open={modelOpen} item={selectedModel} onClose={() => setModelOpen(false)}/>
 
       <LoadingModal open={loading} title="Menu" subtitle="Loading template..." />
       <FlashMessage

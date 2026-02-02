@@ -1,0 +1,157 @@
+/* =========================
+   Overlay
+========================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(8, 10, 18, 0.7);
+  backdrop-filter: blur(12px);
+
+  z-index: 9999;
+}
+
+/* fade animation */
+.overlayIn {
+  animation: fadeIn 180ms ease forwards;
+}
+.overlayOut {
+  animation: fadeOut 150ms ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+@keyframes fadeOut {
+  from { opacity: 1 }
+  to { opacity: 0 }
+}
+
+
+/* =========================
+   Wrapper (true center lock)
+========================= */
+.stageWrapper {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================
+   Showroom Stage
+========================= */
+.stage {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+
+  /* premium showroom background */
+  background:
+    radial-gradient(900px 400px at 50% 25%, rgba(96,165,250,.25), transparent),
+    radial-gradient(600px 500px at 50% 100%, rgba(110,231,183,.15), transparent),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow:
+    0 40px 80px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+
+/* =========================
+   Force Model Center
+   (works for canvas / threejs / r3f)
+========================= */
+.stage > * {
+  max-width: 90%;
+  max-height: 90%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: auto;
+}
+
+.info {
+  color: white;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 80%;
+  margin-bottom: 20px;
+}
+
+
+/* =========================
+   Glow spotlight
+========================= */
+.glow {
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { opacity: .6; transform: scale(1) }
+  to   { opacity: .95; transform: scale(1.08) }
+}
+
+
+/* =========================
+   Close Button
+========================= */
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.15);
+
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(8px);
+
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 10;
+
+  transition: all .18s ease;
+}
+
+.closeBtn:hover {
+  background: rgba(255,255,255,.18);
+  transform: scale(1.08);
+}
+
+.closeBtn:active {
+  transform: scale(0.96);
+}

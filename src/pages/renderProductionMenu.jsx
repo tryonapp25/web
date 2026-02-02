@@ -5,6 +5,7 @@ import http from "../http/http";
 import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
+import ModelShowcase from "../components/modelShowcase";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
@@ -20,6 +21,9 @@ export default function RenderProductionMenu() {
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchFailed, setFetchFailed] = useState(false);
+
+  const [modelOpen, setModelOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(null);
 
   useEffect(() => {
     let alive = true;
@@ -56,7 +60,6 @@ export default function RenderProductionMenu() {
     };
   }, [type, id, code, publicCode]);
 
-  // build key only after template exists
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
 
   const Template = useMemo(() => {
@@ -65,30 +68,45 @@ export default function RenderProductionMenu() {
     return loader ? lazy(loader) : null;
   }, [key]);
 
-  // ✅ 1) Loading FIRST
   if (loading) {
     return <LoadingModal open={true} title="Menu" subtitle="Loading..." />;
   }
 
-  // ✅ 2) Fetch failed or no template
-  if (fetchFailed || !template) {
-    return <NoFoundTemplate onGoback={() => navigate("/menu")} />;
-  }
-
-  // ✅ 3) Template data exists but file missing
-  if (!Template) {
+  if (fetchFailed || !template || !Template) {
     return <NoFoundTemplate onGoback={() => navigate("/menu")} />;
   }
 
   const content = (
     <Suspense
-      fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..." />}
+      fallback={
+        <LoadingModal open={true} title="Menu" subtitle="Loading template..." />
+      }
     >
-      <Template data={template} onSave={(tem) => console.log(tem)} />
+      <Template
+        data={template}
+        onSave={(tem) => console.log(tem)}
+        onClickModel={(item) => {
+          setSelectedModel(item);
+          setModelOpen(true);
+        }}
+      />
     </Suspense>
   );
 
-  return isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
+  const wrappedContent = isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
+
+  return (
+    <div>
+      {wrappedContent}
+
+      {/* Render modal ONCE */}
+      <ModelShowcase
+        open={modelOpen}
+        item={selectedModel}
+        onClose={() => setModelOpen(false)}
+      />
+    </div>
+  );
 }
 
 function NoFoundTemplate({ onGoback }) {

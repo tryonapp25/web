@@ -6,7 +6,7 @@ import { useState } from "react";
 import TemplateEditor from "./templateEditor";
 
 
-export default function Template({ data = [], pressable, onPress, editable = false }) {
+export default function Template({ data = [], pressable, onPress, editable = false, onClickModel }) {
   const [template, setTemplate] = useState(data)
   const { subheading, heading, contents } = template;
   const [onEdit, setOnEdit] = useState(false);
@@ -37,9 +37,9 @@ export default function Template({ data = [], pressable, onPress, editable = fal
         {contents.slice(0, 3).map((section, i) => (
           <div key={`pizza-${i}`} className={`${styles.pizzaWrap} ${pizzaPosClass[i]}`}>
             
-            <div className={styles.pizzaInner}>
+            <div className={styles.pizzaInner} >
               {/* Use 3D model */}
-              <Model3D model={section.model} />
+              <Model3D model={section.model} onClick={() => onClickModel(section)}/>
             </div>
           </div>
         ))}
