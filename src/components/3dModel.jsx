@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styles from "../styles/Model3D.module.css";
 
-export default function Model3D({ model, onClick }) {
+export default function Model3D({ model, config, onClick }) {
   useEffect(() => {
     if (customElements.get("model-viewer")) return;
 
@@ -18,7 +18,7 @@ export default function Model3D({ model, onClick }) {
         src={model}
         alt="3D pizza model"
         camera-controls
-        camera-orbit="auto 10deg" // x y z (in meters, model space)
+        camera-orbit={config?.camera_orbit || "auto 10deg"} // x y z (in meters, model space)
         auto-rotate
         touch-action="pan-y"
         autoplay

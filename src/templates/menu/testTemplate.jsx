@@ -1,51 +1,136 @@
-import styles from "./TestTemplate.module.css";
-import Model3D from "../../components/3dModel";
+import PdfPageWrapper from "../../components/pdfPageWrapper";
+import Template1 from "./BBMN26"
 
-export default function TestTemplate({ data = [], pressable, onPress }) {
-  const { contents, heading, subheading } = data;
+import useIsMobile from "../../utils/deviceCheck";
 
-  return (
-   
-      <div className={styles.page}>
-        <button className={styles.editBtn} type="button">
-          Edit
-        </button>
+const fakeTemplateData = {
+  id: 202,
+  category: "bubble",
+  code: "BBMN26", // template name
+  name: "Bubble",
+  price:1,
+  uid:5,
+  type:"demo",
+  subheading: "Menu",
+  heading: "Bubble tea",
+  contents: [
+    {
+      title: "Taro Cream Milk Tea",
+      description:
+        "Smooth and nutty with a gentle vanilla sweetness. Taro gives it that dreamy purple color and a cozy, almost cookie-like flavor.",
+      ingredients: [
+        { name: "Bubble", included: true },
+        { name: "Jelly", included: true },
+        { name: "Fruit", included: true },
+        { name: "Popping Boba", included: true },
+      ],
 
-        <header className={styles.header}>
-          <h1 className={styles.pizza}>{heading}</h1>
-          <div className={styles.menu}>{subheading}</div>
-        </header>
+      data: [
+        { name: "Small", price: "$20" },
+        { name: "Medium", price: "$22" },
+        { name: "Large", price: "$24" },
+      ],
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FTaro_Bubble.glb_e2b4db50-7bc2-453d-81aa-0fdac3286dc5.glb?alt=media&token=77b87f52-2c13-42c3-a76f-02b315e76ac6"
+    },
+    {
+      title: "Brown Sugar",
+      description:
+        "Rich, caramel-like brown sugar syrup coats warm, chewy tapioca pearls, then blends into creamy milk tea.",
+      ingredients: [
+        { name: "Bubble", included: true },
+        { name: "Jelly", included: true },
+        { name: "Fruit", included: true },
+        { name: "Popping Boba", included: true },
+      ],
+      data: [
+        { name: "Small", price: "$20" },
+        { name: "Medium", price: "$22" },
+        { name: "Large", price: "$24" },
+      ],
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FBrown_Sugar.glb_b876d796-40da-4af1-a676-882cf3ea2ca2.glb?alt=media&token=69f0cab6-a5f2-4971-95bc-ea7cdfd308d3"
+    },
+    {
+      title: "Matcha Latte Boba",
+      description:
+        "Earthy green tea with a light bitterness balanced by milk and sugar. Fresh, grassy, and not too sweet.",
+      ingredients: [
+        { name: "Bubble", included: true },
+        { name: "Jelly", included: true },
+        { name: "Fruit", included: true },
+        { name: "Popping Boba", included: true },
+      ],
+      data: [
+        { name: "Small", price: "$20" },
+        { name: "Medium", price: "$22" },
+        { name: "Large", price: "$24" },
+      ],
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FMatcha_Bubble.glb_5a807eb5-45f5-40ae-9a8a-710a60ebcdfd.glb?alt=media&token=0b2adf51-20ae-41ad-8bb7-fed68fe88970"
+    },
+    {
+      title: "Strawberry Milk Tea",
+      description:
+        "Sweet, fruity, and creamy like a strawberry milkshake but lighter. Soft berry flavor with silky milk tea.",
+      ingredients: [
+        { name: "Bubble", included: true },
+        { name: "Jelly", included: true },
+        { name: "Fruit", included: true },
+        { name: "Popping Boba", included: true },
+      ],
+      data: [
+        { name: "Small", price: "$20" },
+        { name: "Medium", price: "$22" },
+        { name: "Large", price: "$24" },
+      ],
+      model:"https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FStrawberry_Bubble.glb_02d7d794-c5db-4c9b-b233-751beeef21d2.glb?alt=media&token=0c2e78d8-20a1-42f6-bcf0-7ff572d24a21"
+    },
+    {
+      title: "Fruit Milk Tea",
+      description:
+        "Creamy milk tea layered with vibrant fruit flavors and topped with chewy boba pearls.",
+      ingredients: [
+        { name: "Bubble", included: true },
+        { name: "Jelly", included: true },
+        { name: "Fruit", included: true },
+        { name: "Popping Boba", included: true },
+      ],
+      data: [
+        { name: "Small", price: "$20" },
+        { name: "Medium", price: "$22" },
+        { name: "Large", price: "$24" },
+      ],
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FFruit_Milk.glb_c1e2fde9-7702-4338-be22-01fa7b47bb85.glb?alt=media&token=6b401ceb-d604-4a44-97d1-7a30d5a99577"
+    },
+    {
+      title: "Thai Milk Tea",
+      description:
+        "Bold black tea mixed with condensed milk and spices. Strong, sweet, and super creamy.",
+      ingredients: [
+        { name: "Bubble", included: true },
+        { name: "Jelly", included: true },
+        { name: "Fruit", included: true },
+        { name: "Popping Boba", included: true },
+      ],
+      data: [
+        { name: "Small", price: "$20" },
+        { name: "Medium", price: "$22" },
+        { name: "Large", price: "$24" },
+      ],
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FThai_Bubble.glb_93127e08-098f-48a3-91d1-62bfceddd7f0.glb?alt=media&token=abf5c34b-d17d-4b22-b947-9614c2a664d3"
+    },
+  ],
+};
 
-        <section className={styles.grid}>
-          {contents.map((item, idx) => (
-            <article
-              key={`${item.title}-${idx}`}
-              className={styles.item}
-              data-col={(idx % 3) + 1}
-            >
-              <div className={styles.imageWrap}>
-                <Model3D model={item.model}/>
-              </div>
 
-              <div className={styles.card}>
-                <div className={styles.cardTitle}>{item.title}</div>
 
-                <div className={styles.rows}>
-                  {item.data.map((row) => (
-                    <div key={row.name} className={styles.row}>
-                      <div className={styles.left}>
-                        <span className={styles.bullet}>•</span>
-                        <span className={styles.size}>{row.name}</span>
-                      </div>
-                      <div className={styles.price}>{row.price}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </article>
-          ))}
-        </section>
-      </div>
+export default function TestTemplate() {
+  const isMobile = useIsMobile();
 
-  );
+  const content = <Template1 data={fakeTemplateData} />;
+
+  return isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
 }
