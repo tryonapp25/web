@@ -31,7 +31,9 @@ const config = {
 
 export default function TestTemplate({data, pressable, onPress, onClickModel }) {
   const [draft, setDraft] = useState(data);
-  useEffect(() => setDraft(data), []);
+  useEffect(() => {
+    setDraft(data);
+  }, [data]);
 
   const sections = useMemo(() => draft?.contents ?? [], [draft]);
 
@@ -89,10 +91,10 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
                   </div>
                 </div>
                 <div className={styles.priceRow}>
-                  {section.data.map((data, index) => {
+                  {(section?.data || []).map((data, index) => {
                     return (
                         <span key={index}  className={styles.priceSection}>
-                          {data.name.slice(0, 1)}{data.price}
+                          {data?.name?.slice(0, 1)}{data?.price}
                         </span>
                     )
                   })}
@@ -104,12 +106,12 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
                   <div className={styles.ingredientsTitle}>ingredient</div>
 
                   <ul className={styles.ingList}>
-                    {section.ingredients.map((item, index) => (
+                    {(section?.ingredients || []).map((item, index) => (
                       <li className={styles.ingItem} key={index}>
-                        <span className={styles.ingText}>{item.name}</span>
+                        <span className={styles.ingText}>{item?.name}</span>
                         <span
                           className={`${styles.ingDot} ${
-                            item.included ? styles.ingDotOn : ""
+                            item?.included ? styles.ingDotOn : ""
                           }`}
                           aria-hidden="true"
                         />
