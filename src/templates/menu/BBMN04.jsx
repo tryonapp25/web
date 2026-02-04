@@ -47,8 +47,6 @@ export default function BBMN04({data, pressable, onPress, onClickModel }) {
 
   const sections = useMemo(() => draft?.contents ?? [], [draft]);
 
-  console.log(data)
-
   const handlePress = () => {
     if (!pressable) return;
     onPress?.(draft);

@@ -4,8 +4,8 @@ import Model3D from "../../components/3dModel";
 
 
 
-export default function Template({ data = [], pressable, onPress,  onClickModel }) {
-  const [template, setTemplate] = useState(data || [])
+export default function Template({ data = {}, pressable, onPress,  onClickModel }) {
+  const [template, setTemplate] = useState(data || {})
   const { subheading, heading, contents } = template;
 
   const onSelectedTemplate = () => {
