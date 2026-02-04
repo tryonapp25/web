@@ -1,0 +1,419 @@
+/* BBMN04.module.css */
+
+/* ====== Theme tokens ====== */
+:root {
+  --brown: #9b623f;
+  --brown2: #8b5638;
+  --cream: #f4e6c6;
+  --ink: #2a1d16;
+  --muted: rgba(42, 29, 22, 0.65);
+  --white: #ffffff;
+}
+
+/* ====== Page background (wall-like) ====== */
+.page {
+  min-height: 100vh;
+
+  /* IMPORTANT: allow the page to scroll naturally (no vertical centering) */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  cursor: pointer;
+
+  /* hide scrollbar */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;  
+
+
+  background:
+    linear-gradient(0deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03)),
+    radial-gradient(900px 500px at 20% 10%, rgba(0,0,0,0.04), transparent 60%),
+    radial-gradient(800px 500px at 80% 30%, rgba(0,0,0,0.035), transparent 60%),
+    #efefef;
+}
+
+/* Chrome, Safari, Edge */
+.page::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Poster container grows in height based on content */
+.poster {
+  width: min(720px, 100%);
+  background: var(--cream);
+  height: auto;
+
+  /* IMPORTANT: don't clip long content */
+  overflow: visible;
+
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.18);
+}
+
+/* ====== Header ====== */
+.header {
+  background: var(--brown);
+  color: #f7e7cf;
+  padding: 26px 28px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.headerLeft {
+  line-height: 1.05;
+}
+
+.headlineTop {
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  font-size: 18px;
+  opacity: 0.95;
+}
+
+.headlineScript {
+  font-size: 56px;
+  font-weight: 700;
+  margin-top: 4px;
+  transform: translateY(-2px);
+  font-family: ui-rounded, "Segoe UI", "Trebuchet MS", system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.headerSubtitle {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+.headerRight {
+  justify-self: end;
+  text-align: left;
+  max-width: 250px;
+}
+
+.discountRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.discount {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.off {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.headerSmall {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.stars {
+  display: flex;
+  gap: 3px;
+  margin-top: 10px;
+}
+
+.star {
+  font-size: 14px;
+  color: #f7e7cf;
+  opacity: 0.95;
+}
+
+/* ====== Body layout ====== */
+.body {
+  padding: 26px 28px 22px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 26px;
+
+  /* IMPORTANT: allow it to grow */
+  height: auto;
+  
+}
+
+/* Left menu list */
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.menuItem {
+  padding-bottom: 4px;
+}
+
+.menuItemRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.menuTitle {
+  font-weight: 900;
+  color: var(--brown2);
+  letter-spacing: 0.08em;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.dots {
+  border-bottom: 2px dotted rgba(155, 98, 63, 0.55);
+  transform: translateY(-4px);
+}
+
+.menuPrice {
+  font-weight: 900;
+  color: var(--brown2);
+  font-size: 14px;
+}
+
+.menuDesc {
+  margin-top: 6px;
+  color: rgba(155, 98, 63, 0.9);
+  font-size: 10px;
+  line-height: 1.55;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ===== Sizes row ===== */
+
+.sizeRow {
+  margin-top: 8px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.sizeItem {
+  display: flex;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brown2);
+  font-weight: 700;
+}
+
+.sizeName {
+  font-weight: 900;
+  color: var(--brown2);
+}
+
+.sizePrice {
+  font-weight: 900;
+}
+
+
+/* Right drinks grid */
+.drinksGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+  align-content: start;
+  justify-items: center;
+}
+
+.drinkCard {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.drinkName {
+  font-size: 10px;
+  color: rgba(155, 98, 63, 0.95);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.model3d {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+/* ====== Footer ====== */
+.footer {
+  background: var(--brown);
+  color: #f7e7cf;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+  align-items: end;
+}
+
+.footerNote {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  opacity: 0.9;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.footerLeftRow {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.qrBox {
+  width: 86px;
+  height: 86px;
+  background: rgba(247, 231, 207, 0.95);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid rgba(247, 231, 207, 0.4);
+}
+
+.qrGrid {
+  position: absolute;
+  inset: 8px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+}
+
+.qrDot {
+  background: rgba(42, 29, 22, 0.18);
+  border-radius: 2px;
+}
+.qrDot:nth-child(3n) { background: rgba(42, 29, 22, 0.55); }
+.qrDot:nth-child(7n) { background: rgba(42, 29, 22, 0.75); }
+
+.qrLabel {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  font-weight: 900;
+  color: rgba(42, 29, 22, 0.7);
+  letter-spacing: 0.14em;
+  font-size: 12px;
+}
+
+.socialBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.handle {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.website {
+  font-size: 10px;
+  opacity: 0.9;
+  letter-spacing: 0.14em;
+}
+
+.footerRight {
+  justify-self: end;
+  max-width: 280px;
+}
+
+.dontMiss {
+  display: inline-block;
+  border: 2px solid rgba(247, 231, 207, 0.75);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+}
+
+.promoTitle {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.promoNote {
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  opacity: 0.9;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 720px) {
+  .header {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+  .headerRight {
+    justify-self: start;
+    max-width: none;
+  }
+  .headlineScript {
+    font-size: 48px;
+  }
+
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .drinksGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-items: center;
+  }
+
+  .footer {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .footerRight {
+    justify-self: start;
+    max-width: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .header {
+    padding: 20px 18px;
+  }
+  .body {
+    padding: 18px 18px 14px;
+  }
+  .footer {
+    padding: 16px 18px;
+  }
+
+  .headlineScript {
+    font-size: 42px;
+  }
+
+  .drinksGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .menuTitle,
+  .menuPrice {
+    font-size: 13px;
+  }
+}

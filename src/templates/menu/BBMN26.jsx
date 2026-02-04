@@ -3,15 +3,6 @@ import styles from "./BBMN26.module.css";
 import Model3D from "../../components/3dModel";
 
 
-
-
-function priceFromSection(section) {
-  // mimic "$ 4.5" style; use Small price if available, fallback
-  const s = section?.data?.[0]?.price ?? "$4.5";
-  // convert "$20" -> "$ 20"
-  return s.replace("$", "$ ");
-}
-
 function seedColor(idx) {
   // pastel blobs like the reference
   const colors = [

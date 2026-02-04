@@ -1,5 +1,5 @@
 import PdfPageWrapper from "../../components/pdfPageWrapper";
-import Template1 from "./BBMN26"
+import Template1 from "./BBMN04"
 
 import useIsMobile from "../../utils/deviceCheck";
 
