@@ -6,7 +6,7 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 
-const Template = lazy(() => import("../templates/menu/BBMN07.jsx"));
+const Template = lazy(() => import("../templates/menu/CCFF02.jsx"));
 
 
 const defaultText = `{
