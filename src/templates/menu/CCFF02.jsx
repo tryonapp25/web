@@ -142,7 +142,7 @@ export default function Template({data, pressable, onPress, onClickModel }) {
                         <Model3D
                             config={config}
                             model={item?.model}
-                            onClick={() => onClickModel?.(section)}
+                            onClick={() => onClickModel?.(item)}
                         />
                     </div>
                 </div>
