@@ -5,7 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ApiContext/userContext";
 
 
+function GetLetters(name) {
+  const words = name
+    .replace(/[^a-zA-Z ]/g, "") // remove numbers & symbols
+    .trim()
+    .split(/\s+/);
 
+  // if there's only one word, take first 2 letters
+  if (words.length === 1) {
+    return words[0].slice(0, 2).toUpperCase();
+  }
+
+  // otherwise take first letter of each word
+  return words
+    .map(word => word[0])
+    .join("")
+    .toUpperCase();
+}
 
 function IconButton({ children, label }) {
   return (
@@ -44,9 +60,7 @@ export default function Topbar() {
           <span className={styles.tokenLabel}>Tokens</span>
           <span className={styles.tokenValue}>{publicUser?.token?.tokens ?? 0}</span>
         </button>
-        <button className={styles.link}>About us</button>
-
-        <button onClick={() => navigate("/profile")} className={styles.avatar}>SA</button>
+        <button onClick={() => navigate("/profile")} className={styles.avatar}>{GetLetters(publicUser?.userName || "")}</button>
       </div>
     </header>
   );

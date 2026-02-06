@@ -30,10 +30,16 @@ function Item({ icon: Icon, label, active, onPress }) {
   );
 }
 
-export default function Sidebar() {
+const defaultItems = [
+  /* { icon: Image, label: "AI Image", path: "/home" }, */
+  { icon: LayoutGrid, label: "3D Menu", path: "/menu" },
+  { icon: Library, label: "My Collection", path: "/collection" },
+]
+
+export default function Sidebar({items}) {
   const navigate = useNavigate();
   const { pathname } = useLocation(); // ✅ current route
-  const {publicUser}  = useContext(UserContext)
+  const [sidebarItems] = useState(items || defaultItems);
 
   const isActive = (path) =>
     pathname === path || pathname.startsWith(path + "/");
@@ -54,35 +60,15 @@ export default function Sidebar() {
 
       {/* MAIN */}
       <div className={styles.section}>
-        <Item
-          icon={Image}
-          label="AI Image"
-          active={isActive("/home")}
-          onPress={() => navigate("/home")}
-        />
-
-        <Item
-          icon={LayoutGrid}
-          label="3D Menu"
-          active={isActive("/menu")}
-          onPress={() => navigate("/menu")}
-        />
-
-        <Item
-          icon={Library}
-          label="My Collection"
-          active={isActive("/collection")}
-          onPress={() => navigate("/collection")}
-        />
-
-        {publicUser?.role === "admin" &&
+        {sidebarItems.map(({ icon: Icon, label, path }) => (
           <Item
-            icon={Library}
-            label="Create Template"
-            active={isActive("/create-template")}
-            onPress={() => navigate("/create-template")}
+            key={path}
+            icon={Icon}
+            label={label}
+            active={isActive(path)}
+            onPress={() => navigate(path)}
           />
-        }
+        ))}
       </div>
 
       <div className={styles.divider} />

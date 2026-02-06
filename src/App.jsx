@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css"
 import { UserProvider } from "./ApiContext/userContext";
 import ProtectedRoute from "./ApiContext/protectedRoute";
+import AdminProtection from "./ApiContext/adminProtection";
 
 
 import Onboarding from "./pages/onboarding";
@@ -14,10 +15,13 @@ import MenuPage from "./pages/menu";
 import RenderProductionMenu from "./pages/renderProductionMenu";
 import RenderProductionMenuBook from "./pages/renderProductionMenuBook";
 import TemplateWraper from "./pages/templateWraper";
-import CreateTemplate from "./pages/createTemplate";
+import CreateTemplate from "./admin/createTemplate";
 import MenuBookWraper from "./pages/menuBookWrapper";
 import MyCollection from "./pages/collection";
 
+
+// Admin //
+import AdminPage from "./admin";
 
 /* import TestTemplate from "./templates/menu/testTemplate"; */
 
@@ -43,9 +47,13 @@ export default function App() {
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/collection" element={<MyCollection />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
-              <Route path="/create-template" element={<CreateTemplate />} /> 
               <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />
-              <Route path="/create-template" element={<CreateTemplate />} />
+
+              {/* Admin route */}
+              <Route element={<AdminProtection />}>
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/edit/template" element={<CreateTemplate />} />
+              </Route>
             </Route>
             
           </Routes>

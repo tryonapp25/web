@@ -1,4 +1,4 @@
-import React, { useMemo, useState, lazy, Suspense } from "react";
+import React, { useMemo, useState, lazy, Suspense, useEffect } from "react";
 import JSON5 from "json5";
 import styles from "../styles/CreateTemplate.module.css";
 import PdfPageWrapper from "../components/pdfPageWrapper";
@@ -6,26 +6,53 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 
-const Template = lazy(() => import("../templates/menu/CCFF02.jsx"));
+
+
+const files = import.meta.glob("../templates/menu/*.jsx");
+const jsxFileList = Object.keys(files).map(path =>
+  path.split("/").pop()
+);
 
 
 const defaultText = `{
     id: 10,
     category: "",
     code: "", // template name
-    type: "demo" 
+    type: "demo" ,
     name: "ala-carte-sushi",
     heading: "A LA CARTE",
     subheading: "SUSHI AND SASHIMI",
     contents: []
 }`
 
+function removeJsxExtension(filename) {
+  return filename.replace(/\.jsx$/, "");
+}
+
 const defaultMessage = {visible: false, type:"", msg:""};
 
 export default function CreateTemplate() {
   const [text, setText] = useState(defaultText);
-
   const [message, setMessage] = useState(defaultMessage);
+  const [selected, setSelected] = useState("CCFF02.jsx");
+  const Template = lazy(() => import(`../templates/menu/${selected}`));
+
+
+  useEffect(() => {
+    getTemplateDataByCode(removeJsxExtension(selected));
+  }, [selected]);
+
+  const getTemplateDataByCode = async (code) => {
+    try{
+      const res = await http.get(`/admin/demo/templates/code/${code}`);
+      if(res.data.success){
+        setText(JSON.stringify(res.data.data, null, 2));
+      }
+    }
+    catch(err){
+      setMessage(httpMessage(err));
+    }
+  }
 
   const { parsedData, error } = useMemo(() => {
     const trimmed = text.trim();
@@ -55,10 +82,38 @@ export default function CreateTemplate() {
     }
   }
 
+  const handleUpdateTemplate = async () => {
+    if(!parsedData?.code || parsedData?.code === "") return setMessage({visible: true, type:"warn", msg:"Template missing code"});
+    if(!parsedData?.category || parsedData?.category === "") return setMessage({visible: true, type:"warn", msg:"Template missing category"});
+    if(!parsedData?.type || parsedData?.type === "") return setMessage({visible: true, type:"warn", msg:"Template missing type"});
+    if(!parsedData?.price) return setMessage({visible: true, type:"warn", msg:"Template missing price"});
+    try{
+      const res = await http.put(`/admin/demo/template`, parsedData);
+      if(res.data.success){
+        setMessage({visible: true, type: "success", msg: res.data.message});
+      }
+    }
+    catch(err){
+      setMessage(httpMessage(err));
+    }
+  }
+
+  
+
   return (
     <div className={styles.page}>
       {/* LEFT PANEL */}
       <aside className={styles.left}>
+
+        {/* SELECTION TEMPLATES*/}
+        <select onChange={e => setSelected(e.target.value)}>
+        <option value={selected}>{selected}</option>
+          {jsxFileList.map(file => (
+            <option key={file} value={file} selected={file === selected}>{file}</option>
+          ))}
+        </select>
+
+
         <h2 className={styles.title}>Create (JSON / JS Object)</h2>
 
         <textarea
@@ -72,6 +127,7 @@ export default function CreateTemplate() {
           {error ? <span className={styles.error}>{error}</span> : "Valid ✔"}
         </div>
         {error || parsedData && <button onClick={handleCreateTemplate}>Create Template</button>}
+        {error || parsedData && <button onClick={handleUpdateTemplate}>Update Template</button>}
       </aside>
 
       {/* RIGHT PANEL */}

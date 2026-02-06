@@ -2,7 +2,7 @@
   height: 100vh;
   width: 100%;
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 850px 1fr;
   background: #0f1115;
   color: #e9edf1;
 }

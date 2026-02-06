@@ -18,7 +18,7 @@ export default function Profile() {
     const [filters, setFilters] = useState([]);
     const [message, setMessage] = useState({ visible:false, msg:"", type:"" });
 
-    const fetchMyFilters = async (uid) => {
+    /* const fetchMyFilters = async (uid) => {
       try {
           setLoading(true);
           const res = await http.get(`/user/${uid}/public-filters`);
@@ -32,7 +32,7 @@ export default function Profile() {
 
     useEffect(() => {
     fetchMyFilters(publicUser?.uid);
-    }, []);
+    }, []); */
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -90,8 +90,6 @@ export default function Profile() {
 
 return (
   <section className={styles.page}>
-    <Topbar />
-
     <div className={styles.container}>
       {/* PROFILE CARD */}
       <form className={styles.card} onSubmit={handleSubmit}>
@@ -150,16 +148,15 @@ return (
       </form>
 
       <div className={styles.sectionDivider} />
-
-      <div className={styles.filtersSection}>
+    </div>
+    {/* <div className={styles.filtersSection}>
         <div className={styles.filtersHead}>
           <h2 className={styles.h2}>Your Public Filters</h2>
           <p className={styles.sub2}>Manage and preview what you’ve shared.</p>
         </div>
 
         <FilterGrid data={filters} />
-      </div>
-    </div>
+    </div> */}
 
     <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage({ visible:false, msg:"", type:"" })}/>
     <LoadingModal open={loading}/>
