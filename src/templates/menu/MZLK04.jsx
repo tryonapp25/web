@@ -4,6 +4,10 @@ import Model3D from "../../components/3dModel";
 import { useState } from "react";
 
 
+const config = {
+  camera_orbit: "auto 55deg",
+}
+
 export default function Template({ data = [], pressable, onPress, onClickModel }) {
   const [template] = useState(data)
   const { subheading, heading, contents } = template;
@@ -28,7 +32,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
             
             <div className={styles.pizzaInner} >
               {/* Use 3D model */}
-              <Model3D model={section.model} onClick={() => onClickModel({data: section, config: {}})}/>
+              <Model3D config={config} model={section.model} onClick={() => onClickModel({data: section, config: config})}/>
             </div>
           </div>
         ))}

@@ -22,6 +22,7 @@ import MyCollection from "./pages/collection";
 
 // Admin //
 import AdminPage from "./admin";
+import FeatureFlags from "./admin/featureFlags";
 
 /* import TestTemplate from "./templates/menu/testTemplate"; */
 
@@ -33,7 +34,6 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/" element={<Onboarding />} />
-            <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
@@ -42,6 +42,7 @@ export default function App() {
             {/* <Route path="/test" element={<TestTemplate />} /> */}
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
+              {/* <Route path="/home" element={<Home />} /> */}
               <Route path="/payment" element={<Payment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/menu" element={<MenuPage />} />
@@ -52,7 +53,8 @@ export default function App() {
               {/* Admin route */}
               <Route element={<AdminProtection />}>
                 <Route path="/admin" element={<AdminPage />} />
-                <Route path="/edit/template" element={<CreateTemplate />} />
+                <Route path="/admin/edit/template" element={<CreateTemplate />} />
+                <Route path="/admin/features" element={<FeatureFlags />} />
               </Route>
             </Route>
             

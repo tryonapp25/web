@@ -10,6 +10,7 @@ import QuickAction from "../components/quickAction";
 import UploadFileCard from "../components/uploadFile";
 import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 
 const quickAction = [
@@ -34,6 +35,10 @@ export default function MenuPage() {
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("templates")
 
+  const [quickAction, setQuickAction] = useState([
+    {tabName: "templates", name: "Explore"},
+  ])
+
 
   useEffect(() => {
     switch(tab){
@@ -44,8 +49,22 @@ export default function MenuPage() {
         handleGetTemplates();
         break;
     }
+    checkFeatureFlags()
   },[tab]);
 
+
+  const checkFeatureFlags = async () => {
+    const hasMenuBook = await getFeatureFlags("MENU_BOOK");
+    if (!hasMenuBook) return;
+
+    setQuickAction(prev => {
+      const exists = prev.some(action => action.tabName === "menu_book");
+      if (exists) return prev;
+
+      console.log('Adding menu_book quick action');
+      return [...prev, { tabName: "menu_book", name: "MenuBooks" }];
+    });
+  };
   
   const handleGetMenuBooks = async () => {
     if(loading) return;

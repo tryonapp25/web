@@ -3,6 +3,10 @@ import { useState } from "react";
 import Model3D from "../../components/3dModel";
 
 
+const config = {
+  camera_orbit: "auto 55deg",
+}
+
 
 export default function Template({ data = {}, pressable, onPress,  onClickModel }) {
   const [template, setTemplate] = useState(data || {})
@@ -30,7 +34,7 @@ export default function Template({ data = {}, pressable, onPress,  onClickModel 
               data-col={(idx % 3) + 1}
             >
               <div className={styles.imageWrap}>
-                <Model3D model={item.model} onClick={() => onClickModel({data: item, config: {}})}/>
+                <Model3D model={item.model} config={config} onClick={() => onClickModel({data: item, config: config})}/>
               </div>
 
               <div className={styles.card}>

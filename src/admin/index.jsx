@@ -17,7 +17,8 @@ import {
 
 const defaultItems = [
   { icon: LayoutDashboard, label: "Admin", path: "/admin" },
-  { icon: FileEdit, label: "Edit Template", path: "/edit/template" },
+  { icon: FileEdit, label: "Edit Template", path: "/admin/edit/template" },
+  { icon: FileEdit, label: "Features", path: "/admin/features" },
 ];
 
 const quickAction = [
