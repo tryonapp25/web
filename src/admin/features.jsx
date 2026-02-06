@@ -3,7 +3,7 @@ import styles from '../styles/FeatureFlags.module.css';
 import http from '../http/http';
 import httpMessage from '../http/httpMessage';
 
-function FeatureFlags() {
+function Features() {
   const [flags, setFlags] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -175,4 +175,4 @@ function FeatureFlags() {
   )
 }
 
-export default FeatureFlags
+export default Features

@@ -15,14 +15,14 @@ import MenuPage from "./pages/menu";
 import RenderProductionMenu from "./pages/renderProductionMenu";
 import RenderProductionMenuBook from "./pages/renderProductionMenuBook";
 import TemplateWraper from "./pages/templateWraper";
-import CreateTemplate from "./admin/createTemplate";
 import MenuBookWraper from "./pages/menuBookWrapper";
 import MyCollection from "./pages/collection";
 
 
 // Admin //
 import AdminPage from "./admin";
-import FeatureFlags from "./admin/featureFlags";
+import Features from "./admin/features";
+import EditTemplate from "./admin/editTemplate";
 
 /* import TestTemplate from "./templates/menu/testTemplate"; */
 
@@ -53,8 +53,8 @@ export default function App() {
               {/* Admin route */}
               <Route element={<AdminProtection />}>
                 <Route path="/admin" element={<AdminPage />} />
-                <Route path="/admin/edit/template" element={<CreateTemplate />} />
-                <Route path="/admin/features" element={<FeatureFlags />} />
+                <Route path="/admin/edit/template" element={<EditTemplate />} />
+                <Route path="/admin/features" element={<Features />} />
               </Route>
             </Route>
             

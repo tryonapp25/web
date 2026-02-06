@@ -13,12 +13,13 @@ import MenuBookGrid from "../components/menuBookGrid";
 import {
   LayoutDashboard,
   FileEdit,
+  Puzzle
 } from "lucide-react";
 
 const defaultItems = [
   { icon: LayoutDashboard, label: "Admin", path: "/admin" },
   { icon: FileEdit, label: "Edit Template", path: "/admin/edit/template" },
-  { icon: FileEdit, label: "Features", path: "/admin/features" },
+  { icon: Puzzle, label: "Features", path: "/admin/features" },
 ];
 
 const quickAction = [

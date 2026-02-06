@@ -31,11 +31,12 @@ function removeJsxExtension(filename) {
 
 const defaultMessage = {visible: false, type:"", msg:""};
 
-export default function CreateTemplate() {
+export default function EditTemplate() {
   const [text, setText] = useState(defaultText);
   const [message, setMessage] = useState(defaultMessage);
-  const [selected, setSelected] = useState("CCFF02.jsx");
+  const [selected, setSelected] = useState(jsxFileList[0] || "ABCD12.jsx");
   const Template = lazy(() => import(`../templates/menu/${selected}`));
+
 
 
   useEffect(() => {
