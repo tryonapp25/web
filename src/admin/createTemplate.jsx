@@ -88,7 +88,7 @@ export default function CreateTemplate() {
     if(!parsedData?.type || parsedData?.type === "") return setMessage({visible: true, type:"warn", msg:"Template missing type"});
     if(!parsedData?.price) return setMessage({visible: true, type:"warn", msg:"Template missing price"});
     try{
-      const res = await http.put(`/admin/demo/template`, parsedData);
+      const res = await http.put(`/admin/demo/templates`, parsedData);
       if(res.data.success){
         setMessage({visible: true, type: "success", msg: res.data.message});
       }
@@ -126,8 +126,12 @@ export default function CreateTemplate() {
         <div className={styles.hint}>
           {error ? <span className={styles.error}>{error}</span> : "Valid ✔"}
         </div>
-        {error || parsedData && <button onClick={handleCreateTemplate}>Create Template</button>}
-        {error || parsedData && <button onClick={handleUpdateTemplate}>Update Template</button>}
+        {(error || parsedData) && (
+          <div className={styles.buttonGroup}>
+            <button className={styles.primary} onClick={handleCreateTemplate}>Create Template</button>
+            <button className={styles.secondary} onClick={handleUpdateTemplate}>Update Template</button>
+          </div>
+        )}
       </aside>
 
       {/* RIGHT PANEL */}

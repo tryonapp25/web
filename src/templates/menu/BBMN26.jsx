@@ -76,7 +76,7 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
                       <Model3D
                         config={config}
                         model={section?.model}
-                        onClick={() => onClickModel?.(section)}
+                        onClick={() => onClickModel?.({data: section, config: config})}
                       />
                     </div>
                   </div>

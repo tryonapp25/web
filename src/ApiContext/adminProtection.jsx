@@ -7,7 +7,7 @@ export default function AdminProtection() {
     return <Navigate to="/" replace />;
   }
   if (user?.role !== "admin"){ 
-    return <Navigate to="/" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return <Outlet />;

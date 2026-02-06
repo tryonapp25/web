@@ -7,7 +7,7 @@ import Model3D from "./3dModel";
 export default function ModelShowcase({
   open,
   onClose,
-  item = data
+  item
 }) {
   const [mounted, setMounted] = useState(open);
   // mount/unmount for fade animation
@@ -66,10 +66,10 @@ export default function ModelShowcase({
           >
             ✕
           </button>
-          <Model3D model={item.model}/>
+          <Model3D model={item?.data?.model} config={item?.config}/>
           <div className={styles.info}>
-            <p>{item.title}</p>
-            <p>{item.description}</p>
+            <p>{item?.data?.title} : </p>
+            <p>- {item?.data?.description}</p>
           </div>
           <div className={styles.glow} />
         </div>

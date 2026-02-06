@@ -35,7 +35,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel  
           return (
             <div key={i} className={style.card}>
               <div className={style.imageWrap}>
-                <Model3D model={item.model}  onClick={() => onClickModel(item)}/>
+                <Model3D model={item.model}  onClick={() => onClickModel({data: item, config: {}})}/>
               </div>
 
               <div className={style.name}>{item.title}</div>

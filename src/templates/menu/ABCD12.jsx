@@ -54,7 +54,7 @@ export default function Template({
         <section className={styles.grid}>
           {sections.slice(0, 6).map((section, sIndex) => (
             <article key={sIndex} className={styles.card}>
-              <PlateImage model={section?.model} onClickModel={() => onClickModel(section)} />
+              <PlateImage model={section?.model} onClickModel={() => onClickModel({data: section, config: {}})} />
 
               {section?.data?.map((row, rIndex) => (
                 <div key={rIndex} className={styles.meta} onClick={stop}>

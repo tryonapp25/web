@@ -113,7 +113,7 @@ export default function BBMN04({data, pressable, onPress, onClickModel }) {
             {sections.map((item, idx) => (
               <div key={idx} className={styles.drinkCard} title={item.model}>
                 <div style={{ width: "100px", height: "100px" }} className={styles.model3d}>
-                  <Model3D model={item?.model} config={config} onClick={() => onClickModel?.(item)}/>
+                  <Model3D model={item?.model} config={config} onClick={() => onClickModel?.({data: item, config: config})}/>
                 </div>
                 <div className={styles.drinkName}>{item.title}</div>
               </div>

@@ -28,7 +28,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
             
             <div className={styles.pizzaInner} >
               {/* Use 3D model */}
-              <Model3D model={section.model} onClick={() => onClickModel(section)}/>
+              <Model3D model={section.model} onClick={() => onClickModel({data: section, config: {}})}/>
             </div>
           </div>
         ))}
