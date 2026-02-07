@@ -10,7 +10,8 @@ import FlashMessage from "../components/flashMessage";
 
 const files = import.meta.glob("../templates/menu/*.jsx");
 const jsxFileList = Object.keys(files).map(path =>
-  path.split("/").pop()
+  // keep filenames without extension so we can append the extension
+  path.split("/").pop().replace(/\.jsx$/, "")
 );
 
 
@@ -34,8 +35,8 @@ const defaultMessage = {visible: false, type:"", msg:""};
 export default function EditTemplate() {
   const [text, setText] = useState(defaultText);
   const [message, setMessage] = useState(defaultMessage);
-  const [selected, setSelected] = useState(jsxFileList[0] || "ABCD12.jsx");
-  const Template = lazy(() => import(`../templates/menu/${selected}`));
+  const [selected, setSelected] = useState(jsxFileList[0] || "ABCD12");
+  const Template = lazy(() => import(`../templates/menu/${selected}.jsx`));
 
 
 
@@ -107,10 +108,9 @@ export default function EditTemplate() {
       <aside className={styles.left}>
 
         {/* SELECTION TEMPLATES*/}
-        <select onChange={e => setSelected(e.target.value)}>
-        <option value={selected}>{selected}</option>
+        <select value={selected} onChange={e => setSelected(e.target.value)}>
           {jsxFileList.map(file => (
-            <option key={file} value={file} selected={file === selected}>{file}</option>
+            <option key={file} value={file}>{file}.jsx</option>
           ))}
         </select>
 

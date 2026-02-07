@@ -6,12 +6,14 @@ import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import ModelShowcase from "../components/modelShowcase";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(false);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
@@ -55,10 +57,15 @@ export default function RenderProductionMenu() {
     };
 
     fetchTemplate();
+    getFeatureFlags("ORDER_FEATURE").then(setOrderFeatureEnabled);
     return () => {
       alive = false;
     };
   }, [type, id, code, publicCode]);
+
+  const handleOrder = () => {
+    if (!orderFeatureEnabled)return;
+  };
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
 
@@ -104,6 +111,8 @@ export default function RenderProductionMenu() {
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
+        orderFeatureEnabled={orderFeatureEnabled}
+        onOrder={handleOrder}
       />
     </div>
   );

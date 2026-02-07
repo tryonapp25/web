@@ -98,6 +98,36 @@
   margin-bottom: 20px;
 }
 
+.actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.orderBtn {
+  background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(59,130,246,0.18), inset 0 -2px 0 rgba(255,255,255,0.06);
+  transition: transform .16s ease, box-shadow .16s ease, opacity .12s ease;
+}
+
+.orderBtn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(59,130,246,0.22);
+}
+
+.orderBtn:active {
+  transform: translateY(0) scale(0.99);
+  opacity: .95;
+}
+
 
 /* =========================
    Glow spotlight

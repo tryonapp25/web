@@ -8,7 +8,7 @@ function PlateImage({ model, onClickModel }) {
     <div className={styles.plateWrap}>
       <div className={styles.plate}>
         <div className={styles.model3d}>
-          <Model3D model={model} onClick={onClickModel}/>
+          <Model3D model={model} onClick={onClickModel} config={config} />
         </div>
         <div className={styles.plateShadow} />
       </div>
@@ -16,6 +16,9 @@ function PlateImage({ model, onClickModel }) {
   );
 }
 
+const config = {
+  camera_orbit: "auto 60deg",
+}
 // Sushi Template //
 export default function Template({
   data,
@@ -54,7 +57,7 @@ export default function Template({
         <section className={styles.grid}>
           {sections.slice(0, 6).map((section, sIndex) => (
             <article key={sIndex} className={styles.card}>
-              <PlateImage model={section?.model} onClickModel={() => onClickModel({data: section, config: {}})} />
+              <PlateImage model={section?.model} onClickModel={() => onClickModel({data: section, config: config})} />
 
               {section?.data?.map((row, rIndex) => (
                 <div key={rIndex} className={styles.meta} onClick={stop}>

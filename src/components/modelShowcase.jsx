@@ -7,7 +7,9 @@ import Model3D from "./3dModel";
 export default function ModelShowcase({
   open,
   onClose,
-  item
+  item,
+  onOrder,
+  orderFeatureEnabled,
 }) {
   const [mounted, setMounted] = useState(open);
   // mount/unmount for fade animation
@@ -71,7 +73,21 @@ export default function ModelShowcase({
             <p>{item?.data?.title} : </p>
             <p>- {item?.data?.description}</p>
           </div>
-          <div className={styles.glow} />
+          
+          {orderFeatureEnabled && (
+            <>
+              <div className={styles.actions}>
+                <button
+                  className={styles.orderBtn}
+                  onClick={() => onOrder?.(item)}
+                  aria-label="Order"
+                >
+                  Order
+                </button>
+              </div>
+              <div className={styles.glow} />
+            </>
+          )}
         </div>
       </div>
     </div>
