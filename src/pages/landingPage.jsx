@@ -14,8 +14,42 @@ const modelUrls = [
   "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FNeapolitan_Pizza.glb_da513427-77b4-4b5a-8bf6-c5df72b479ad.glb?alt=media&token=52945a22-e746-4f9f-ad81-f3cd5345f205",
 ];
 
+const images = [
+  {
+    title: "No More Standing to Order",
+    icon: `${import.meta.env.BASE_URL}images/noMoreStandOrder.png`,
+    desc: "Skip the counter and order directly from your phone with ease."
+  },
+  {
+    title: "No More Waiting in Line",
+    icon: `${import.meta.env.BASE_URL}images/noMoreWaiting.png`,
+    desc: "Avoid long queues and place your order instantly from anywhere."
+  },
+  {
+    title: "Scan to Order",
+    icon: `${import.meta.env.BASE_URL}images/scanToOrder.png`,
+    desc: "Scan a QR code to view the menu and start ordering in seconds."
+  },
+  {
+    title: "Order From Your Table",
+    icon: `${import.meta.env.BASE_URL}images/orderFromTable.png`,
+    desc: "Sit back and order comfortably without leaving your seat."
+  },
+  {
+    title: "Easy Ordering",
+    icon: `${import.meta.env.BASE_URL}images/easyToOrder.png`,
+    desc: "Simple steps, clear menus, and a smooth checkout experience."
+  },
+  {
+    title: "Easy to Use",
+    icon: `${import.meta.env.BASE_URL}images/easyToUse.png`,
+    desc: "Designed for everyone—fast, intuitive, and hassle-free."
+  }
+];
+
 export default function LandingPage() {
   const [currentModelIndex, setCurrentModelIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,6 +57,14 @@ export default function LandingPage() {
     }, 15000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const imageInterval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 3500);
+
+    return () => clearInterval(imageInterval);
   }, []);
   return (
     <div className={styles.page}>
@@ -61,6 +103,34 @@ export default function LandingPage() {
                     <Model3D config={config} model={modelUrls[currentModelIndex]}/>
                 </div>
               <div className={styles.mockupOverlay} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Image Showcase Section */}
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionLabel}>Benefits</span>
+          <h2 className={styles.sectionTitle}>Better Customer Experience</h2>
+        </div>
+        <div className={styles.imageShowcase}>
+          <div className={styles.imageShowcaseContent}>
+            <img 
+              src={images[currentImageIndex].icon} 
+              alt={images[currentImageIndex].title}
+              className={styles.showcaseImage}
+            />
+            <h3 className={styles.showcaseTitle}>{images[currentImageIndex].title}</h3>
+            <p className={styles.showcaseDesc}>{images[currentImageIndex].desc}</p>
+            <div className={styles.showcaseDots}>
+              {images.map((_, index) => (
+                <span 
+                  key={index}
+                  className={`${styles.showcaseDot} ${index === currentImageIndex ? styles.activeDot : ''}`}
+                  onClick={() => setCurrentImageIndex(index)}
+                />
+              ))}
             </div>
           </div>
         </div>
