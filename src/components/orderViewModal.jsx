@@ -1,0 +1,135 @@
+import React, { useEffect, useState } from "react";
+import styles from "../styles/OrderViewModal.module.css";
+
+export default function OrderViewModal({
+  open,
+  onClose,
+  orders = [],
+  onUpdateQuantity,
+  onRemoveItem,
+  onCheckout,
+}) {
+  const [mounted, setMounted] = useState(open);
+
+  useEffect(() => {
+    if (open) setMounted(true);
+  }, [open]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [mounted, onClose]);
+
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = prev);
+  }, [open]);
+
+  if (!mounted) return null;
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) onClose?.();
+  };
+
+  const handleAnimationEnd = () => {
+    if (!open) setMounted(false);
+  };
+
+  const totalItems = orders.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+  return (
+    <div
+      className={`${styles.overlay} ${open ? styles.overlayIn : styles.overlayOut}`}
+      onMouseDown={handleOverlayClick}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      <div className={styles.modal}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Your Order</h2>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <div className={styles.content}>
+          {orders.length === 0 ? (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>🛒</div>
+              <p className={styles.emptyText}>Your cart is empty</p>
+              <p className={styles.emptySubtext}>Add some delicious items to get started!</p>
+            </div>
+          ) : (
+            <div className={styles.orderList}>
+              {orders.map((item, index) => (
+                <div key={index} className={styles.orderItem}>
+                  <div className={styles.itemInfo}>
+                    <h3 className={styles.itemTitle}>{item.title}</h3>
+                    {item.description && (
+                      <p className={styles.itemDescription}>{item.description}</p>
+                    )}
+                    {item.ingredients && (
+                      <div className={styles.itemIngredients}>
+                        {item.ingredients
+                          .filter((ing) => ing.included)
+                          .map((ing, i) => (
+                            <span key={i} className={styles.ingredientTag}>
+                              {ing.name}
+                            </span>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={styles.itemActions}>
+                    <div className={styles.quantityControl}>
+                      <button
+                        className={styles.quantityBtn}
+                        onClick={() => onUpdateQuantity?.(index, (item.quantity || 1) - 1)}
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+                      <span className={styles.quantity}>{item.quantity || 1}</span>
+                      <button
+                        className={styles.quantityBtn}
+                        onClick={() => onUpdateQuantity?.(index, (item.quantity || 1) + 1)}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      className={styles.removeBtn}
+                      onClick={() => onRemoveItem?.(index)}
+                      aria-label="Remove item"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {orders.length > 0 && (
+          <div className={styles.footer}>
+            <div className={styles.summary}>
+              <span className={styles.summaryLabel}>Total Items:</span>
+              <span className={styles.summaryValue}>{totalItems}</span>
+            </div>
+            <button className={styles.checkoutBtn} onClick={onCheckout}>
+              Place Order
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

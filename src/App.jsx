@@ -24,7 +24,7 @@ import AdminPage from "./admin";
 import Features from "./admin/features";
 import EditTemplate from "./admin/editTemplate";
 
-/* import TestTemplate from "./templates/menu/testTemplate"; */
+import TestTemplate from "./templates/menu/testTemplate";
 
 
 
@@ -39,7 +39,7 @@ export default function App() {
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
 
-            {/* <Route path="/test" element={<TestTemplate />} /> */}
+            <Route path="/test" element={<TestTemplate />} />
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               {/* <Route path="/home" element={<Home />} /> */}

@@ -1,0 +1,106 @@
+/* =========================
+   Cart Bubble Button
+========================= */
+.cartBubble {
+  position: fixed;
+  bottom: 24px;
+  right: 18px;
+
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  z-index: 9990;
+
+  box-shadow:
+    0 8px 24px rgba(59, 130, 246, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* Bounce animation */
+  animation: bounce 2s ease-in-out infinite;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cartBubble:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 12px 32px rgba(59, 130, 246, 0.45),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+  animation-play-state: paused;
+}
+
+.cartBubble:active {
+  transform: scale(0.95);
+}
+
+/* =========================
+   Bounce Animation
+========================= */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* =========================
+   Cart Icon
+========================= */
+.cartIcon {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+/* =========================
+   Badge (item count)
+========================= */
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 11px;
+
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+
+  /* Pop-in animation */
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

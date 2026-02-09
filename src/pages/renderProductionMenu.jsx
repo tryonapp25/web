@@ -7,13 +7,15 @@ import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import ModelShowcase from "../components/modelShowcase";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
+import CartBubble from "../components/cartBubble";
+import OrderViewModal from "../components/orderViewModal";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(false);
+  const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
@@ -27,6 +29,9 @@ export default function RenderProductionMenu() {
   const [modelOpen, setModelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
 
+  const [orders, setOrders] = useState([]);
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+
   useEffect(() => {
     let alive = true;
 
@@ -35,12 +40,8 @@ export default function RenderProductionMenu() {
       setFetchFailed(false);
 
       try {
-        const res = await http.get(
-          `/${type}/code/${code}/template/${id}/public/${publicCode}`
-        );
-
+        const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
         if (!alive) return;
-
         if (res.data?.success && res.data?.data) {
           setTemplate(res.data.data);
         } else {
@@ -57,14 +58,61 @@ export default function RenderProductionMenu() {
     };
 
     fetchTemplate();
-    getFeatureFlags("ORDER_FEATURE").then(setOrderFeatureEnabled);
+    //getFlages();
     return () => {
       alive = false;
     };
   }, [type, id, code, publicCode]);
 
-  const handleOrder = () => {
-    if (!orderFeatureEnabled)return;
+  const getFlages = async () => {
+    const flags = await getFeatureFlags("ORDER_FEATURE");
+    setOrderFeatureEnabled(flags);
+  }
+
+  const handleOrder = (order) => {
+    if (!orderFeatureEnabled) return;
+    console.log("Ordering item:", order);
+    
+    setOrders((prevOrders) => {
+      const existingIndex = prevOrders.findIndex(
+        (item) => item.title === order.data.title
+      );
+      
+      if (existingIndex !== -1) {
+        // Item exists, increment quantity
+        return prevOrders.map((item, index) =>
+          index === existingIndex
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
+            : item
+        );
+      } else {
+        // New item, add with quantity 1
+        return [...prevOrders, { ...order.data, quantity: 1 }];
+      }
+    });
+    
+    setModelOpen(false);
+  };
+
+  const handleUpdateQuantity = (index, newQuantity) => {
+    if (newQuantity < 1) {
+      handleRemoveItem(index);
+      return;
+    }
+    setOrders((prevOrders) =>
+      prevOrders.map((item, i) =>
+        i === index ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (index) => {
+    setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
+  };
+
+  const handleCheckout = () => {
+    console.log("Checkout with orders:", orders);
+    // Add your checkout logic here
   };
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
@@ -105,6 +153,7 @@ export default function RenderProductionMenu() {
   return (
     <div>
       {wrappedContent}
+      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
 
       {/* Render modal ONCE */}
       <ModelShowcase
@@ -113,6 +162,15 @@ export default function RenderProductionMenu() {
         onClose={() => setModelOpen(false)}
         orderFeatureEnabled={orderFeatureEnabled}
         onOrder={handleOrder}
+      />
+
+      <OrderViewModal
+        open={orderModalOpen}
+        onClose={() => setOrderModalOpen(false)}
+        orders={orders}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+        onCheckout={handleCheckout}
       />
     </div>
   );

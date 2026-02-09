@@ -1,129 +1,107 @@
 import PdfPageWrapper from "../../components/pdfPageWrapper";
-import Template1 from "./CCFF02"
+import Template1 from "./BRGR01"
 
 import useIsMobile from "../../utils/deviceCheck";
 
 const fakeTemplateData = {
-  id: 202,
-  category: "bubble",
-  code: "BBMN26", // template name
-  name: "Bubble",
-  price:1,
-  uid:5,
-  type:"demo",
+  id: 303,
+  category: "burger",
+  code: "BRGR01",
+  name: "Burger",
+  price: 1,
+  uid: 5,
+  type: "demo",
   subheading: "Menu",
-  heading: "Bubble tea",
+  heading: "Burgers",
   contents: [
     {
-      title: "Taro Cream Milk Tea",
+      title: "Classic Cheeseburger",
       description:
-        "Smooth and nutty with a gentle vanilla sweetness. Taro gives it that dreamy purple color and a cozy, almost cookie-like flavor.",
+        "Juicy beef patty grilled to perfection, topped with melted cheddar, fresh lettuce, tomato, and house sauce.",
       ingredients: [
-        { name: "Bubble", included: true },
-        { name: "Jelly", included: true },
-        { name: "Fruit", included: true },
-        { name: "Popping Boba", included: true },
+        { name: "Beef Patty", included: true },
+        { name: "Cheese", included: true },
+        { name: "Lettuce", included: true },
+        { name: "Tomato", included: true },
       ],
-
       data: [
-        { name: "Small", price: "$20" },
-        { name: "Medium", price: "$22" },
-        { name: "Large", price: "$24" },
+        { name: "Single", price: "$18" },
+        { name: "Double", price: "$22" },
+        { name: "Triple", price: "$26" },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FTaro_Bubble.glb_e2b4db50-7bc2-453d-81aa-0fdac3286dc5.glb?alt=media&token=77b87f52-2c13-42c3-a76f-02b315e76ac6"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
     },
     {
-      title: "Brown Sugar",
+      title: "Bacon BBQ Burger",
       description:
-        "Rich, caramel-like brown sugar syrup coats warm, chewy tapioca pearls, then blends into creamy milk tea.",
+        "Smoky bacon, crispy onions, and tangy BBQ sauce layered over a thick beef patty.",
       ingredients: [
-        { name: "Bubble", included: true },
-        { name: "Jelly", included: true },
-        { name: "Fruit", included: true },
-        { name: "Popping Boba", included: true },
+        { name: "Beef Patty", included: true },
+        { name: "Bacon", included: true },
+        { name: "BBQ Sauce", included: true },
+        { name: "Onion", included: true },
       ],
       data: [
-        { name: "Small", price: "$20" },
-        { name: "Medium", price: "$22" },
-        { name: "Large", price: "$24" },
+        { name: "Single", price: "$20" },
+        { name: "Double", price: "$24" },
+        { name: "Triple", price: "$28" },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FBrown_Sugar.glb_b876d796-40da-4af1-a676-882cf3ea2ca2.glb?alt=media&token=69f0cab6-a5f2-4971-95bc-ea7cdfd308d3"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
     },
     {
-      title: "Matcha Latte Boba",
+      title: "Chicken Burger",
       description:
-        "Earthy green tea with a light bitterness balanced by milk and sugar. Fresh, grassy, and not too sweet.",
+        "Crispy fried chicken breast with creamy mayo, lettuce, and pickles in a toasted bun.",
       ingredients: [
-        { name: "Bubble", included: true },
-        { name: "Jelly", included: true },
-        { name: "Fruit", included: true },
-        { name: "Popping Boba", included: true },
+        { name: "Chicken", included: true },
+        { name: "Lettuce", included: true },
+        { name: "Pickles", included: true },
+        { name: "Mayo", included: true },
       ],
       data: [
-        { name: "Small", price: "$20" },
-        { name: "Medium", price: "$22" },
-        { name: "Large", price: "$24" },
+        { name: "Single", price: "$17" },
+        { name: "Double", price: "$21" },
+        { name: "Spicy", price: "$22" },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FMatcha_Bubble.glb_5a807eb5-45f5-40ae-9a8a-710a60ebcdfd.glb?alt=media&token=0b2adf51-20ae-41ad-8bb7-fed68fe88970"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
     },
     {
-      title: "Strawberry Milk Tea",
+      title: "Veggie Burger",
       description:
-        "Sweet, fruity, and creamy like a strawberry milkshake but lighter. Soft berry flavor with silky milk tea.",
+        "Plant-based patty with avocado, fresh veggies, and vegan sauce. Light, fresh, and satisfying.",
       ingredients: [
-        { name: "Bubble", included: true },
-        { name: "Jelly", included: true },
-        { name: "Fruit", included: true },
-        { name: "Popping Boba", included: true },
+        { name: "Veggie Patty", included: true },
+        { name: "Avocado", included: true },
+        { name: "Lettuce", included: true },
+        { name: "Tomato", included: true },
       ],
       data: [
-        { name: "Small", price: "$20" },
-        { name: "Medium", price: "$22" },
-        { name: "Large", price: "$24" },
+        { name: "Single", price: "$16" },
+        { name: "Double", price: "$20" },
+        { name: "Gluten-Free Bun", price: "$22" },
       ],
-      model:"https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FStrawberry_Bubble.glb_02d7d794-c5db-4c9b-b233-751beeef21d2.glb?alt=media&token=0c2e78d8-20a1-42f6-bcf0-7ff572d24a21"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
     },
     {
-      title: "Fruit Milk Tea",
+      title: "Spicy Jalapeño Burger",
       description:
-        "Creamy milk tea layered with vibrant fruit flavors and topped with chewy boba pearls.",
+        "Bold and fiery with jalapeños, pepper jack cheese, and spicy chipotle sauce.",
       ingredients: [
-        { name: "Bubble", included: true },
-        { name: "Jelly", included: true },
-        { name: "Fruit", included: true },
-        { name: "Popping Boba", included: true },
+        { name: "Beef Patty", included: true },
+        { name: "Jalapeño", included: true },
+        { name: "Pepper Jack", included: true },
+        { name: "Chipotle Sauce", included: true },
       ],
       data: [
-        { name: "Small", price: "$20" },
-        { name: "Medium", price: "$22" },
-        { name: "Large", price: "$24" },
+        { name: "Single", price: "$19" },
+        { name: "Double", price: "$23" },
+        { name: "Extra Spicy", price: "$25" },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FFruit_Milk.glb_c1e2fde9-7702-4338-be22-01fa7b47bb85.glb?alt=media&token=6b401ceb-d604-4a44-97d1-7a30d5a99577"
-    },
-    {
-      title: "Thai Milk Tea",
-      description:
-        "Bold black tea mixed with condensed milk and spices. Strong, sweet, and super creamy.",
-      ingredients: [
-        { name: "Bubble", included: true },
-        { name: "Jelly", included: true },
-        { name: "Fruit", included: true },
-        { name: "Popping Boba", included: true },
-      ],
-      data: [
-        { name: "Small", price: "$20" },
-        { name: "Medium", price: "$22" },
-        { name: "Large", price: "$24" },
-      ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FThai_Bubble.glb_93127e08-098f-48a3-91d1-62bfceddd7f0.glb?alt=media&token=abf5c34b-d17d-4b22-b947-9614c2a664d3"
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
     },
   ],
 };
+
 
 
 
