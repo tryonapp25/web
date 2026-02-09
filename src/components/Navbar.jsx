@@ -12,10 +12,18 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const scrollToSection = (e, targetId) => {
+    e.preventDefault();
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <div className={`${styles.wrap} ${scrolled ? styles.scrolled : ""}`}>
       <nav className={styles.nav}>
-        <a className={styles.brand} href="#top" aria-label="TryOn home">
+        <a className={styles.brand} href="#top" onClick={(e) => scrollToSection(e, "top")} aria-label="TryOn home">
           <div className={styles.logo} aria-hidden="true">
             <img className={styles.Icon} src={`${import.meta.env.BASE_URL}logos/logo.png`}/>
           </div>
@@ -23,14 +31,14 @@ export default function Navbar() {
         </a>
 
         <div className={styles.links}>
-          <a href="#features">Features</a>
-          <a href="#how">How it works</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#faq">FAQ</a>
+          <a href="#features" onClick={(e) => scrollToSection(e, "features")}>Features</a>
+          <a href="#how" onClick={(e) => scrollToSection(e, "how")}>How it works</a>
+          <a href="#pricing" onClick={(e) => scrollToSection(e, "pricing")}>Pricing</a>
+          <a href="#faq" onClick={(e) => scrollToSection(e, "faq")}>FAQ</a>
         </div>
 
         <div className={styles.actions}>
-          <a className={styles.ghost} href="#get-started">Request access</a>
+          <a className={styles.ghost} href="#get-started" onClick={(e) => scrollToSection(e, "get-started")}>Request access</a>
           <Link to="/login"><a className={styles.cta} href="#get-started">Get started</a></Link>
         </div>
       </nav>

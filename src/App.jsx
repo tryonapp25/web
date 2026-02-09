@@ -6,9 +6,11 @@ import AdminProtection from "./ApiContext/adminProtection";
 
 
 import Onboarding from "./pages/onboarding";
+import Home from "./pages/home";
+
 import Login from "./pages/login";
 import Signup from "./pages/signup";
-import Home from "./pages/home";
+import LandingPage from "./pages/landingPage";
 import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import MenuPage from "./pages/menu";
@@ -33,7 +35,7 @@ export default function App() {
     <UserProvider>
         <main>
           <Routes>
-            <Route path="/" element={<Onboarding />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
