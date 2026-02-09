@@ -97,44 +97,44 @@ export default function LandingPage() {
             </a>
           </div>
 
-          <div className={styles.heroVisual}>
-            <div className={styles.mockupContainer}>
-              <div className={styles.mockupImage}>
-                    <Model3D config={config} model={modelUrls[currentModelIndex]}/>
-                </div>
-              <div className={styles.mockupOverlay} />
+          {/* Image Showcase Section */}
+          <section className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionLabel}>Benefits</span>
+              <h2 className={styles.sectionTitle}>Better Customer Experience</h2>
             </div>
-          </div>
+            <div className={styles.imageShowcase}>
+              <div className={styles.imageShowcaseContent}>
+                <img 
+                  src={images[currentImageIndex].icon} 
+                  alt={images[currentImageIndex].title}
+                  className={styles.showcaseImage}
+                />
+                <h3 className={styles.showcaseTitle}>{images[currentImageIndex].title}</h3>
+                <p className={styles.showcaseDesc}>{images[currentImageIndex].desc}</p>
+                <div className={styles.showcaseDots}>
+                  {images.map((_, index) => (
+                    <span 
+                      key={index}
+                      className={`${styles.showcaseDot} ${index === currentImageIndex ? styles.activeDot : ''}`}
+                      onClick={() => setCurrentImageIndex(index)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
-      {/* Image Showcase Section */}
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionLabel}>Benefits</span>
-          <h2 className={styles.sectionTitle}>Better Customer Experience</h2>
-        </div>
-        <div className={styles.imageShowcase}>
-          <div className={styles.imageShowcaseContent}>
-            <img 
-              src={images[currentImageIndex].icon} 
-              alt={images[currentImageIndex].title}
-              className={styles.showcaseImage}
-            />
-            <h3 className={styles.showcaseTitle}>{images[currentImageIndex].title}</h3>
-            <p className={styles.showcaseDesc}>{images[currentImageIndex].desc}</p>
-            <div className={styles.showcaseDots}>
-              {images.map((_, index) => (
-                <span 
-                  key={index}
-                  className={`${styles.showcaseDot} ${index === currentImageIndex ? styles.activeDot : ''}`}
-                  onClick={() => setCurrentImageIndex(index)}
-                />
-              ))}
+      <div className={styles.heroVisual}>
+        <div className={styles.mockupContainer}>
+          <div className={styles.mockupImage}>
+                <Model3D config={config} model={modelUrls[currentModelIndex]}/>
             </div>
-          </div>
+          <div className={styles.mockupOverlay} />
         </div>
-      </section>
+      </div>
 
       {/* Features Section */}
       <section className={styles.section} id="features">

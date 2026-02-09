@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "../styles/Onbroading.module.css";
-import Navbar from "../components/Navbar";
-import http from "../http/http";
-import WaitlistCard from "../components/waitlistCard";
+import Navbar from "../src/components/Navbar";
+import http from "../src/http/http";
+import WaitlistCard from "../src/components/waitlistCard";
 import { Link } from "react-router-dom";
-import FilterGrid from "../components/filterGrid";
-import AppPublicCard from "../homeComponents/appPublicCard";
+import FilterGrid from "../src/components/filterGrid";
+import AppPublicCard from "../src/homeComponents/appPublicCard";
 
 function Badge({ children }) {
   return <span className={styles.badge}>{children}</span>;

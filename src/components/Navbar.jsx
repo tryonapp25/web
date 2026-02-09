@@ -34,7 +34,6 @@ export default function Navbar() {
           <a href="#features" onClick={(e) => scrollToSection(e, "features")}>Features</a>
           <a href="#how" onClick={(e) => scrollToSection(e, "how")}>How it works</a>
           <a href="#pricing" onClick={(e) => scrollToSection(e, "pricing")}>Pricing</a>
-          <a href="#faq" onClick={(e) => scrollToSection(e, "faq")}>FAQ</a>
         </div>
 
         <div className={styles.actions}>

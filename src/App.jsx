@@ -5,7 +5,6 @@ import ProtectedRoute from "./ApiContext/protectedRoute";
 import AdminProtection from "./ApiContext/adminProtection";
 
 
-import Onboarding from "./pages/onboarding";
 import Home from "./pages/home";
 
 import Login from "./pages/login";
@@ -27,6 +26,7 @@ import Features from "./admin/features";
 import EditTemplate from "./admin/editTemplate";
 
 import TestTemplate from "./templates/menu/testTemplate";
+import DashboardPage from "./business/dashboard";
 
 
 
@@ -42,6 +42,7 @@ export default function App() {
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
 
             <Route path="/test" element={<TestTemplate />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               {/* <Route path="/home" element={<Home />} /> */}
