@@ -11,7 +11,7 @@ const config = {
 export default function Template({ data = [], pressable, onPress, onClickModel, onExtrasPress }){
   if (!data) return null;
 
-  const { extras = [] } = data;
+  const { extras } = data;
   const { heading, subheading, contents = []} = data;
 
   const onSelectedTemplate = () => {
@@ -67,26 +67,28 @@ export default function Template({ data = [], pressable, onPress, onClickModel, 
         </div>
 
         {/* Bottom lists (extras groups) */}
-        <div className={styles.bottom}>
-          {extras.length !== 0 && extras.map((group, gIdx) => (
-            <div className={styles.listBlock} key={`extras-${gIdx}`} onClick={() => onExtrasPress(group)}>
-              <h4 className={styles.listTitle}>{group.title}</h4>
-              {group.description && (
-                <p className={styles.listDesc}>{group.description}</p>
-              )}
+        {extras && extras.length > 0 &&
+          <div className={styles.bottom}>
+            {extras && extras.length !== 0 && extras.map((group, gIdx) => (
+              <div className={styles.listBlock} key={`extras-${gIdx}`} onClick={() => onExtrasPress(group)}>
+                <h4 className={styles.listTitle}>{group.title}</h4>
+                {group.description && (
+                  <p className={styles.listDesc}>{group.description}</p>
+                )}
 
-              <ul className={styles.list}>
-                {Array.isArray(group.data) && group.data.map((row, i) => (
-                  <li className={styles.listRow} key={`addon-${gIdx}-${i}`}>
-                    <span className={styles.listName}>{row.name}</span>
-                    <span className={styles.dots} aria-hidden="true" />
-                    <span className={styles.listPrice}>{row.price}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+                <ul className={styles.list}>
+                  {Array.isArray(group.data) && group.data.map((row, i) => (
+                    <li className={styles.listRow} key={`addon-${gIdx}-${i}`}>
+                      <span className={styles.listName}>{row.name}</span>
+                      <span className={styles.dots} aria-hidden="true" />
+                      <span className={styles.listPrice}>{row.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        }
 
         <div className={styles.scribblesBottomRight} aria-hidden="true" />
       </div>
