@@ -3,9 +3,8 @@ import "./index.css"
 import { UserProvider } from "./ApiContext/userContext";
 import ProtectedRoute from "./ApiContext/protectedRoute";
 import AdminProtection from "./ApiContext/adminProtection";
+import BusinessProtection from "./ApiContext/businessProtection";
 
-
-import Home from "./pages/home";
 
 import Login from "./pages/login";
 import Signup from "./pages/signup";
@@ -45,10 +44,9 @@ export default function App() {
       
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
-              {/* <Route path="/home" element={<Home />} /> */}
+              <Route path="/home" element={<MenuPage />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/menu" element={<MenuPage />} />
               <Route path="/collection" element={<MyCollection />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
               <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />
@@ -61,7 +59,9 @@ export default function App() {
               </Route>
 
               {/* Business route */}
-              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route element={<BusinessProtection />}>
+                <Route path="/business/dashboard" element={<DashboardPage />} />
+              </Route>
             </Route>
             
           </Routes>

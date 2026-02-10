@@ -31,7 +31,7 @@ export default function Login() {
         sessionStorage.setItem("token", res.data.token);
         sessionStorage.setItem("user", JSON.stringify(res.data.data));
         setPublicUser(res.data.data);
-        navigate("/menu")
+        navigate("/home")
       }
     }
     catch (err) {
