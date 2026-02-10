@@ -10,6 +10,9 @@
 
   background: rgba(8, 10, 18, 0.7);
   backdrop-filter: blur(12px);
+  overflow-y: auto;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;  
 
   z-index: 9999;
 }
@@ -224,8 +227,6 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  width: 100%;
-  max-width: 400px;
   padding: 20px;
 }
 
@@ -282,4 +283,97 @@
 .ingredientExcluded {
   opacity: 0.5;
   text-decoration: line-through;
+}
+
+/* =========================
+   Extras Section
+========================= */
+.extrasContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  height: 100%;
+}
+
+.extrasTitle {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.extrasCategoriesList {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.extrasCategory {
+  background: rgba(255,255,255,.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 16px;
+}
+
+.extrasCategoryTitle {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.extrasCategoryDesc {
+  color: rgba(255,255,255,.6);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.extrasItemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.extrasItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.08);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.extrasItem:hover {
+  background: rgba(255,255,255,.14);
+}
+
+.extrasCheckbox {
+  width: 20px;
+  height: 20px;
+  accent-color: #10b981;
+  cursor: pointer;
+}
+
+.extrasItemName {
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.extrasItemPrice {
+  color: #10b981;
+  font-size: 14px;
+  font-weight: 600;
 }

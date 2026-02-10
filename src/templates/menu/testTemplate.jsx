@@ -13,18 +13,28 @@ const fakeTemplateData = {
   type: "demo",
   subheading: "Menu",
   heading: "Burgers",
-  drinks: [
-    { name: "Soda", price: "$2" },
-    { name: "Iced Tea", price: "$0.5" },
-    { name: "Lemonade", price: "$0.5" },
-    { name: "Blue Lemonade", price: "$2" },
-    { name: "Mineral Water", price: "$1" },
-  ],
   extras: [
-    { name: "Ketchup", price: "$0.5" },
-    { name: "Mayonnaise", price: "$0.5" },
-    { name: "BBQ Sauce", price: "$0.5" },
-    { name: "Chili Sauce", price: "$0.5" },
+    {
+      title: "Drinks",
+      description: "Refreshing beverages",
+      data: [
+        { name: "Soda", price: "$2" },
+        { name: "Iced Tea", price: "$0.5" },
+        { name: "Lemonade", price: "$0.5" },
+        { name: "Blue Lemonade", price: "$2" },
+        { name: "Mineral Water", price: "$1" }
+      ]
+    },
+    {
+      title: "Sauces",
+      description: "Additional sauces",
+      data: [
+        { name: "Ketchup", price: "$0.5" },
+        { name: "Mayonnaise", price: "$0.5" },
+        { name: "BBQ Sauce", price: "$0.5" },
+        { name: "Chili Sauce", price: "$0.5" }
+      ]
+    }
   ],
   contents: [
     {

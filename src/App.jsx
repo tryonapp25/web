@@ -24,8 +24,11 @@ import AdminPage from "./admin";
 import Features from "./admin/features";
 import EditTemplate from "./admin/editTemplate";
 
-import TestTemplate from "./templates/menu/testTemplate";
+// Business //
 import DashboardPage from "./business/dashboard";
+
+
+import TestTemplate from "./templates/menu/testTemplate";
 
 
 
@@ -44,7 +47,7 @@ export default function App() {
       
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/home" element={<MenuPage />} />
+              <Route path="/menu" element={<MenuPage />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/collection" element={<MyCollection />} />

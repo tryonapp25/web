@@ -69,7 +69,7 @@ export default function RenderProductionMenu() {
     setOrderFeatureEnabled(flags);
   }
 
-  const handleOrder = (order) => {
+  const handleSelectOrder = (order) => {
     if (!orderFeatureEnabled) return;
     console.log("Ordering item:", order);
     
@@ -92,6 +92,7 @@ export default function RenderProductionMenu() {
     });
     
     setModelOpen(false);
+    setOrderModalOpen(true);
   };
 
   const handleUpdateQuantity = (index, newQuantity) => {
@@ -161,7 +162,8 @@ export default function RenderProductionMenu() {
         item={selectedModel}
         onClose={() => setModelOpen(false)}
         orderFeatureEnabled={orderFeatureEnabled}
-        onOrder={handleOrder}
+        onOrder={handleSelectOrder}
+        extras={template?.extras || []}
       />
 
       <OrderViewModal

@@ -8,14 +8,19 @@ const config = {
 }
 
 
-export default function Template({ data }) {
+export default function Template({ data = [], pressable, onPress, onClickModel, onExtrasPress }){
   if (!data) return null;
 
-  const { drinks = [], extras = [] } = data;
+  const { extras = [] } = data;
   const { heading, subheading, contents = []} = data;
 
+  const onSelectedTemplate = () => {
+    if(!pressable) return;
+    onPress(data);
+  }
+
   return (
-    <section className={styles.page}>
+    <section className={styles.page} onClick={onSelectedTemplate}>
       <div className={styles.inner}>
         {/* Header */}
         <header className={styles.header}>
@@ -39,7 +44,7 @@ export default function Template({ data }) {
 
                 <div className={styles.imageWrap}>
                   <div className={styles.image}>
-                    <Model3D model={item.model} config={config}/>
+                    <Model3D model={item.model} config={config} onClick={() => onClickModel({data: item, config: config})} />
                   </div>
                 </div>
 
@@ -61,33 +66,26 @@ export default function Template({ data }) {
           })}
         </div>
 
-        {/* Bottom lists */}
+        {/* Bottom lists (extras groups) */}
         <div className={styles.bottom}>
-          <div className={styles.listBlock}>
-            <h4 className={styles.listTitle}>Adds-on</h4>
-            <ul className={styles.list}>
-              {extras.length !== 0 && extras.map((row, i) => (
-                <li className={styles.listRow} key={`addon-${i}`}>
-                  <span className={styles.listName}>{row.name}</span>
-                  <span className={styles.dots} aria-hidden="true" />
-                  <span className={styles.listPrice}>{row.price}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {extras.length !== 0 && extras.map((group, gIdx) => (
+            <div className={styles.listBlock} key={`extras-${gIdx}`} onClick={() => onExtrasPress(group)}>
+              <h4 className={styles.listTitle}>{group.title}</h4>
+              {group.description && (
+                <p className={styles.listDesc}>{group.description}</p>
+              )}
 
-          <div className={styles.listBlock}>
-            <h4 className={styles.listTitle}>Drinks</h4>
-            <ul className={styles.list}>
-              {drinks.length !== 0 && drinks.map((row, i) => (
-                <li className={styles.listRow} key={`drink-${i}`}>
-                  <span className={styles.listName}>{row.name}</span>
-                  <span className={styles.dots} aria-hidden="true" />
-                  <span className={styles.listPrice}>{row.price}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+              <ul className={styles.list}>
+                {Array.isArray(group.data) && group.data.map((row, i) => (
+                  <li className={styles.listRow} key={`addon-${gIdx}-${i}`}>
+                    <span className={styles.listName}>{row.name}</span>
+                    <span className={styles.dots} aria-hidden="true" />
+                    <span className={styles.listPrice}>{row.price}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         <div className={styles.scribblesBottomRight} aria-hidden="true" />

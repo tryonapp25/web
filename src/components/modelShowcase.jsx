@@ -10,10 +10,13 @@ export default function ModelShowcase({
   item,
   onOrder,
   orderFeatureEnabled,
+  extras = [],
 }) {
   const [mounted, setMounted] = useState(open);
-  const [showIngredients, setShowIngredients] = useState(false);
+  const [currentStep, setCurrentStep] = useState('model'); // 'model' | 'ingredients' | 'extras'
   const [ingredients, setIngredients] = useState([]);
+  const [selectedExtras, setSelectedExtras] = useState({});
+
 
   // Initialize ingredients from item data
   useEffect(() => {
@@ -22,10 +25,24 @@ export default function ModelShowcase({
     }
   }, [item]);
 
-  // Reset showIngredients when modal closes
+  // Initialize selected extras state
+  useEffect(() => {
+    if (extras && extras.length > 0) {
+      const initialExtras = {};
+      extras.forEach((category, catIndex) => {
+        initialExtras[catIndex] = {};
+        category.data?.forEach((_, itemIndex) => {
+          initialExtras[catIndex][itemIndex] = false;
+        });
+      });
+      setSelectedExtras(initialExtras);
+    }
+  }, [extras]);
+
+  // Reset step when modal closes
   useEffect(() => {
     if (!open) {
-      setShowIngredients(false);
+      setCurrentStep('model');
     }
   }, [open]);
 
@@ -66,6 +83,10 @@ export default function ModelShowcase({
     if (!open) setMounted(false);
   };
 
+
+
+  // Order Handlers //
+
   const toggleIngredient = (index) => {
     setIngredients(prev => 
       prev.map((ing, i) => 
@@ -74,13 +95,45 @@ export default function ModelShowcase({
     );
   };
 
+  const toggleExtra = (categoryIndex, itemIndex) => {
+    setSelectedExtras(prev => ({
+      ...prev,
+      [categoryIndex]: {
+        ...prev[categoryIndex],
+        [itemIndex]: !prev[categoryIndex]?.[itemIndex]
+      }
+    }));
+  };
+
   const handleNextClick = () => {
-    setShowIngredients(true);
+    if (currentStep === 'model') {
+      setCurrentStep('ingredients');
+    } else if (currentStep === 'ingredients' && extras && extras.length > 0) {
+      setCurrentStep('extras');
+    }
   };
 
   const handleBackClick = () => {
-    setShowIngredients(false);
+    if (currentStep === 'extras') {
+      setCurrentStep('ingredients');
+    } else if (currentStep === 'ingredients') {
+      setCurrentStep('model');
+    }
   };
+
+  const getSelectedExtrasData = () => {
+    const selected = [];
+    extras.forEach((category, catIndex) => {
+      category.data?.forEach((item, itemIndex) => {
+        if (selectedExtras[catIndex]?.[itemIndex]) {
+          selected.push({ ...item, category: category.title });
+        }
+      });
+    });
+    return selected;
+  };
+
+  const hasExtras = extras && extras.length > 0;
 
   return (
     <div
@@ -102,7 +155,7 @@ export default function ModelShowcase({
             ✕
           </button>
           
-          {!showIngredients ? (
+          {currentStep === 'model' && (
             <>
               <Model3D model={item?.data?.model} config={item?.config}/>
               <div className={styles.info}>
@@ -127,7 +180,9 @@ export default function ModelShowcase({
                 </>
               )}
             </>
-          ) : (
+          )}
+          
+          {currentStep === 'ingredients' && (
             <>
               <div className={styles.ingredientsContainer}>
                 <h3 className={styles.ingredientsTitle}>Ingredients</h3>
@@ -156,9 +211,82 @@ export default function ModelShowcase({
                 >
                   Back
                 </button>
+                {hasExtras ? (
+                  <button
+                    className={styles.nextBtn}
+                    onClick={handleNextClick}
+                    aria-label="Next"
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    className={styles.orderBtn}
+                    onClick={() => onOrder?.({ 
+                      ...item, 
+                      data: { 
+                        ...item.data, 
+                        ingredients,
+                        extras: [] 
+                      } 
+                    })}
+                    aria-label="Order"
+                  >
+                    Order
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+          
+          {currentStep === 'extras' && (
+            <>
+              <div className={styles.extrasContainer}>
+                <h3 className={styles.extrasTitle}>Extras</h3>
+                <div className={styles.extrasCategoriesList}>
+                  {extras.map((category, catIndex) => (
+                    <div key={catIndex} className={styles.extrasCategory}>
+                      <h4 className={styles.extrasCategoryTitle}>{category.title}</h4>
+                      {category.description && (
+                        <p className={styles.extrasCategoryDesc}>{category.description}</p>
+                      )}
+                      <div className={styles.extrasItemsList}>
+                        {category.data?.map((extraItem, itemIndex) => (
+                          <label key={itemIndex} className={styles.extrasItem}>
+                            <input
+                              type="checkbox"
+                              checked={selectedExtras[catIndex]?.[itemIndex] || false}
+                              onChange={() => toggleExtra(catIndex, itemIndex)}
+                              className={styles.extrasCheckbox}
+                            />
+                            <span className={styles.extrasItemName}>{extraItem.name}</span>
+                            <span className={styles.extrasItemPrice}>{extraItem.price}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className={styles.actions}>
+                <button
+                  className={styles.backBtn}
+                  onClick={handleBackClick}
+                  aria-label="Back"
+                >
+                  Back
+                </button>
                 <button
                   className={styles.orderBtn}
-                  onClick={() => onOrder?.({ ...item, ingredients })}
+                  onClick={() => onOrder?.({ 
+                    ...item, 
+                    data: { 
+                      ...item.data, 
+                      ingredients,
+                      extras: getSelectedExtrasData() 
+                    } 
+                  })}
                   aria-label="Order"
                 >
                   Order
