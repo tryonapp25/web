@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import styles from "../styles/LandingPage.module.css";
+import styles from "../styles/Onboarding.module.css";
 import Model3D from "../components/3dModel";
 
 const config = {
@@ -47,7 +47,7 @@ const images = [
   }
 ];
 
-export default function LandingPage() {
+export default function Onboarding() {
   const [currentModelIndex, setCurrentModelIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -60,12 +60,20 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    const imageInterval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 3500);
+  const imageInterval = setInterval(() => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  }, 3500);
 
     return () => clearInterval(imageInterval);
   }, []);
+
+  const scrollToSection = (e, targetId) => {
+    e.preventDefault();
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
   return (
     <div className={styles.page}>
       <Navbar />
@@ -92,9 +100,7 @@ export default function LandingPage() {
               Start Free Trial
               <span>→</span>
             </Link>
-            <a href="#how" className={styles.btnSecondary}>
-              See How It Works
-            </a>
+            <a className={styles.btnSecondary} href="#how" onClick={(e) => scrollToSection(e, "how")}>How it works</a>
           </div>
 
           {/* Image Showcase Section */}
@@ -460,9 +466,9 @@ export default function LandingPage() {
           </div>
 
           <div className={styles.footerLinks}>
-            <a href="#features">Features</a>
-            <a href="#how">How it works</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#features" onClick={(e) => scrollToSection(e, "features")}>Features</a>
+            <a href="#how" onClick={(e) => scrollToSection(e, "how")}>How it works</a>
+            <a href="#pricing" onClick={(e) => scrollToSection(e, "pricing")}>Pricing</a>
             <Link to="/login">Login</Link>
           </div>
 

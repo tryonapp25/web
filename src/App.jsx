@@ -9,7 +9,7 @@ import Home from "./pages/home";
 
 import Login from "./pages/login";
 import Signup from "./pages/signup";
-import LandingPage from "./pages/landingPage";
+import Onboarding from "./pages/onboarding";
 import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import MenuPage from "./pages/menu";
@@ -35,14 +35,14 @@ export default function App() {
     <UserProvider>
         <main>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Onboarding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
 
             <Route path="/test" element={<TestTemplate />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
+      
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               {/* <Route path="/home" element={<Home />} /> */}
@@ -59,6 +59,9 @@ export default function App() {
                 <Route path="/admin/edit/template" element={<EditTemplate />} />
                 <Route path="/admin/features" element={<Features />} />
               </Route>
+
+              {/* Business route */}
+              <Route path="/dashboard" element={<DashboardPage />} />
             </Route>
             
           </Routes>

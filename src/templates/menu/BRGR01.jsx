@@ -11,7 +11,8 @@ const config = {
 export default function Template({ data }) {
   if (!data) return null;
 
-  const { heading, subheading, contents = [], addons = [], drinks = [] } = data;
+  const { drinks = [], extras = [] } = data;
+  const { heading, subheading, contents = []} = data;
 
   return (
     <section className={styles.page}>
@@ -65,7 +66,7 @@ export default function Template({ data }) {
           <div className={styles.listBlock}>
             <h4 className={styles.listTitle}>Adds-on</h4>
             <ul className={styles.list}>
-              {(addons.length ? addons : defaultAddons).map((row, i) => (
+              {extras.length !== 0 && extras.map((row, i) => (
                 <li className={styles.listRow} key={`addon-${i}`}>
                   <span className={styles.listName}>{row.name}</span>
                   <span className={styles.dots} aria-hidden="true" />
@@ -78,7 +79,7 @@ export default function Template({ data }) {
           <div className={styles.listBlock}>
             <h4 className={styles.listTitle}>Drinks</h4>
             <ul className={styles.list}>
-              {(drinks.length ? drinks : defaultDrinks).map((row, i) => (
+              {drinks.length !== 0 && drinks.map((row, i) => (
                 <li className={styles.listRow} key={`drink-${i}`}>
                   <span className={styles.listName}>{row.name}</span>
                   <span className={styles.dots} aria-hidden="true" />
@@ -95,18 +96,3 @@ export default function Template({ data }) {
   );
 }
 
-const defaultAddons = [
-  { name: "Cheese", price: "$2" },
-  { name: "Salad", price: "$0.5" },
-  { name: "Pickle", price: "$0.5" },
-  { name: "Fries", price: "$2" },
-  { name: "Extra Sauce", price: "$1" },
-];
-
-const defaultDrinks = [
-  { name: "Soda", price: "$2" },
-  { name: "Iced Tea", price: "$0.5" },
-  { name: "Lemonade", price: "$0.5" },
-  { name: "Blue Lemonade", price: "$2" },
-  { name: "Mineral Water", price: "$1" },
-];
