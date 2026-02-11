@@ -85,6 +85,7 @@ export default function Template({data = {}, pressable, onPress, onClickModel })
               key={it.id}
               className={`${styles.card} ${isRight ? styles.cardRight : styles.cardLeft}`}
               role="listitem"
+              onClick={() => onClickModel?.({data: it, config: config})}
             >
               <div className={styles.cardInner}>
                 <div className={styles.crownWrap} aria-hidden="true">
@@ -92,7 +93,7 @@ export default function Template({data = {}, pressable, onPress, onClickModel })
                 </div>
 
                 <div className={styles.drinkWrap}>
-                  <Model3D model={it?.model} images={it?.images} config={config} onClick={() => onClickModel?.({data: it, config: config})}/>
+                  <Model3D model={it?.model} images={it?.images} config={config}/>
                 </div>
 
                 <div className={styles.textWrap}>

@@ -47,24 +47,23 @@ export default function Template({data, pressable, onPress, onClickModel }) {
             {/* Cards grid */}
             <main className={styles.grid}>
             {contents.map((item, index) => (
-                <article key={index} className={styles.card}>
-                <div className={styles.cardBody}>
-                    <h3 className={styles.cardTitle}>{item.title}</h3>
-                    <p className={styles.cardDesc}>{item.description}</p>
+                <article key={index} className={styles.card} onClick={() => onClickModel?.({data: item, config: config})}>
+                    <div className={styles.cardBody}>
+                        <h3 className={styles.cardTitle}>{item.title}</h3>
+                        <p className={styles.cardDesc}>{item.description}</p>
 
-                    {item.data.map((d, ix) => {
-                        return <div key={ix} className={styles.cardPrice}>{d.price}</div>;
-                    })}
+                        {item.data.map((d, ix) => {
+                            return <div key={ix} className={styles.cardPrice}>{d.price}</div>;
+                        })}
 
-                    <div className={styles.cardImageWrap}>
-                        <Model3D
-                            images={item?.images}
-                            config={config}
-                            model={item?.model}
-                            onClick={() => onClickModel?.({data:item, config: config})}
-                        />
+                        <div className={styles.cardImageWrap}>
+                            <Model3D
+                                images={item?.images}
+                                config={config}
+                                model={item?.model}
+                            />
+                        </div>
                     </div>
-                </div>
                 </article>
             ))}
             </main>

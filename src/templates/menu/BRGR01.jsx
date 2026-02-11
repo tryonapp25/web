@@ -39,12 +39,12 @@ export default function Template({ data = [], pressable, onPress, onClickModel, 
               "$0";
 
             return (
-              <article className={styles.card} key={`${item.title}-${idx}`}>
+              <article className={styles.card} key={`${item.title}-${idx}`} onClick={() => onClickModel({data: item, config: config})}>
                 <div className={styles.priceBadge}>{String(displayPrice).replace("$", "$")}</div>
 
                 <div className={styles.imageWrap}>
                   <div className={styles.image}>
-                    <Model3D model={item.model} images={item?.images} config={config} onClick={() => onClickModel({data: item, config: config})} />
+                    <Model3D model={item.model} images={item?.images} config={config} />
                   </div>
                 </div>
 

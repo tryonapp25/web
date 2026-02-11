@@ -5,10 +5,10 @@ import Model3D from "../../components/3dModel";
 
 function PlateImage({ model, onClickModel, images }) {
   return (
-    <div className={styles.plateWrap}>
+    <div className={styles.plateWrap} onClick={onClickModel}>
       <div className={styles.plate}>
         <div className={styles.model3d}>
-          <Model3D model={model} onClick={onClickModel} config={config} images={images} />
+          <Model3D model={model} config={config} images={images} />
         </div>
         <div className={styles.plateShadow} />
       </div>

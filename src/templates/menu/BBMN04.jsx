@@ -111,9 +111,9 @@ export default function BBMN04({data, pressable, onPress, onClickModel }) {
           {/* RIGHT GRID */}
           <section className={styles.drinksGrid}>
             {sections.map((item, idx) => (
-              <div key={idx} className={styles.drinkCard} title={item.model}>
+              <div key={idx} className={styles.drinkCard} title={item.model} onClick={() => onClickModel({data: item, config: config})}>
                 <div style={{ width: "100px", height: "100px" }} className={styles.model3d}>
-                  <Model3D model={item?.model} images={item?.images} config={config} onClick={() => onClickModel?.({data: item, config: config})}/>
+                  <Model3D model={item?.model} images={item?.images} config={config}/>
                 </div>
                 <div className={styles.drinkName}>{item.title}</div>
               </div>

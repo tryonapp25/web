@@ -58,13 +58,13 @@ export default function RenderProductionMenu() {
     };
 
     fetchTemplate();
-    getFlages();
+    getFlags();
     return () => {
       alive = false;
     };
   }, [type, id, code, publicCode]);
 
-  const getFlages = async () => {
+  const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
   }

@@ -28,11 +28,11 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
 
         {/* 3 circular pizzas / models */}
         {contents.slice(0, 3).map((section, i) => (
-          <div key={`pizza-${i}`} className={`${styles.pizzaWrap} ${pizzaPosClass[i]}`}>
+          <div key={`pizza-${i}`} className={`${styles.pizzaWrap} ${pizzaPosClass[i]}`} onClick={() => onClickModel({data: section, config: config})}>
             
             <div className={styles.pizzaInner} >
               {/* Use 3D model */}
-              <Model3D config={config} images={section?.images} model={section.model} onClick={() => onClickModel({data: section, config: config})}/>
+              <Model3D config={config} images={section?.images} model={section.model}/>
             </div>
           </div>
         ))}

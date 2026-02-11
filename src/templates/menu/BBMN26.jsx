@@ -53,7 +53,7 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
           {sections.slice(0, 6).map((section, idx) => {
             const [c1, c2] = seedColor(idx);
             return (
-              <article className={styles.card} key={idx}>
+              <article className={styles.card} key={idx} onClick={() => onClickModel?.({data: section, config: config})}>
                 {/* top blob */}
                 <div
                   className={styles.cardBlob}
@@ -77,7 +77,6 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
                         images={section?.images}
                         config={config}
                         model={section?.model}
-                        onClick={() => onClickModel?.({data: section, config: config})}
                       />
                     </div>
                   </div>
