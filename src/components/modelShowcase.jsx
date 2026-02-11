@@ -157,7 +157,7 @@ export default function ModelShowcase({
           
           {currentStep === 'model' && (
             <>
-              <Model3D model={item?.data?.model} config={item?.config}/>
+              <Model3D model={item?.data?.model} config={item?.config} images={item?.data?.images}/>
               <div className={styles.info}>
                 <p>{item?.data?.title} : </p>
                 <p>- {item?.data?.description}</p>

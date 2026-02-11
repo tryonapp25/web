@@ -34,7 +34,7 @@ export default function Template({ data = {}, pressable, onPress,  onClickModel 
               data-col={(idx % 3) + 1}
             >
               <div className={styles.imageWrap}>
-                <Model3D model={item.model} config={config} onClick={() => onClickModel({data: item, config: config})}/>
+                <Model3D model={item.model} images={item?.images} config={config} onClick={() => onClickModel({data: item, config: config})}/>
               </div>
 
               <div className={styles.card}>

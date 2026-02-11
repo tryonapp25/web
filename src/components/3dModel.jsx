@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styles from "../styles/Model3D.module.css";
 
-export default function Model3D({ model, config, onClick }) {
+export default function Model3D({ model, images, config, onClick }) {
   useEffect(() => {
     if (customElements.get("model-viewer")) return;
 
@@ -14,14 +14,17 @@ export default function Model3D({ model, config, onClick }) {
   return (
     <div className={styles.wrapper} onClick={onClick}>
       <model-viewer
-        key={model}   // 🔥 forces reset when model changes
+        //key={model}   // 🔥 forces reset when model changes
         src={model}
-        alt="3D pizza model"
+        alt="3D model"
+        //poster=""
         camera-controls
         camera-orbit={config?.camera_orbit || "auto 10deg"} // x y z (in meters, model space)
         auto-rotate
         touch-action="pan-y"
         autoplay
+        loading="eager"
+        reveal="auto"
         animation-loop
         environment-image="neutral"
         shadow-intensity="1"

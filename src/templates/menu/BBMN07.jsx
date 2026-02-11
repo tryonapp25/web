@@ -92,7 +92,7 @@ export default function Template({data = {}, pressable, onPress, onClickModel })
                 </div>
 
                 <div className={styles.drinkWrap}>
-                  <Model3D model={it?.model} config={config} onClick={() => onClickModel?.({data: it, config: config})}/>
+                  <Model3D model={it?.model} images={it?.images} config={config} onClick={() => onClickModel?.({data: it, config: config})}/>
                 </div>
 
                 <div className={styles.textWrap}>

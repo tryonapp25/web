@@ -74,6 +74,7 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
                   <div className={styles.modelWrap}>
                     <div className={styles.model3d}>
                       <Model3D
+                        images={section?.images}
                         config={config}
                         model={section?.model}
                         onClick={() => onClickModel?.({data: section, config: config})}
