@@ -9,6 +9,7 @@ import ModelShowcase from "../components/modelShowcase";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
 import CartBubble from "../components/cartBubble";
 import OrderViewModal from "../components/orderViewModal";
+import PaymentMethodModal from "../components/paymentMethodModal";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
@@ -28,6 +29,7 @@ export default function RenderProductionMenu() {
 
   const [modelOpen, setModelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
+  const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
   const [orders, setOrders] = useState([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
@@ -172,8 +174,16 @@ export default function RenderProductionMenu() {
         orders={orders}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        onCheckout={handleCheckout}
+        onCheckout={() => setShowPaymentMethod(true)}
       />
+
+      <PaymentMethodModal
+        open={showPaymentMethod}
+        onClose={() => setShowPaymentMethod(false)}
+        onPayInKasse={() => console.log("pay in kasse")}
+        onPayNow={() => handleCheckout()}
+      />
+
     </div>
   );
 }

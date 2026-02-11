@@ -1,3 +1,5 @@
+/* modelShowcase.module.css */
+
 /* =========================
    Overlay
 ========================= */
@@ -70,8 +72,16 @@
   overflow: hidden;
 
   /* premium showroom background */
-  background: radial-gradient(900px 400px at 50% 25%, rgba(96, 165, 250, 0.25), transparent),
-    radial-gradient(600px 500px at 50% 100%, rgba(110, 231, 183, 0.15), transparent),
+  background: radial-gradient(
+      900px 400px at 50% 25%,
+      rgba(96, 165, 250, 0.25),
+      transparent
+    ),
+    radial-gradient(
+      600px 500px at 50% 100%,
+      rgba(110, 231, 183, 0.15),
+      transparent
+    ),
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
 
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -142,22 +152,57 @@
   text-align: left;
 }
 
-/* Optional pill (if you uncomment in JSX) */
-.metaPill {
+/* =========================
+   Section header (shared)
+========================= */
+.sectionHeader {
+  width: min(720px, 92%);
+  margin: 0 auto 14px;
+  padding: 14px 16px;
+
+  border-radius: 16px;
+  background: rgba(10, 14, 24, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.sectionHeaderTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sectionMeta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
 
   padding: 6px 10px;
   border-radius: 999px;
 
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
 
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.82);
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sectionSubTitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13.5px;
+  line-height: 1.4;
+  text-align: left;
 }
 
 /* =========================
@@ -285,7 +330,7 @@
 }
 
 /* =========================
-   Ingredients Section
+   Ingredients Section (PRO)
 ========================= */
 .ingredientsContainer {
   display: flex;
@@ -293,66 +338,139 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding: 20px;
+  width: 100%;
+  padding: 18px 16px 10px;
 }
 
 .ingredientsTitle {
-  color: white;
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  text-align: center;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: 22px;
+  font-weight: 850;
+  margin: 0;
+  text-align: left;
+  letter-spacing: -0.02em;
 }
 
 .ingredientsList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-height: 300px;
-  overflow-y: auto;
+  width: min(720px, 92%);
+  max-height: min(52vh, 420px);
+  overflow: auto;
+
   padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+
+  background: rgba(10, 14, 24, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  display: grid;
+  gap: 10px;
 }
 
 .ingredientItem {
-  display: flex;
+  display: grid;
+  grid-template-columns: 34px 1fr;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+
   cursor: pointer;
-  transition: background 0.15s ease;
+  user-select: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+
+  transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
 }
 
 .ingredientItem:hover {
-  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-.ingredientCheckbox {
-  width: 22px;
-  height: 22px;
-  accent-color: #3b82f6;
+.itemOn {
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.18);
+}
+
+.itemOff {
+  opacity: 0.92;
+}
+
+.checkWrap {
+  position: relative;
+  width: 34px;
+  height: 34px;
+
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  display: grid;
+  place-items: center;
+}
+
+.ingredientCheckbox,
+.extrasCheckbox {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
   cursor: pointer;
 }
 
+.customCheck {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+
+  transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+}
+
+.checkWrap:has(input:checked) .customCheck {
+  background: rgba(59, 130, 246, 0.9);
+  border-color: rgba(59, 130, 246, 0.95);
+  transform: scale(1.03);
+}
+
+.itemText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .ingredientName {
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  transition: opacity 0.15s ease, text-decoration 0.15s ease;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemHint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
 .ingredientExcluded {
-  opacity: 0.5;
+  opacity: 0.55;
   text-decoration: line-through;
 }
 
 /* =========================
-   Extras Section
+   Extras Section (PRO)
 ========================= */
 .extrasContainer {
   display: flex;
@@ -361,85 +479,149 @@
   justify-content: center;
   flex: 1;
   width: 100%;
-  padding: 20px;
+  padding: 18px 16px 10px;
   height: 100%;
 }
 
 .extrasTitle {
-  color: white;
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  text-align: center;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: 22px;
+  font-weight: 850;
+  margin: 0;
+  text-align: left;
+  letter-spacing: -0.02em;
 }
 
 .extrasCategoriesList {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
+  width: min(820px, 92%);
+  max-height: min(58vh, 520px);
+  overflow: auto;
+
+  display: grid;
+  gap: 14px;
+
   padding: 10px;
+  border-radius: 18px;
+
+  background: rgba(10, 14, 24, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .extrasCategory {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 16px;
+  border-radius: 16px;
+  padding: 14px;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.06);
+}
+
+.extrasCategoryHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .extrasCategoryTitle {
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 16px;
+  font-weight: 850;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
 }
 
 .extrasCategoryDesc {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.62);
   font-size: 13px;
-  margin-bottom: 12px;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .extrasItemsList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  gap: 10px;
 }
 
 .extrasItem {
-  display: flex;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+
   cursor: pointer;
-  transition: background 0.15s ease;
+  user-select: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+
+  transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
 }
 
 .extrasItem:hover {
-  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-.extrasCheckbox {
-  width: 20px;
-  height: 20px;
-  accent-color: #10b981;
-  cursor: pointer;
+.extraOn {
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.16);
+}
+
+.extraOff {
+  opacity: 0.95;
 }
 
 .extrasItemName {
-  color: white;
+  color: rgba(255, 255, 255, 0.92);
   font-size: 15px;
-  font-weight: 500;
-  flex: 1;
+  font-weight: 750;
+  line-height: 1.25;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .extrasItemPrice {
-  color: #10b981;
-  font-size: 14px;
-  font-weight: 600;
+  color: rgba(16, 185, 129, 0.95);
+  font-size: 13.5px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+/* =========================
+   Motion safety
+========================= */
+@media (prefers-reduced-motion: reduce) {
+  .overlayIn,
+  .overlayOut,
+  .glow {
+    animation: none !important;
+  }
+  .ingredientItem,
+  .extrasItem,
+  .orderBtn,
+  .nextBtn,
+  .backBtn {
+    transition: none !important;
+  }
 }

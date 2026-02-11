@@ -43,6 +43,24 @@ export default function OrderViewModal({
 
   const totalItems = orders.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
+  const getExtrasForItem = (item) => {
+    // supports both shapes:
+    // - item.extras (if you store directly at root)
+    // - item.data.extras (matches how you set it in ModelShowcase)
+    const extras = item?.extras ?? item?.data?.extras ?? [];
+    return Array.isArray(extras) ? extras : [];
+  };
+
+  const groupExtrasByCategory = (extras) => {
+    const groups = {};
+    extras.forEach((ex) => {
+      const cat = ex.category || "Extras";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(ex);
+    });
+    return groups;
+  };
+
   return (
     <div
       className={`${styles.overlay} ${open ? styles.overlayIn : styles.overlayOut}`}
@@ -66,54 +84,84 @@ export default function OrderViewModal({
             </div>
           ) : (
             <div className={styles.orderList}>
-              {orders.map((item, index) => (
-                <div key={index} className={styles.orderItem}>
-                  <div className={styles.itemInfo}>
-                    <h3 className={styles.itemTitle}>{item.title}</h3>
-                    {item.description && (
-                      <p className={styles.itemDescription}>{item.description}</p>
-                    )}
-                    {item.ingredients && (
-                      <div className={styles.itemIngredients}>
-                        {item.ingredients
-                          .filter((ing) => ing.included)
-                          .map((ing, i) => (
-                            <span key={i} className={styles.ingredientTag}>
-                              {ing.name}
-                            </span>
-                          ))}
-                      </div>
-                    )}
-                  </div>
+              {orders.map((item, index) => {
+                const extras = getExtrasForItem(item);
+                const grouped = groupExtrasByCategory(extras);
 
-                  <div className={styles.itemActions}>
-                    <div className={styles.quantityControl}>
+                return (
+                  <div key={index} className={styles.orderItem}>
+                    <div className={styles.itemInfo}>
+                      <h3 className={styles.itemTitle}>{item.title}</h3>
+
+                      {item.description && (
+                        <p className={styles.itemDescription}>{item.description}</p>
+                      )}
+
+                      {/* Ingredients (included) */}
+                      {item.ingredients?.length > 0 && (
+                        <div className={styles.itemIngredients}>
+                          {item.ingredients
+                            .filter((ing) => ing.included)
+                            .map((ing, i) => (
+                              <span key={i} className={styles.ingredientTag}>
+                                {ing.name}
+                              </span>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* ✅ Extras */}
+                      {extras.length > 0 && (
+                        <div className={styles.itemExtras}>
+                          {Object.entries(grouped).map(([category, list]) => (
+                            <div key={category} className={styles.extrasGroup}>
+                              <div className={styles.extrasGroupTitle}>{category}</div>
+                              <div className={styles.extrasTags}>
+                                {list.map((ex, i) => (
+                                  <span key={i} className={styles.extraTag}>
+                                    <span className={styles.extraName}>{ex.name}</span>
+                                    {ex.price ? (
+                                      <span className={styles.extraPrice}>{ex.price}</span>
+                                    ) : null}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className={styles.itemActions}>
+                      <div className={styles.quantityControl}>
+                        <button
+                          className={styles.quantityBtn}
+                          onClick={() => onUpdateQuantity?.(index, (item.quantity || 1) - 1)}
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+                        <span className={styles.quantity}>{item.quantity || 1}</span>
+                        <button
+                          className={styles.quantityBtn}
+                          onClick={() => onUpdateQuantity?.(index, (item.quantity || 1) + 1)}
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
-                        className={styles.quantityBtn}
-                        onClick={() => onUpdateQuantity?.(index, (item.quantity || 1) - 1)}
-                        aria-label="Decrease quantity"
+                        className={styles.removeBtn}
+                        onClick={() => onRemoveItem?.(index)}
+                        aria-label="Remove item"
                       >
-                        −
-                      </button>
-                      <span className={styles.quantity}>{item.quantity || 1}</span>
-                      <button
-                        className={styles.quantityBtn}
-                        onClick={() => onUpdateQuantity?.(index, (item.quantity || 1) + 1)}
-                        aria-label="Increase quantity"
-                      >
-                        +
+                        🗑️
                       </button>
                     </div>
-                    <button
-                      className={styles.removeBtn}
-                      onClick={() => onRemoveItem?.(index)}
-                      aria-label="Remove item"
-                    >
-                      🗑️
-                    </button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

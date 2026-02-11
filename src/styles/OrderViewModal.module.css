@@ -1,3 +1,5 @@
+/* OrderViewModal.module.css */
+
 /* =========================
    Overlay
 ========================= */
@@ -156,11 +158,13 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .orderItem:hover {
   background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
 }
 
 /* =========================
@@ -174,14 +178,15 @@
 .itemTitle {
   color: white;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 4px;
+  letter-spacing: -0.01em;
 }
 
 .itemDescription {
   color: rgba(255, 255, 255, 0.6);
   font-size: 13px;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -189,6 +194,7 @@
   overflow: hidden;
 }
 
+/* Ingredients tags */
 .itemIngredients {
   display: flex;
   flex-wrap: wrap;
@@ -202,7 +208,67 @@
   border-radius: 6px;
   color: #60a5fa;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
+}
+
+/* =========================
+   ✅ Extras (matches current design)
+========================= */
+.itemExtras {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.extrasGroup {
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.extrasGroupTitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.extrasTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.extraTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 5px 9px;
+  border-radius: 999px;
+
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.extraName {
+  white-space: nowrap;
+}
+
+.extraPrice {
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(16, 185, 129, 0.95);
+  font-weight: 900;
 }
 
 /* =========================
@@ -222,6 +288,7 @@
   background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .quantityBtn {
@@ -235,19 +302,24 @@
   border-radius: 6px;
   color: white;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.12s ease;
 }
 
 .quantityBtn:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.quantityBtn:active {
+  transform: translateY(0);
 }
 
 .quantity {
   color: white;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   min-width: 24px;
   text-align: center;
 }
@@ -290,7 +362,7 @@
 .summaryValue {
   color: white;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .checkoutBtn {
@@ -301,7 +373,7 @@
   border-radius: 12px;
   color: white;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
