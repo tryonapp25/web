@@ -13,11 +13,6 @@ import MenuBookGrid from "../components/menuBookGrid";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 
-const quickAction = [
-  {tabName: "templates", name: "Explore"},
-  {tabName: "menu_book", name: "MenuBooks"},
-]
-
 function HeroTitle() {
   return (
     <div className={styles.heroHead}>

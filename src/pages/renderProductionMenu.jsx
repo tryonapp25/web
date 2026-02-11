@@ -58,7 +58,7 @@ export default function RenderProductionMenu() {
     };
 
     fetchTemplate();
-    //getFlages();
+    getFlages();
     return () => {
       alive = false;
     };
