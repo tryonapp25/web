@@ -114,11 +114,48 @@ export default function MenuBookWraper() {
   }
 
 
+  const isContentsEmpty = !data?.contents || (Array.isArray(data?.contents) && data.contents.length === 0);
+
+  const emptyStateStyles = {
+    container: {
+      width: '100%',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      background: 'rgba(255, 255, 255, 0.02)',
+    },
+    icon: {
+      width: 64,
+      height: 64,
+      borderRadius: '50%',
+      border: '2px dashed rgba(255, 255, 255, 0.3)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      fontSize: 32,
+      color: 'rgba(255, 255, 255, 0.5)',
+    },
+    text: {
+      marginTop: 12,
+      fontSize: 14,
+      color: 'rgba(255, 255, 255, 0.5)',
+      fontWeight: 500,
+    }
+  };
+
   const Preview = (
     <div>
       <Suspense fallback={<div style={{ padding: 12 }}>Loading…</div>}>
         {editable && <EditButton onClick={() => setIsEditMode(true)}/>}
-        {LazyMenuBook && LazyTemplate ? (
+        {isContentsEmpty ? (
+          <div style={emptyStateStyles.container} onClick={() => setIsEditMode(true)}>
+            <div style={emptyStateStyles.icon}>+</div>
+            <div style={emptyStateStyles.text}>Add page</div>
+          </div>
+        ) : LazyMenuBook && LazyTemplate ? (
           <LazyMenuBook data={data}>
             <LazyTemplate onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
           </LazyMenuBook>

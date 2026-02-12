@@ -11,6 +11,7 @@ import UploadFileCard from "../components/uploadFile";
 import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
+import PagesRows from "../components/pagesRows";
 
 
 function HeroTitle() {
@@ -28,7 +29,11 @@ export default function MenuPage() {
   const {publicUser} = useContext(UserContext);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("templates")
+  const [tab, setTab] = useState("templates");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const [quickAction, setQuickAction] = useState([
     {tabName: "templates", name: "Explore"},
@@ -41,7 +46,7 @@ export default function MenuPage() {
         handleGetMenuBooks();
         break;
       default:
-        handleGetTemplates();
+        handleGetTemplates(currentPage + 1);
         break;
     }
     checkFeatureFlags()
@@ -79,12 +84,15 @@ export default function MenuPage() {
     }
   }
 
-  const handleGetTemplates = async () => {
+  const handleGetTemplates = async (page) => {
     try{
       setLoading(true)
-      const res = await http.get(`/demo/templates`);
+      const res = await http.get(`/demo/templates?page=${page}`);
       if(res.data.success){
         setTemplates(res.data.data);
+        setTotalPages(res.data.totalPages);
+        setTotalItems(res.data.totalItems);
+        setCurrentPage(res.data.page);
       }
     }
     catch(err){
@@ -102,6 +110,18 @@ export default function MenuPage() {
       block: "start",
     });
   };
+
+  const handleNextPage = () => {
+    if(currentPage < totalPages){
+      handleGetTemplates(currentPage + 1);
+    }
+  }
+
+  const handlePrevPage = () => {
+    if(currentPage > 0){
+      handleGetTemplates(currentPage - 1);
+    }
+  }
 
   return (
     <div className={styles.page}>
@@ -126,7 +146,18 @@ export default function MenuPage() {
               <TemplateGrid templates={templates} />
             )}
           </div>
+            <div style={{marginTop:"18px", marginBottom:"18px"}}>
+              <PagesRows
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pageSize={60}
+                totalItems={totalItems}
+                onPrev={() => handlePrevPage()}
+                onNext={() => handleNextPage()}
+              />
+            </div>
         </main>
+       
       </div>
 
       <LoadingModal open={loading} title="Loading templates..."/>

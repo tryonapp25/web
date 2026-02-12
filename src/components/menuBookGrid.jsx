@@ -121,18 +121,27 @@ export default function MenuBookGrid({ templates = []}) {
                     const LazyTemplate = templateMap[templatePath]
                     const LazyMenuBook = menuBookMap[menuBookPath]
 
+                    const isContentsEmpty = !item.contents || (Array.isArray(item.contents) && item.contents.length === 0);
+
                     return (
                         <div key={item.id ?? index} className={styles.card}>
                             <div className={styles.preview}>
-                                <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
-                                    {LazyMenuBook && LazyTemplate ?  (
-                                        <LazyMenuBook data={item} onClick={(item) => handleMenuBookSelect(item)}>
-                                            <LazyTemplate />
-                                        </LazyMenuBook>
-                                    ) : (
-                                        <NoFoundTemplate onGoback={() => navigate("menu")}/>
-                                    )}
-                                </Suspense>
+                                {isContentsEmpty ? (
+                                    <div className={styles.emptyState} onClick={() => handleMenuBookSelect(item)}>
+                                        <div className={styles.addPageIcon}>+</div>
+                                        <div className={styles.addPageText}>Add page</div>
+                                    </div>
+                                ) : (
+                                    <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
+                                        {LazyMenuBook && LazyTemplate ?  (
+                                            <LazyMenuBook data={item} onClick={(item) => handleMenuBookSelect(item)}>
+                                                <LazyTemplate />
+                                            </LazyMenuBook>
+                                        ) : (
+                                            <NoFoundTemplate onGoback={() => navigate("menu")}/>
+                                        )}
+                                    </Suspense>
+                                )}
                             </div>
 
                             <div className={styles.meta}>

@@ -96,10 +96,7 @@ export default function EditMenuBook() {
 
     try {
       // Example endpoint — change to yours
-      const res = await http.post("/menu-books/templates", {
-        ...parsedData,
-        code: selected, // keep template name in sync with selected file
-      });
+      const res = await http.post("/admin/demo/menu-book/create", parsedData);
 
       showMsg("success", httpMessage?.success?.(res) ?? "Created successfully");
     } catch (err) {

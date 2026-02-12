@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./MNBO33.module.css";
+import styles from "./SWIPER.module.css";
 
 export default function BookTemplate({ data, children, onClick }) {
   return null;
