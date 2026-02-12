@@ -23,6 +23,7 @@ import MyCollection from "./pages/collection";
 import AdminPage from "./admin";
 import Features from "./admin/features";
 import EditTemplate from "./admin/editTemplate";
+import EditMenuBook from "./admin/editMenuBook";
 
 // Business //
 import DashboardPage from "./business/dashboard";
@@ -58,6 +59,7 @@ export default function App() {
               <Route element={<AdminProtection />}>
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/edit/template" element={<EditTemplate />} />
+                <Route path="/admin/edit/menubook" element={<EditMenuBook />} />
                 <Route path="/admin/features" element={<Features />} />
               </Route>
 
