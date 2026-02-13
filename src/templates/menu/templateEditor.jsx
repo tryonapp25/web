@@ -46,7 +46,7 @@ export default function TemplateEditor({ data = [], onChange}) {
 
       next[sectionIndex] = {
         ...section,
-        data: [...section.data, { name: "", price: "" }],
+        data: [...section.data, { name: "", price: "", description: "", quantity: "" }],
       };
 
       return { ...prev, contents: next };
@@ -61,6 +61,82 @@ export default function TemplateEditor({ data = [], onChange}) {
       next[sectionIndex] = { ...next[sectionIndex], data: rows };
       return { ...prev, contents: next };
     });
+  };
+
+  // images helpers for sections
+  const addImage = (sectionIndex) => {
+    setUpdateData((prev) => {
+      const next = [...prev.contents];
+      const imgs = next[sectionIndex].images ? [...next[sectionIndex].images] : [];
+      imgs.push("");
+      next[sectionIndex] = { ...next[sectionIndex], images: imgs };
+      return { ...prev, contents: next };
+    });
+  };
+
+  const updateImage = (sectionIndex, imgIndex, value) => {
+    setUpdateData((prev) => {
+      const next = [...prev.contents];
+      const imgs = [...(next[sectionIndex].images || [])];
+      imgs[imgIndex] = value;
+      next[sectionIndex] = { ...next[sectionIndex], images: imgs };
+      return { ...prev, contents: next };
+    });
+  };
+
+  const removeImage = (sectionIndex, imgIndex) => {
+    setUpdateData((prev) => {
+      const next = [...prev.contents];
+      const imgs = (next[sectionIndex].images || []).filter((_, i) => i !== imgIndex);
+      next[sectionIndex] = { ...next[sectionIndex], images: imgs.length ? imgs : null };
+      return { ...prev, contents: next };
+    });
+  };
+
+  // ingredients helpers for sections
+  const addIngredient = (sectionIndex) => {
+    setUpdateData((prev) => {
+      const next = [...prev.contents];
+      const ing = next[sectionIndex].ingredients ? [...next[sectionIndex].ingredients] : [];
+      ing.push("");
+      next[sectionIndex] = { ...next[sectionIndex], ingredients: ing };
+      return { ...prev, contents: next };
+    });
+  };
+
+  const updateIngredient = (sectionIndex, ingIndex, value) => {
+    setUpdateData((prev) => {
+      const next = [...prev.contents];
+      const ing = [...(next[sectionIndex].ingredients || [])];
+      const current = ing[ingIndex];
+      if (current && typeof current === "object" && !Array.isArray(current)) {
+        ing[ingIndex] = { ...current, name: value };
+      } else {
+        ing[ingIndex] = value;
+      }
+      next[sectionIndex] = { ...next[sectionIndex], ingredients: ing };
+      return { ...prev, contents: next };
+    });
+  };
+
+  const removeIngredient = (sectionIndex, ingIndex) => {
+    setUpdateData((prev) => {
+      const next = [...prev.contents];
+      const ing = (next[sectionIndex].ingredients || []).filter((_, i) => i !== ingIndex);
+      next[sectionIndex] = { ...next[sectionIndex], ingredients: ing.length ? ing : null };
+      return { ...prev, contents: next };
+    });
+  };
+
+  // extras root helper (JSON textarea)
+  const updateExtras = (value) => {
+    try {
+      const parsed = value ? JSON.parse(value) : null;
+      updateRoot("extras", parsed);
+    } catch (e) {
+      // if invalid JSON, keep as string until valid
+      updateRoot("extras", value);
+    }
   };
 
 
@@ -100,6 +176,47 @@ export default function TemplateEditor({ data = [], onChange}) {
           </div>
         </div>
 
+        {/* Extras & Information */}
+        <div className={styles.card}>
+          <h4 className={styles.labelText}>Extras (JSON)</h4>
+          <textarea
+            className={styles.input}
+            style={{minHeight: 300, width: '95%', overflowY:"auto", scrollbarWidth:"none", msOverflowStyle:"none"}}
+            value={typeof updateData.extras === 'string' ? updateData.extras : JSON.stringify(updateData.extras || null, null, 2)}
+            onChange={(e) => updateExtras(e.target.value)}
+          />
+
+          <h4 className={styles.labelText} style={{marginTop:12}}>Information</h4>
+          <div className={styles.grid2}>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Brand</span>
+              <input className={styles.input} value={updateData.information?.brand || ""} onChange={(e)=> updateRoot('information', {...(updateData.information||{}), brand: e.target.value})} />
+            </label>
+
+            <label className={styles.label}>
+              <span className={styles.labelText}>Website</span>
+              <input className={styles.input} value={updateData.information?.website || ""} onChange={(e)=> updateRoot('information', {...(updateData.information||{}), website: e.target.value})} />
+            </label>
+          </div>
+
+          <div className={styles.grid2}>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Email</span>
+              <input className={styles.input} value={updateData.information?.email || ""} onChange={(e)=> updateRoot('information', {...(updateData.information||{}), email: e.target.value})} />
+            </label>
+
+            <label className={styles.label}>
+              <span className={styles.labelText}>Phone</span>
+              <input className={styles.input} value={updateData.information?.phone || ""} onChange={(e)=> updateRoot('information', {...(updateData.information||{}), phone: e.target.value})} />
+            </label>
+          </div>
+
+          <label className={styles.label}>
+            <span className={styles.labelText}>Address</span>
+            <input className={styles.input} value={updateData.information?.address || ""} onChange={(e)=> updateRoot('information', {...(updateData.information||{}), address: e.target.value})} />
+          </label>
+        </div>
+
         {/* Sections */}
         {updateData.contents.map((section, i) => (
           <div key={i} className={styles.section}>
@@ -137,6 +254,50 @@ export default function TemplateEditor({ data = [], onChange}) {
                 </label>
               </div>
 
+              <label className={styles.label}>
+                <span className={styles.labelText}>Section Description</span>
+                <input className={styles.input} value={section.description || ""} onChange={(e)=> updateSection(i, { description: e.target.value })} />
+              </label>
+
+              {/* Images */}
+              <div style={{marginTop:8}}>
+                <div className={styles.rowsHeader}>
+                  <span>Images</span>
+                  <button type="button" className={styles.addRow} onClick={()=> addImage(i)}>+ Add image</button>
+                </div>
+                {(section.images || []).map((img, idx) => (
+                  <div key={idx} style={{display:'flex', gap:8, marginTop:6}}>
+                    <input className={styles.input} placeholder="Image URL" value={img} onChange={(e)=> updateImage(i, idx, e.target.value)} />
+                    <button type="button" className={styles.removeRow} onClick={()=> removeImage(i, idx)}>✕</button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Ingredients */}
+              <div style={{marginTop:8}}>
+                <div className={styles.rowsHeader}>
+                  <span>Ingredients</span>
+                  <button type="button" className={styles.addRow} onClick={()=> addIngredient(i)}>+ Add ingredient</button>
+                </div>
+                {(section.ingredients || []).map((ing, idx) => (
+                  <div key={idx} style={{display:'flex', gap:8, marginTop:6}}>
+                    <input
+                      className={styles.input}
+                      placeholder="Ingredient"
+                      value={
+                        typeof ing === "string"
+                          ? ing
+                          : ing && typeof ing === "object"
+                          ? ing.name || ""
+                          : String(ing || "")
+                      }
+                      onChange={(e) => updateIngredient(i, idx, e.target.value)}
+                    />
+                    <button type="button" className={styles.removeRow} onClick={()=> removeIngredient(i, idx)}>✕</button>
+                  </div>
+                ))}
+              </div>
+
               {/* Rows */}
               <div className={styles.rows}>
                 <div className={styles.rowsHeader}>
@@ -167,6 +328,18 @@ export default function TemplateEditor({ data = [], onChange}) {
                       onChange={(e) =>
                         updateRow(i, r, { price: e.target.value })
                       }
+                    />
+                    <input
+                      className={styles.input}
+                      placeholder="Quantity"
+                      value={row.quantity || ""}
+                      onChange={(e) => updateRow(i, r, { quantity: e.target.value })}
+                    />
+                    <input
+                      className={styles.input}
+                      placeholder="Description"
+                      value={row.description || ""}
+                      onChange={(e) => updateRow(i, r, { description: e.target.value })}
                     />
                     <button
                       type="button"
