@@ -9,12 +9,10 @@ import LoadingModal from "../components/loading";
 import QuickAction from "../components/quickAction";
 import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 
-const quickAction = [
-  {tabName: "mine", name: "My templates", isActive: true},
-  {tabName: "mine_menu_book", name: "My Menu Books"}
-]
+
 
 function HeroTitle() {
   return (
@@ -31,7 +29,11 @@ export default function MyCollection() {
   const {publicUser} = useContext(UserContext);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("mine")
+  const [tab, setTab] = useState("mine");
+
+  const [quickAction, setQuickAction] = useState([
+    {tabName: "mine", name: "My templates", isActive: true},
+  ])
 
 
   useEffect(() => {
@@ -43,7 +45,21 @@ export default function MyCollection() {
         handleGetUserProductionTemaplate(publicUser?.uid);
         break;
     }
+    checkFeatureFlags();
   },[tab]);
+
+  const checkFeatureFlags = async () => {
+    const hasMenuBook = await getFeatureFlags("MENU_BOOK");
+    if (!hasMenuBook) return;
+
+    setQuickAction(prev => {
+      const exists = prev.some(action => action.tabName === "mine_menu_book");
+      if (exists) return prev;
+
+      console.log('Adding menu_book quick action');
+      return [...prev, { tabName: "mine_menu_book", name: "MenuBooks" }];
+    });
+  };
 
   const handleGetUserMenuBooks = async () => {
     if(loading) return;
@@ -104,7 +120,7 @@ export default function MyCollection() {
             <QuickAction onPress={(t) => setTab(t)} data={quickAction}/>
           </div>
           <div className={[styles.content, {backgroundColor:"transparent"}]}>
-            {tab === "menu_book" || tab === "mine_menu_book" ? (
+            {tab === "mine_menu_book" ? (
               <MenuBookGrid templates={templates} />
             ) : (
               <TemplateGrid templates={templates} />
