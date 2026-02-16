@@ -23,7 +23,7 @@ export default function Model3D({ model, images, config }) {
         auto-rotate
         touch-action="pan-y"
         autoplay
-        loading="eager"
+        loading="lazy"
         reveal="auto"
         animation-loop
         environment-image="neutral"
