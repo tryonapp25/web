@@ -65,7 +65,6 @@ export default function MenuPage() {
       return [...prev, { tabName: "menu_book", name: "MenuBooks" }];
     });
   };
-  
   const handleGetMenuBooks = async () => {
     if(loading) return;
     try{
@@ -146,16 +145,16 @@ export default function MenuPage() {
               <TemplateGrid templates={templates} />
             )}
           </div>
-            <div style={{marginTop:"18px", marginBottom:"18px"}}>
-              <PagesRows
-                currentPage={currentPage}
-                totalPages={totalPages}
-                pageSize={60}
-                totalItems={totalItems}
-                onPrev={() => handlePrevPage()}
-                onNext={() => handleNextPage()}
-              />
-            </div>
+          {totalPages > 1 && (
+            <PagesRows 
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={60}
+              totalItems={totalItems}
+              onPrev={() => handlePrevPage()}
+              onNext={() => handleNextPage()}
+            />
+          )}
         </main>
        
       </div>
