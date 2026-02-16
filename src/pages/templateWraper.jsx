@@ -78,7 +78,7 @@ export default function TemplateWraper() {
 
 
   const handleUpdateMenuTemplate = async (data) => {
-    if(data.type === "demo")return setIsEditMode(false);
+    if(data.type === "demo") return setIsEditMode(false);
     try{
       setLoading(true);
       const update = await UpdateTemplate(data);

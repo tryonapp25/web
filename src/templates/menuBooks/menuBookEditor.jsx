@@ -1,12 +1,22 @@
 import styles from "./menuBookEditor.module.css";
 import EditButom from "../../components/editButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext} from "react";
+import TemplateGridModal from "../../components/templateGridModal";
+import http from "../../http/http";
+import httpMessage from "../../http/httpMessage";
+import { UserContext } from "../../ApiContext/userContext";
+import LoadingModal from "../../components/loading";
 
 
 const defaultMessage = { visible: false, type: "", msg: "" };
 
 export default function MenuBookEditor({ data, onChange}) {
+  const {publicUser} = useContext(UserContext);
   const [updateData, setUpdateData] = useState(data ?? null);
+  const [message, setMessage] = useState(defaultMessage);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setUpdateData(data ?? null);
@@ -53,32 +63,8 @@ export default function MenuBookEditor({ data, onChange}) {
     });
   };
 
-  const addTemplate = () => {
-    setUpdateData((prev) => {
-      const nextTemplates = [...(prev.contents ?? [])];
-      nextTemplates.push({
-        id: Date.now(),
-        uid: prev.uid ?? 0,
-        isPublic: false,
-        publicCode: { String: "", Valid: false },
-        price: 0,
-        code: "",
-        type: "menu",
-        category: "food",
-        heading: "New Menu",
-        subheading: "",
-        contents: [
-          {
-            title: "Section 1",
-            model: "",
-            data: [],
-          },
-        ],
-        information: { email: "", phone: "", address: "" },
-      });
-
-      return { ...prev, contents: nextTemplates };
-    });
+  const addTemplate = async () => {
+    await handleGetUserProductionTemaplate(publicUser?.uid);
   };
 
   const removeTemplate = (tplIndex) => {
@@ -194,7 +180,24 @@ export default function MenuBookEditor({ data, onChange}) {
 
   const handleOnchange = () => {
     onChange(updateData)
-  }
+  };
+
+  const handleGetUserProductionTemaplate = async (uid) => {
+    try{
+      setLoading(true);
+      const res = await http.get(`/user/${uid}/production/templates`);
+      if(res.data.success){
+        setTemplates(res.data.data);
+      }
+    }
+    catch(err){
+      console.log(httpMessage(err));
+    }
+    finally{
+      setLoading(false);
+      setShowTemplateModal(true);
+    }
+  };
 
 
   return (
@@ -453,6 +456,15 @@ export default function MenuBookEditor({ data, onChange}) {
           </div>
         ))}
       </main>
+
+      <TemplateGridModal
+        open={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        templates={templates}
+        title="Select a template to add"
+      />
+
+      <LoadingModal open={loading} title="Loading templates..."/>
     </div>
   );
 }

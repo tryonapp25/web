@@ -112,7 +112,7 @@ export default function AdminPage() {
           <div ref={generatorRef}>
               <HeroTitle />
           </div>
-          <UploadFileCard/>
+          {publicUser?.role === "admin" && <UploadFileCard/>}
           <div style={{marginLeft:"28px"}}>
             <QuickAction onPress={(t) => setTab(t)} data={quickAction} activeTab={tab}/>
           </div>

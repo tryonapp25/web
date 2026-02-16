@@ -135,7 +135,7 @@ export default function MenuPage() {
           <div ref={generatorRef}>
               <HeroTitle />
           </div>
-          <UploadFileCard/>
+          {/* <UploadFileCard/> */}
           <div style={{marginLeft:"28px"}}>
             <QuickAction onPress={(t) => setTab(t)} data={quickAction} activeTab={tab}/>
           </div>
