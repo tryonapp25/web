@@ -1,0 +1,348 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+  --paper: #f6f3ee;
+  --ink: #111;
+  --muted: #4b4b4b;
+  --rule: rgba(0, 0, 0, 0.35);
+  --shadow: rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #e9e6e1;
+  font-family: "Montserrat", sans-serif;
+
+  cursor: pointer;
+  overflow-y: auto;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;  
+}
+
+.page::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================
+   MAIN SHEET
+========================= */
+
+.sheet {
+  width: 100%;
+  height: auto;
+  max-width: 900px;
+  background: var(--paper);
+  box-shadow: 0 22px 55px var(--shadow);
+  padding: 20px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =========================
+   ORNAMENT LINES
+========================= */
+
+.ruleTop,
+.ruleBottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+}
+
+.ruleMid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.ruleLine {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.ruleDot {
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+}
+
+.ruleDotSmall {
+  width: 4px;
+  height: 4px;
+  background: var(--rule);
+  border-radius: 50%;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.brand {
+  padding-top: 310px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.title {
+  text-align: center;
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 800;
+  margin: 5px 0;
+  line-height: 1;
+   color: var(--ink);
+}
+
+
+/* =========================
+   DISH GRID
+========================= */
+
+.dishGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+
+.dish {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 15px;
+  align-items: center;
+}
+
+
+.dishTitle {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  overflow-wrap: break-word;
+   color: var(--ink);
+}
+
+.dishTitleLine {
+  display: block;
+}
+
+
+.dishPrice {
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.dishDesc {
+  font-size: 10px;
+  margin-top: 6px;
+  color: var(--muted);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+/* =========================
+   CIRCLE IMAGE
+========================= */
+
+.photoWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photoRing {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: #ddd;
+}
+
+/* =========================
+   BOTTOM GRID
+========================= */
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.listTitle {
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.priceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 0;
+  overflow: hidden;
+}
+
+
+.priceName {
+  overflow-wrap: break-word;
+}
+
+.priceVal {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ========================= BOTTOM SECTION ========================= */
+.bottomGrid {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  position: relative;
+}
+
+
+/* vertical divider between Beverage and Dessert */
+.bottomGrid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--rule);
+}
+
+
+/* section title */
+.listTitle {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* rows */
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 4px 0;
+  border-bottom: 1px dotted rgba(0,0,0,0.15);
+}
+
+
+/* remove last line */
+.priceRow:last-child {
+  border-bottom: none;
+}
+
+/* price */
+.priceVal {
+  font-weight: 600;
+}
+
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .sheet {
+    padding: 15px;
+  }
+
+  .dishGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .photoRing {
+    width: 80px;
+    height: 80px;
+  }
+
+  .dishTitle {
+    font-size: 18px;
+  }
+  
+  .brand{
+    padding-top:0px
+  }
+}
+
+
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+  }
+
+  .brand {
+    font-size: 10px;
+    padding-top: 0px;
+  }
+
+  .dish {
+
+    grid-template-columns: 1fr 70px;
+  }
+
+  .photoRing {
+
+    width: 70px;
+    height: 70px;
+  }
+
+}

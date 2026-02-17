@@ -1,189 +1,184 @@
 import PdfPageWrapper from "../../components/pdfPageWrapper";
-import Template1 from "./BRGR01"
+import Template1 from "./REST01"
 
 import useIsMobile from "../../utils/deviceCheck";
 
-const fakeTemplateData = {
-  id: 303,
-  category: "burger",
-  code: "BRGR01",
-  name: "Burger",
-  price: 1,
+const MENU_DATA = {
+  id: 5,
   uid: 5,
+  isPublic: false,
+  publicCode: { String: "", Valid: false },
+  price: 1,
+  code: "REST01",
   type: "demo",
-  subheading: "Menu",
-  heading: "Burgers",
-  extras: [
-    {
-      title: "Drinks",
-      description: "Refreshing beverages",
-      data: [
-        { name: "Soda", price: "$2" },
-        { name: "Iced Tea", price: "$0.5" },
-        { name: "Lemonade", price: "$0.5" },
-        { name: "Blue Lemonade", price: "$2" },
-        { name: "Mineral Water", price: "$1" }
-      ]
-    },
-    {
-      title: "Sauces",
-      description: "Additional sauces",
-      data: [
-        { name: "Ketchup", price: "$0.5" },
-        { name: "Mayonnaise", price: "$0.5" },
-        { name: "BBQ Sauce", price: "$0.5" },
-        { name: "Chili Sauce", price: "$0.5" }
-      ]
-    }
-  ],
+  category: "restaurant",
+  subheading: "PAUCEK AND LAGE RESTAURANT",
+  heading: "FOOD MENU",
   contents: [
     {
-      title: "Classic Cheeseburger",
+      title: "Grilled Salmon",
       description:
-        "Juicy beef patty grilled to perfection, topped with melted cheddar, fresh lettuce, tomato, and house sauce.",
-      ingredients: [
-        { name: "Beef Patty", included: true },
-        { name: "Cheese", included: true },
-        { name: "Lettuce", included: true },
-        { name: "Tomato", included: true },
-      ],
+        "Fresh salmon fillet seasoned with herbs and grilled to perfection, served with a side of roasted vegetables and lemon-butter sauce.",
       data: [
-        { name: "Single", price: "$18" },
-        { name: "Double", price: "$22" },
-        { name: "Triple", price: "$26" },
+        {
+          name: "Grilled Salmon",
+          description:
+            "Fresh salmon fillet seasoned with herbs and grilled to perfection, served with a side of roasted vegetables and lemon-butter sauce.",
+          price: "18.99",
+          quantity: "1",
+        },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [
+        "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=60",
+      ],
+      ingredients: [],
     },
     {
-      title: "Bacon BBQ Burger",
+      title: "Vegetable Pad Thai",
       description:
-        "Smoky bacon, crispy onions, and tangy BBQ sauce layered over a thick beef patty.",
-      ingredients: [
-        { name: "Beef Patty", included: true },
-        { name: "Bacon", included: true },
-        { name: "BBQ Sauce", included: true },
-        { name: "Onion", included: true },
-      ],
+        "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
       data: [
-        { name: "Single", price: "$20" },
-        { name: "Double", price: "$24" },
-        { name: "Triple", price: "$28" },
+        {
+          name: "Vegetable Pad Thai",
+          description:
+            "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
+          price: "13.99",
+          quantity: "1",
+        },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FBacon_BBQ_Burger.glb_ad0699ba-6b80-4a4e-a36e-ce7067752669.glb?alt=media&token=3f472398-015e-448e-b644-27af2b37ba76",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [
+        "https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=1200&q=60",
+      ],
+      ingredients: [],
     },
     {
-      title: "Chicken Burger",
+      title: "Mushroom Risotto",
       description:
-        "Crispy fried chicken breast with creamy mayo, lettuce, and pickles in a toasted bun.",
-      ingredients: [
-        { name: "Chicken", included: true },
-        { name: "Lettuce", included: true },
-        { name: "Pickles", included: true },
-        { name: "Mayo", included: true },
-      ],
+        "Creamy rice cooked with savory mushrooms, garlic, shallots, and Parmesan cheese, finished with a drizzle of truffle oil and fresh parsley.",
       data: [
-        { name: "Single", price: "$17" },
-        { name: "Double", price: "$21" },
-        { name: "Spicy", price: "$22" },
+        {
+          name: "Mushroom Risotto",
+          description:
+            "Creamy rice cooked with savory mushrooms, garlic, shallots, and Parmesan cheese, finished with a drizzle of truffle oil and fresh parsley.",
+          price: "14.99",
+          quantity: "1",
+        },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FChicken_Burger.glb_9d5ed30f-d6bb-4d74-8b06-f1b88b8d90dd.glb?alt=media&token=574e07e7-9f14-4b03-8bf1-dc5b65cbb2e8",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [
+        "https://images.unsplash.com/photo-1604908176997-125f25cc500f?auto=format&fit=crop&w=1200&q=60",
+      ],
+      ingredients: [],
     },
     {
-      title: "Veggie Burger",
+      title: "Grilled Chicken",
       description:
-        "Plant-based patty with avocado, fresh veggies, and vegan sauce. Light, fresh, and satisfying.",
-      ingredients: [
-        { name: "Veggie Patty", included: true },
-        { name: "Avocado", included: true },
-        { name: "Lettuce", included: true },
-        { name: "Tomato", included: true },
-      ],
+        "Grilled chicken breast served atop crisp lettuce with dressing, shaved cheese, garlic croutons, and cherry tomatoes.",
       data: [
-        { name: "Single", price: "$16" },
-        { name: "Double", price: "$20" },
-        { name: "Gluten-Free Bun", price: "$22" },
+        {
+          name: "Grilled Chicken",
+          description:
+            "Grilled chicken breast served atop crisp lettuce with dressing, shaved cheese, garlic croutons, and cherry tomatoes.",
+          price: "12.99",
+          quantity: "1",
+        },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2Fveggie_burger.glb_46571bc5-53a6-4219-8760-c28a12ed7b4d.glb?alt=media&token=84fc60e1-be4c-4725-a0c2-60dc940dbfce",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [
+        "https://images.unsplash.com/photo-1604908177074-0cf29f8e3a08?auto=format&fit=crop&w=1200&q=60",
+      ],
+      ingredients: [],
     },
     {
-      title: "Spicy Jalapeño Burger",
+      title: "Classic Beef",
       description:
-        "Bold and fiery with jalapeños, pepper jack cheese, and spicy chipotle sauce.",
-      ingredients: [
-        { name: "Beef Patty", included: true },
-        { name: "Jalapeño", included: true },
-        { name: "Pepper Jack", included: true },
-        { name: "Chipotle Sauce", included: true },
-      ],
+        "Layers of rich tomato sauce, seasoned ground beef, lasagna noodles, and creamy béchamel sauce, baked to bubbly perfection and topped with melted mozzarella cheese.",
       data: [
-        { name: "Single", price: "$19" },
-        { name: "Double", price: "$23" },
-        { name: "Extra Spicy", price: "$25" },
+        {
+          name: "Classic Beef",
+          description:
+            "Layers of rich tomato sauce, seasoned ground beef, lasagna noodles, and creamy béchamel sauce, baked to bubbly perfection and topped with melted mozzarella cheese.",
+          price: "16.99",
+          quantity: "1",
+        },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FSpicy_Jalape%C3%B1o_Burge.glb_e16538e1-5c73-4e74-b69c-4f819da1dbed.glb?alt=media&token=6c399d68-e1e8-4ccb-b741-1a875309c4d6",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [
+        "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1200&q=60",
+      ],
+      ingredients: [],
     },
     {
-      title: "Cheeseburger",
+      title: "Eggplant Parmesan",
       description:
-        "Juicy beef patty topped with melted cheese, crisp lettuce, fresh tomato, and classic burger sauce. A timeless favorite.",
-      ingredients: [
-        { name: "Beef Patty", included: true },
-        { name: "Cheddar Cheese", included: true },
-        { name: "Lettuce", included: true },
-        { name: "Tomato", included: true },
-      ],
+        "Breaded eggplant fried to golden crisp, layered with marinara sauce, mozzarella, and Parmesan, baked until bubbly and served with spaghetti marinara.",
       data: [
-        { name: "Single", price: "$18" },
-        { name: "Double", price: "$22" },
-        { name: "Gluten-Free Bun", price: "$24" },
+        {
+          name: "Eggplant Parmesan",
+          description:
+            "Breaded eggplant fried to golden crisp, layered with marinara sauce, mozzarella, and Parmesan, baked until bubbly and served with spaghetti marinara.",
+          price: "15.99",
+          quantity: "1",
+        },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FCheeseburger.glb_35eae291-d4e0-4c11-9ba6-8bd6cac793ad.glb?alt=media&token=1fda8dcf-3537-4209-abec-9cfad39d9426",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [
+        "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=1200&q=60",
+      ],
+      ingredients: [],
+    }
+  ],
+  extras: [
+    {
+      title: "Beverage",
+      description: "",
+      data: [
+        { name: "Classic Margarita", description: "", price: "3.99", quantity: "" },
+        { name: "Mango Mocktail", description: "", price: "2.99", quantity: "" },
+        { name: "Iced Caramel Macchiato", description: "", price: "4.99", quantity: "" },
+        { name: "Green Tea Frappuccino", description: "", price: "3.99", quantity: "" },
+        { name: "Pineapple Coconut Smoothie", description: "", price: "5.99", quantity: "" },
+        { name: "Raspberry Mojito", description: "", price: "3.99", quantity: "" },
+        { name: "Blackberry Ginger Sparkler", description: "", price: "2.99", quantity: "" },
+      ],
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [],
+      ingredients: [],
     },
     {
-      title: "Chicken Nuggets",
-      description:
-        "Crispy golden chicken nuggets made with tender white meat. Perfectly seasoned and served hot with your choice of dipping sauce.",
-      ingredients: [
-        { name: "Chicken Breast", included: true },
-        { name: "Crispy Breading", included: true },
-        { name: "Salt & Pepper", included: true },
-        { name: "Dipping Sauce", included: true },
-      ],
+      title: "Dessert",
+      description: "",
       data: [
-        { name: "6 Pieces", price: "$10" },
-        { name: "9 Pieces", price: "$14" },
-        { name: "12 Pieces", price: "$18" },
+        { name: "Chocolate Mousse", description: "", price: "5.99", quantity: "" },
+        { name: "Apple Pie", description: "", price: "7.99", quantity: "" },
+        { name: "Strawberry Shortcake", description: "", price: "6.99", quantity: "" },
+        { name: "Fruit Tart", description: "", price: "5.99", quantity: "" },
+        { name: "Tiramisu", description: "", price: "8.99", quantity: "" },
+        { name: "Chocolate Lava Cake", description: "", price: "6.99", quantity: "" },
+        { name: "Cheesecake", description: "", price: "5.99", quantity: "" },
       ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FNuggets.glb_215c5ac2-03c5-49da-aebf-a4d1ae8fba47.glb?alt=media&token=c22dfbb1-41fe-4b23-b4a6-245542b2635b",
-    },
-    {
-      title: "Pepper Chicken Wings",
-      description:
-        "A bold, tangy house sauce with a creamy base, a touch of sweetness, and a spicy kick. Perfect for dipping nuggets or fries.",
-      ingredients: [
-        { name: "Mayo Base", included: true },
-        { name: "Tomato Paste", included: true },
-        { name: "Garlic", included: true },
-        { name: "Paprika", included: true },
-        { name: "Chili Heat", included: true },
-      ],
-      data: [
-        { name: "Single Dip", price: "$1.50" },
-        { name: "Double Dip", price: "$2.50" },
-        { name: "Large Cup", price: "$4.00" },
-      ],
-      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FPepper_Chicken_Wings.glb_c3d00806-20f4-412b-9384-299a49cf71a9.glb?alt=media&token=7206f815-6e6e-4285-8f87-ff9e1051b895",
+      model:
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      images: [],
+      ingredients: [],
     },
   ],
+  information: { brand: "", website: "", email: "", phone: "", address: "", more: {} },
 };
-
-
-
 
 export default function TestTemplate() {
   const isMobile = useIsMobile();
 
-  const content = <Template1 data={fakeTemplateData} />;
+  const content = <Template1 data={MENU_DATA}/>;
 
   return isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
 }

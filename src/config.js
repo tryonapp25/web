@@ -5,6 +5,63 @@ export const defaultMessage = {
 }
 
 
+const menuTemplateData = {
+  "id": 5,
+  "uid": 5,
+  "isPublic": false,
+  "publicCode": {
+    "String": "",
+    "Valid": false
+  },
+  "price": 1,
+  "code": "",
+  "type": "demo",
+  "category": "restaurant",
+  "subheading": "",
+  "heading": "",
+  "contents": [
+    {
+      "title": "",
+      "description": "",
+      "data": [
+        {
+          "name": "",
+          "description": "",
+          "price": "",
+          "quantity": ""
+        }
+      ],
+      "model": "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      "images": [],
+      "ingredients": []
+    },
+    {
+      "title": "",
+      "description": "",
+      "data": [
+        {
+          "name": "",
+          "description": "",
+          "price": "",
+          "quantity": ""
+        }
+      ],
+      "model": "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
+      "images": [],
+      "ingredients": []
+    }
+  ],
+  "extras": [],
+  "information": {
+    "brand": "",
+    "website": "",
+    "email": "",
+    "phone": "",
+    "address": "",
+    "more": {}
+  }
+}
+
 export const fakeTemplate = {
     url:    "https://tryonapp.tech",
     marker: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2FAR-web%2Fmarker.patt?alt=media&token=fe6663bf-7a3e-4cbc-a719-ff460c31c7e9",
