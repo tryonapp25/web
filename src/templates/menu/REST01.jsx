@@ -92,13 +92,13 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
 
         {/* Dishes */}
         <div className={styles.dishGrid}>
-          {dishes.map((item) => {
+          {dishes.map((item, index) => {
             const price = money(item?.data?.[0]?.price);
             const model = item?.model || "";
             const lines = splitTitleForLayout(item.title);
 
             return (
-              <div className={styles.dish} key={item.title}>
+              <div className={styles.dish} key={index} onClick={() => onClickModel({data: item, config: config})}>
                 <div className={styles.dishText}>
                   <div className={styles.dishTitle}>
                     {lines.map((l, idx) => (
@@ -115,10 +115,10 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
                   ) : null}
                 </div>
 
-                <div className={styles.photoWrap} onClick={() => onClickModel({data: section, config: config})}>
+                <div className={styles.photoWrap}>
                   <div className={styles.photoRing}>
                     <div className={styles.photo}>
-                      <Model3D model={model} config={config} images={item?.images}/>
+                      <Model3D model={model} config={config} images={item?.images}  onClick={() => onClickModel({data: item, config: config})}/>
                     </div>
                   </div>
                 </div>

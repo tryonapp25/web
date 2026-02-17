@@ -129,6 +129,11 @@
   grid-template-columns: 1fr 110px;
   gap: 15px;
   align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.dish:hover{
+  opacity: 0.9;
 }
 
 
@@ -221,6 +226,12 @@
   color: var(--muted);
   padding: 2px 0;
   overflow: hidden;
+  transition: opacity 0.3s ease, text-decoration 0.3s ease;
+}
+
+.priceRow:hover{
+  opacity: 0.9;
+  text-decoration: underline;
 }
 
 
