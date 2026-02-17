@@ -118,7 +118,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
                 <div className={styles.photoWrap} onClick={() => onClickModel({data: section, config: config})}>
                   <div className={styles.photoRing}>
                     <div className={styles.photo}>
-                      <Model3D model={model} config={config} />
+                      <Model3D model={model} config={config} images={item?.images}/>
                     </div>
                   </div>
                 </div>
