@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./REST02.module.css";
 import Model3D from "../../components/3dModel";
 
@@ -17,7 +16,7 @@ function Item({ item, variant = "normal", onClick }) {
   return (
     <article className={`${styles.card} ${variant === "hero" ? styles.hero : ""}`} onClick={onClick}>
       <div className={styles.photo}>
-        <Model3D model={model} config={config} />
+        <Model3D model={model} config={config} images={item?.images} />
       </div>
 
       <div className={styles.text}>

@@ -101,6 +101,11 @@
   grid-template-columns: 1fr;
   gap: 4px;
   padding-right: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover{
+  opacity: 0.9;
 }
 
 /* images scale inside their block (no overlap ever) */
