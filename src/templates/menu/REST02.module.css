@@ -1,0 +1,352 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:wght@400;700&display=swap");
+
+/* FULL SCREEN 100% */
+.screen {
+  width: 100%;
+  height: 100%;
+  background: #050505;
+  display: grid;
+  place-items: center;
+  position: relative;
+  cursor: pointer;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;  
+}
+
+/* PAGE fills screen, keeps safe padding */
+.page {
+  width: 100%;
+  height: 100%;
+  max-width: 1100px;
+  padding: clamp(14px, 2.2vw, 34px);
+  position: relative;
+  color: #ead9ad;
+  overflow-x: hidden;
+
+  background:
+    radial-gradient(1200px 900px at 30% 10%, rgba(255,255,255,0.07), transparent 55%),
+    radial-gradient(900px 700px at 80% 30%, rgba(255,255,255,0.05), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%),
+    #0a0a0a;
+}
+
+/* title */
+.header {
+  display: grid;
+  place-items: center;
+  padding-top: 6px;
+  padding-bottom: clamp(10px, 1.4vw, 18px);
+}
+
+.mainTitle {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  letter-spacing: clamp(4px, 0.9vw, 8px);
+  font-weight: 600;
+  color: #e7d3a1;
+  font-size: clamp(30px, 4.2vw, 56px);
+}
+
+/* bunting flags (top right) */
+.flags {
+  position: absolute;
+  top: clamp(8px, 2vw, 18px);
+  right: clamp(8px, 2vw, 18px);
+  display: flex;
+  gap: 8px;
+  transform: rotate(-10deg);
+}
+
+.flag {
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 26px solid #c6a23d;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.6));
+}
+.f1 { border-top-color: #f5c400; }
+.f2 { border-top-color: #d62b2b; }
+.f3 { border-top-color: #2d2d2d; }
+.f4 { border-top-color: #f5c400; }
+.f5 { border-top-color: #d62b2b; }
+
+/* ---------- DESKTOP/TABLET GRID (NO OVERLAP) ---------- */
+/* 2 columns main, bottom row has big hero on right like your menu */
+.desktopGrid {
+  display: grid;
+  gap: clamp(10px, 1.6vw, 20px);
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "a b"
+    "c d"
+    "e g"
+    "f g";
+  align-items: start;
+}
+
+.a { grid-area: a; }
+.b { grid-area: b; }
+.c { grid-area: c; }
+.d { grid-area: d; }
+.e { grid-area: e; }
+.f { grid-area: f; }
+.g { grid-area: g; }
+
+/* card */
+.card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  padding-right: 8px;
+}
+
+/* images scale inside their block (no overlap ever) */
+.photo {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* normal card photo aspect like menu plates */
+.card .photo {
+  aspect-ratio: 16 / 10;
+}
+
+/* big hero on bottom right */
+.hero .photo {
+  aspect-ratio: 18 / 18;
+}
+
+/* text section */
+.text {
+  padding-left: 4px;
+}
+
+.titleRow {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.bullet {
+  font-size: 18px;
+  line-height: 1;
+  margin-top: 2px;
+  color: #d8c27c;
+}
+
+.itemName {
+  margin: 0;
+  white-space: pre-line;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.25;
+  color: #ead9ad;
+}
+
+.meta {
+  margin-top: 6px;
+  padding-left: 24px;
+  font-size: clamp(11px, 1vw, 12px);
+  opacity: 0.95;
+}
+
+.de {
+  font-family: "Libre Baskerville", serif;
+}
+
+.th {
+  margin-top: 4px;
+}
+
+.priceRow {
+  margin-top: 10px;
+  padding-left: 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.dots {
+  height: 1px;
+  background-image: radial-gradient(rgba(233,217,176,0.45) 1px, transparent 1px);
+  background-size: 6px 1px;
+  background-repeat: repeat-x;
+}
+
+.price {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: clamp(16px, 1.7vw, 20px);
+  color: #e7d3a1;
+}
+
+.thb {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-left: 4px;
+}
+
+/* ---------- EXTRAS SECTION ---------- */
+/* ---------- EXTRAS SECTION (ALWAYS 2 COLUMNS) ---------- */
+.extrasSection {
+  grid-column: 1 / -1;
+
+  /* keep section full-width */
+  display: block;
+
+  margin-top: clamp(20px, 3vw, 40px);
+  padding-top: clamp(16px, 2vw, 28px);
+  border-top: 1px solid rgba(234, 217, 173, 0.25);
+
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.extrasCategory {
+  margin-bottom: clamp(16px, 2vw, 24px);
+}
+
+/* ALWAYS 2 columns (no stacking on mobile) */
+.extrasGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 40px);
+  row-gap: clamp(8px, 1.2vw, 14px);
+}
+
+.extraItem {
+  padding: clamp(6px, 0.8vw, 10px) 0;
+}
+
+/* Prevent overflow issues for long names */
+.extraItemRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 0.8vw, 10px);
+  min-width: 0;
+  transition: opacity 0.2s ease, text-decoration 0.2s ease;
+}
+
+.extraItemRow:hover{
+  opacity: 0.9;
+  text-decoration-line: underline;
+}
+
+.extraName {
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  font-size: clamp(11px, 1vw, 13px);
+  color: #ead9ad;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.extraDots {
+  flex: 1;
+  height: 1px;
+  min-width: 20px;
+  background-image: radial-gradient(rgba(233,217,176,0.4) 1px, transparent 1px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+}
+
+.extraPrice {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: clamp(12px, 1.1vw, 14px);
+  color: #e7d3a1;
+  flex-shrink: 0;
+}
+
+
+/* ---------- MOBILE STACK ---------- */
+.mobileStack {
+  display: none;
+}
+
+/* MOBILE — STILL 2 COLUMNS */
+@media (max-width: 820px) {
+
+  .desktopGrid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    grid-template-areas:
+      "a b"
+      "c d"
+      "e g"
+      "f g";
+
+    gap: 12px;
+  }
+
+  .mobileStack {
+    display: none;
+  }
+
+  /* smaller images */
+  .card .photo {
+    aspect-ratio: 1 / 1;
+  }
+
+  .hero .photo {
+    aspect-ratio: 1 / 1;
+  }
+
+  /* smaller fonts */
+  .mainTitle {
+    font-size: 28px;
+  }
+
+  .itemName {
+    font-size: 11px;
+  }
+
+  .meta {
+    font-size: 10px;
+  }
+
+  .price {
+    font-size: 14px;
+  }
+
+  /* Extras mobile */
+  .extrasGrid {
+    grid-template-columns: repeat(1fr, 1fr);
+  }
+
+  .extrasTitle {
+    font-size: 16px;
+  }
+
+  .extraName {
+    font-size: 11px;
+  }
+
+  .extraPrice {
+    font-size: 11px;
+  }
+
+}

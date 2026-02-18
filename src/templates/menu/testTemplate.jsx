@@ -1,184 +1,218 @@
 import PdfPageWrapper from "../../components/pdfPageWrapper";
-import Template1 from "./REST01"
+import Template1 from "./REST02"
 
 import useIsMobile from "../../utils/deviceCheck";
 
-const MENU_DATA = {
+const restaurantData = {
   id: 5,
   uid: 5,
   isPublic: false,
   publicCode: { String: "", Valid: false },
   price: 1,
-  code: "REST01",
+  code: "REST02",
   type: "demo",
   category: "restaurant",
-  subheading: "PAUCEK AND LAGE RESTAURANT",
-  heading: "FOOD MENU",
+  subheading: "GERMAN CUISINE",
+  heading: "GERMAN",
   contents: [
     {
-      title: "Grilled Salmon",
-      description:
-        "Fresh salmon fillet seasoned with herbs and grilled to perfection, served with a side of roasted vegetables and lemon-butter sauce.",
+      title: "MEATLOAF WITH FRIED EGG &\nFRIED POTATOES",
+      description: "Fleischkäse mit Spiegelei & Bratkartoffeln",
       data: [
         {
-          name: "Grilled Salmon",
-          description:
-            "Fresh salmon fillet seasoned with herbs and grilled to perfection, served with a side of roasted vegetables and lemon-butter sauce.",
-          price: "18.99",
+          name: "MEATLOAF WITH FRIED EGG &\nFRIED POTATOES",
+          description: "ไส้กรอก+ไข่ดาว+มันทอด",
+          price: "280",
           quantity: "1",
         },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [
-        "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=60",
-      ],
-      ingredients: [],
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5",
+      images: null,
+      ingredients: null,
     },
     {
-      title: "Vegetable Pad Thai",
-      description:
-        "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
+      title: "CREAMED SPINACH WITH BOILED\nPOTATOES AND FRIED EGGS",
+      description: "Rahm-Spinat mit Kartoffeln und Spiegelei",
       data: [
         {
-          name: "Vegetable Pad Thai",
-          description:
-            "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
-          price: "13.99",
+          name: "CREAMED SPINACH WITH BOILED\nPOTATOES AND FRIED EGGS",
+          description: "ผักโขม นิ่มกับ+ไข่ดาว",
+          price: "280",
           quantity: "1",
         },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [
-        "https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=1200&q=60",
-      ],
-      ingredients: [],
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FCREAMED_SPINACH.glb_4d6f14cd-7c5b-45a1-907e-cd738cd8bf99.glb?alt=media&token=04e46b3b-7213-466c-bb21-b57d8b6354f3",
+      ingredients: null,
     },
     {
-      title: "Mushroom Risotto",
-      description:
-        "Creamy rice cooked with savory mushrooms, garlic, shallots, and Parmesan cheese, finished with a drizzle of truffle oil and fresh parsley.",
+      title: "CURRY SAUSAGE WITH FRENCH FRIES",
+      description: "Currywurst mit Pommes frites",
       data: [
         {
-          name: "Mushroom Risotto",
-          description:
-            "Creamy rice cooked with savory mushrooms, garlic, shallots, and Parmesan cheese, finished with a drizzle of truffle oil and fresh parsley.",
-          price: "14.99",
+          name: "CURRY SAUSAGE WITH FRENCH FRIES",
+          description: "ไส้กรอกเยอรมัน+เฟรนช์ฟรายส์",
+          price: "270",
           quantity: "1",
         },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [
-        "https://images.unsplash.com/photo-1604908176997-125f25cc500f?auto=format&fit=crop&w=1200&q=60",
-      ],
-      ingredients: [],
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FCURRY_SAUSAGE.glb_654b7ba4-90bd-43a8-8fdf-74ddac67ae2a.glb?alt=media&token=6077fc8e-4c95-4822-8481-9ce20a3d306b",
+      ingredients: null,
     },
     {
-      title: "Grilled Chicken",
-      description:
-        "Grilled chicken breast served atop crisp lettuce with dressing, shaved cheese, garlic croutons, and cherry tomatoes.",
+      title: "SOUR LENTILS WITH GERMAN PASTA\nAND VIENNA SAUSAGES",
+      description: "Linsen, Spätzle und Wiener Würstchen",
       data: [
         {
-          name: "Grilled Chicken",
-          description:
-            "Grilled chicken breast served atop crisp lettuce with dressing, shaved cheese, garlic croutons, and cherry tomatoes.",
-          price: "12.99",
+          name: "SOUR LENTILS WITH GERMAN PASTA\nAND VIENNA SAUSAGES",
+          description: "เลนทิลซอส พาสต้าเยอรมัน และไส้กรอกเยอรมัน",
+          price: "280",
           quantity: "1",
         },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [
-        "https://images.unsplash.com/photo-1604908177074-0cf29f8e3a08?auto=format&fit=crop&w=1200&q=60",
-      ],
-      ingredients: [],
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FSOUR_LENTILS.glb_809cb294-9f8e-4ac2-972d-aa7d53c24f97.glb?alt=media&token=69e182d6-640a-4eab-a502-9e5d6dc66674",
+      images: null,
+      ingredients: null,
     },
     {
-      title: "Classic Beef",
-      description:
-        "Layers of rich tomato sauce, seasoned ground beef, lasagna noodles, and creamy béchamel sauce, baked to bubbly perfection and topped with melted mozzarella cheese.",
+      title: "SAUSAGE SALAD WITH BREAD",
+      description: "Wurstsalat mit Brot",
       data: [
         {
-          name: "Classic Beef",
-          description:
-            "Layers of rich tomato sauce, seasoned ground beef, lasagna noodles, and creamy béchamel sauce, baked to bubbly perfection and topped with melted mozzarella cheese.",
-          price: "16.99",
+          name: "SAUSAGE SALAD WITH BREAD",
+          description: "ไส้กรอกสลัด+ขนมปัง",
+          price: "280",
           quantity: "1",
         },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [
-        "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1200&q=60",
-      ],
-      ingredients: [],
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FSAUSAGE_SALAD.glb_27bb4c7b-67c2-4b46-a328-36cd5f06360a.glb?alt=media&token=8d622ada-681d-4698-bf10-bedd332e64a9",
+      images: null,
+      ingredients: null,
     },
     {
-      title: "Eggplant Parmesan",
-      description:
-        "Breaded eggplant fried to golden crisp, layered with marinara sauce, mozzarella, and Parmesan, baked until bubbly and served with spaghetti marinara.",
+      title: "GERMAN SAUSAGE WITH POTATO SALAD",
+      description: "Bockwurst mit Kartoffelsalat (Essig & Öl)",
       data: [
         {
-          name: "Eggplant Parmesan",
-          description:
-            "Breaded eggplant fried to golden crisp, layered with marinara sauce, mozzarella, and Parmesan, baked until bubbly and served with spaghetti marinara.",
-          price: "15.99",
+          name: "GERMAN SAUSAGE WITH POTATO SALAD",
+          description: "ไส้กรอกเยอรมัน+มันสลัด (น้ำส้มสายชูและน้ำมัน)",
+          price: "240",
           quantity: "1",
         },
       ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [
-        "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=1200&q=60",
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FGERMAN_SAUSAGE.glb_894e8338-7bbe-4a84-8e3a-c1b3f0aba14a.glb?alt=media&token=d9c128f6-399a-4832-891a-86aa43c9fe50",
+      images: null,
+      ingredients: null,
+    },
+    {
+      title: "CURRY VEAL SAUSAGE WITH\nFRENCH FRIES",
+      description: "Kalbscurrywurst mit Pommes frites",
+      data: [
+        {
+          name: "CURRY VEAL SAUSAGE WITH\nFRENCH FRIES",
+          description: "ไส้กรอกเนื้อลูกวัว+ เฟรนช์ฟรายส์",
+          price: "360",
+          quantity: "1",
+        },
       ],
-      ingredients: [],
-    }
+      model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FCURRY_VEAL_SAUSAGE.glb_3bce0841-2ac7-41b7-a9c7-6c9cc0aac757.glb?alt=media&token=59d75fe4-5f1d-4d22-98fa-4799dcdbf88a",
+      images: null,
+      ingredients: null,
+    },
   ],
   extras: [
     {
       title: "Beverage",
       description: "",
       data: [
-        { name: "Classic Margarita", description: "", price: "3.99", quantity: "" },
-        { name: "Mango Mocktail", description: "", price: "2.99", quantity: "" },
-        { name: "Iced Caramel Macchiato", description: "", price: "4.99", quantity: "" },
-        { name: "Green Tea Frappuccino", description: "", price: "3.99", quantity: "" },
-        { name: "Pineapple Coconut Smoothie", description: "", price: "5.99", quantity: "" },
-        { name: "Raspberry Mojito", description: "", price: "3.99", quantity: "" },
-        { name: "Blackberry Ginger Sparkler", description: "", price: "2.99", quantity: "" },
-      ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [],
-      ingredients: [],
-    },
-    {
-      title: "Dessert",
-      description: "",
-      data: [
-        { name: "Chocolate Mousse", description: "", price: "5.99", quantity: "" },
-        { name: "Apple Pie", description: "", price: "7.99", quantity: "" },
-        { name: "Strawberry Shortcake", description: "", price: "6.99", quantity: "" },
-        { name: "Fruit Tart", description: "", price: "5.99", quantity: "" },
-        { name: "Tiramisu", description: "", price: "8.99", quantity: "" },
-        { name: "Chocolate Lava Cake", description: "", price: "6.99", quantity: "" },
-        { name: "Cheesecake", description: "", price: "5.99", quantity: "" },
-      ],
-      model:
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FRuby_Toro_Selection.glb_b2b1243c-a0aa-4db4-9c59-fe269a277bf5.glb?alt=media&token=cf2a0f1d-52b2-495a-9678-2d39d1515f62",
-      images: [],
-      ingredients: [],
-    },
+        {
+          name: "Pilsner Beer (0.3L)",
+          description: "",
+          price: "3.50",
+          quantity: ""
+        },
+        {
+          name: "Pilsner Beer (0.5L)",
+          description: "",
+          price: "5.00",
+          quantity: ""
+        },
+        {
+          name: "Weissbier (Wheat Beer, 0.5L)",
+          description: "",
+          price: "5.50",
+          quantity: ""
+        },
+        {
+          name: "Radler (Beer + Lemon)",
+          description: "",
+          price: "5.00",
+          quantity: ""
+        },
+        {
+          name: "House Red Wine (0.2L)",
+          description: "",
+          price: "4.50",
+          quantity: ""
+        },
+        {
+          name: "House White Wine (0.2L)",
+          description: "",
+          price: "4.50",
+          quantity: ""
+        },
+        {
+          name: "Coca-Cola",
+          description: "",
+          price: "2.50",
+          quantity: ""
+        },
+        {
+          name: "Sparkling Water",
+          description: "",
+          price: "2.00",
+          quantity: ""
+        },
+        {
+          name: "Apple Juice",
+          description: "",
+          price: "2.50",
+          quantity: ""
+        },
+        {
+          name: "Coffee",
+          description: "",
+          price: "2.50",
+          quantity: ""
+        },
+        {
+          name: "Cappuccino",
+          description: "",
+          price: "3.00",
+          quantity: ""
+        },
+        {
+          name: "Espresso",
+          description: "",
+          price: "2.00",
+          quantity: ""
+        }
+      ]
+    }
   ],
-  information: { brand: "", website: "", email: "", phone: "", address: "", more: {} },
+  information: {
+    brand: "",
+    website: "",
+    email: "",
+    phone: "",
+    address: "",
+    more: {},
+  },
 };
 
 export default function TestTemplate() {
   const isMobile = useIsMobile();
 
-  const content = <Template1 data={MENU_DATA}/>;
+  const content = <Template1 data={restaurantData} />;
 
   return isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
 }
