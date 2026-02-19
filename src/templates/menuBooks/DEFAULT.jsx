@@ -3,19 +3,28 @@ import styles from "./DEFAULT.module.css";
 
 const templateModules = import.meta.glob("../menu/*.jsx");
 
-export default function TemplateLoader({ data }) {
+// Component to load a single content item with its own template
+function ContentItem({ content }) {
   const DynamicTemplate = useMemo(() => {
-    const code = data?.templateCode;
+    const code = content?.code;
     if (!code) return null;
 
     const key = `../menu/${code}.jsx`;
     const importer = templateModules[key];
     return importer ? lazy(importer) : null;
-  }, [data?.templateCode]);
+  }, [content?.code]);
 
-  if (!data?.templateCode) return <p>Missing templateCode</p>;
-  if (!DynamicTemplate) return <p>Template not found: {data.templateCode}</p>;
+  if (!content?.code) return <p>Missing code for item</p>;
+  if (!DynamicTemplate) return <p>Template not found: {content.code}</p>;
 
+  return (
+    <Suspense fallback={<p>Loading item...</p>}>
+      <DynamicTemplate data={content} />
+    </Suspense>
+  );
+}
+
+export default function TemplateLoader({ data }) {
   const contents = Array.isArray(data?.contents) ? data.contents : [];
   if (contents.length === 0) return <p>No content available</p>;
 
@@ -25,7 +34,7 @@ export default function TemplateLoader({ data }) {
   // reset when data changes
   useEffect(() => {
     setVisibleCount(1);
-  }, [data?.templateCode, contents.length]);
+  }, [contents.length]);
 
   const sentinelRef = useRef(null);
 
@@ -55,9 +64,7 @@ export default function TemplateLoader({ data }) {
   return (
     <main className={styles.main}>
       {visibleItems.map((content, index) => (
-        <Suspense key={content?.id ?? index} fallback={<p>Loading item...</p>}>
-          <DynamicTemplate data={content} />
-        </Suspense>
+        <ContentItem key={content?.id ?? index} content={content} />
       ))}
 
       {/* sentinel: when user scrolls near the end, load the next one */}

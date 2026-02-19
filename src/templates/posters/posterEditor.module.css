@@ -1,0 +1,360 @@
+/* posterEditor.module.css */
+
+.editor {
+  /* Theme */
+  --bg: #0a0b10;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface2: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.10);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.62);
+  --muted2: rgba(255, 255, 255, 0.45);
+
+  --accent: #8b5cf6;
+  --accent2: #22d3ee;
+
+  --r-lg: 16px;
+  --r-md: 12px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.35);
+
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  background:
+    radial-gradient(900px 500px at 8% -10%, rgba(139, 92, 246, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 95% 0%, rgba(34, 211, 238, 0.12), transparent 55%),
+    linear-gradient(180deg, #07080c, var(--bg));
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main {
+  width: 95%;
+  max-width: 600px;
+  height: 100%;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+/* Header */
+.header {
+  margin: 50px 0 16px;
+  padding-left: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Cards */
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025));
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  margin-bottom: 16px;
+  
+}
+
+/* Section title */
+.sectionTitle {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.90);
+}
+
+/* Layout */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 680px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Form labels */
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.labelText {
+  color: var(--muted);
+  letter-spacing: 0.2px;
+  font-size: 12px;
+}
+
+/* Inputs */
+.input {
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease, transform 140ms ease;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.input:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.40);
+}
+
+.input:focus {
+  border-color: rgba(139, 92, 246, 0.65);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.20), 0 14px 34px rgba(0, 0, 0, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Image preview */
+.imagePreview {
+  margin-top: 12px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.imagePreview img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Slider */
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 140ms ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.sliderValue {
+  min-width: 50px;
+  text-align: right;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Color inputs */
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .colorGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.colorLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.colorInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.colorInput {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.colorInput::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.colorInput::-webkit-color-swatch {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+}
+
+.colorInput::-moz-color-swatch {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+}
+
+.colorText {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  font-family: monospace;
+  outline: none;
+}
+
+/* Live Preview */
+.preview {
+  padding: 20px 16px;
+  border-radius: var(--r-md);
+  text-align: center;
+  overflow: hidden;
+}
+
+.previewKicker {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.previewTitle {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 6px 0 14px;
+}
+
+.previewPlateWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.previewPlate {
+  border-radius: 50%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow:
+    inset 0 0 0 2px #222,
+    0 6px 20px rgba(0, 0, 0, 0.8);
+}
+
+.previewFood {
+  width: 85%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.previewBadge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 8px 14px;
+  text-align: left;
+  color: #000;
+}
+
+.previewBadge span {
+  font-size: 9px;
+  display: block;
+}
+
+.previewBadge b {
+  font-size: 11px;
+}
+
+.previewInfo {
+  margin-top: 16px;
+  font-size: 9px;
+}
+
+.previewInfo p {
+  margin: 3px 0;
+}
+
+.previewWebsite {
+  font-size: 10px;
+  margin-top: 10px;
+}
+
+/* Scrollbar */
+.editor::-webkit-scrollbar {
+  width: 10px;
+}
+
+.editor::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.35);
+}
+
+.editor::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}

@@ -2,21 +2,29 @@ import { lazy, Suspense, useMemo, useState } from "react";
 
 const templateModules = import.meta.glob("../menu/*.jsx");
 
-export default function Template({ data }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
+// Component to load a single content item with its own template
+function ContentItem({ content }) {
   const DynamicTemplate = useMemo(() => {
-    const code = data?.templateCode;
+    const code = content?.code;
     if (!code) return null;
 
     const key = `../menu/${code}.jsx`;
     const importer = templateModules[key];
-
     return importer ? lazy(importer) : null;
-  }, [data?.templateCode]);
+  }, [content?.code]);
 
-  if (!data?.templateCode) return <p>Missing templateCode</p>;
-  if (!DynamicTemplate) return <p>Template not found: {data.templateCode}</p>;
+  if (!content?.code) return <p>Missing code for item</p>;
+  if (!DynamicTemplate) return <p>Template not found: {content.code}</p>;
+
+  return (
+    <Suspense fallback={<p>Loading template...</p>}>
+      <DynamicTemplate data={content} />
+    </Suspense>
+  );
+}
+
+export default function Template({ data }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const contents = Array.isArray(data?.contents) ? data.contents : [];
   if (contents.length === 0) return <p>No content available</p>;
@@ -38,9 +46,7 @@ export default function Template({ data }) {
         minHeight: "200px",     // ✅ so arrows have space even if template is small
       }}
     >
-      <Suspense fallback={<p>Loading template...</p>}>
-        <DynamicTemplate data={contents[currentIndex]} />
-      </Suspense>
+      <ContentItem content={contents[currentIndex]} />
 
       {/* LEFT ARROW */}
       <button

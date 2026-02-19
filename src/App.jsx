@@ -29,7 +29,7 @@ import EditMenuBook from "./admin/editMenuBook";
 import DashboardPage from "./business/dashboard";
 
 
-/* import TestTemplate from "./templates/menu/testTemplate";  */
+import TestTemplate from "./templates/testTemplate"; 
 
 
 
@@ -43,8 +43,6 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
-
-           {/* <Route path="/test" element={<TestTemplate />} />  */}
       
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
@@ -61,6 +59,7 @@ export default function App() {
                 <Route path="/admin/edit/template" element={<EditTemplate />} />
                 <Route path="/admin/edit/menubook" element={<EditMenuBook />} />
                 <Route path="/admin/features" element={<Features />} />
+                <Route path="/template" element={<TestTemplate />} />
               </Route>
 
               {/* Business route */}
