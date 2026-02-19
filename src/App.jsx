@@ -24,6 +24,7 @@ import AdminPage from "./admin";
 import Features from "./admin/features";
 import EditTemplate from "./admin/editTemplate";
 import EditMenuBook from "./admin/editMenuBook";
+import EditPosterTemplate from "./admin/editPosterTemplate";
 
 // Business //
 import DashboardPage from "./business/dashboard";
@@ -58,6 +59,7 @@ export default function App() {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/edit/template" element={<EditTemplate />} />
                 <Route path="/admin/edit/menubook" element={<EditMenuBook />} />
+                <Route path="/admin/edit/poster" element={<EditPosterTemplate />} />
                 <Route path="/admin/features" element={<Features />} />
                 <Route path="/template" element={<TestTemplate />} />
               </Route>

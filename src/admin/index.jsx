@@ -19,6 +19,7 @@ import {
 const defaultItems = [
   { icon: LayoutDashboard, label: "Admin", path: "/admin" },
   { icon: FileEdit, label: "Edit Template", path: "/admin/edit/template" },
+  { icon: FileEdit, label: "Edit Poster", path: "/admin/edit/poster" },
   { icon: FileEdit, label: "Edit Menu Book", path: "/admin/edit/menubook" },
   { icon: Puzzle, label: "Features", path: "/admin/features" },
 ];

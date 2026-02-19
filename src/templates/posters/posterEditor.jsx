@@ -14,9 +14,41 @@ export default function PosterEditor({children, data, onChange }) {
 
   if (!updateData) return null;
 
-  // Update helper
+  const info = updateData.information || {};
+  const more = info.more || {};
+  const firstContent = updateData.contents?.[0] || {};
+
+  // Update helper for top-level fields
   const updateField = (key, value) => {
     setUpdateData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Update helper for information fields
+  const updateInfoField = (key, value) => {
+    setUpdateData((prev) => ({
+      ...prev,
+      information: { ...prev.information, [key]: value }
+    }));
+  };
+
+  // Update helper for information.more fields
+  const updateMoreField = (key, value) => {
+    setUpdateData((prev) => ({
+      ...prev,
+      information: {
+        ...prev.information,
+        more: { ...prev.information?.more, [key]: value }
+      }
+    }));
+  };
+
+  // Update helper for contents[0] fields
+  const updateContentField = (key, value) => {
+    setUpdateData((prev) => {
+      const newContents = [...(prev.contents || [])];
+      newContents[0] = { ...newContents[0], [key]: value };
+      return { ...prev, contents: newContents };
+    });
   };
 
   return (
@@ -36,21 +68,21 @@ export default function PosterEditor({children, data, onChange }) {
           <h3 className={styles.sectionTitle}>Header Text</h3>
           <div className={styles.grid2}>
             <label className={styles.label}>
-              <span className={styles.labelText}>Kicker</span>
+              <span className={styles.labelText}>Subheading</span>
               <input
                 className={styles.input}
-                value={updateData.kicker || ""}
-                onChange={(e) => updateField("kicker", e.target.value)}
+                value={updateData.subheading || ""}
+                onChange={(e) => updateField("subheading", e.target.value)}
                 placeholder="THE FOOD RESTO"
               />
             </label>
 
             <label className={styles.label}>
-              <span className={styles.labelText}>Title</span>
+              <span className={styles.labelText}>Heading</span>
               <input
                 className={styles.input}
-                value={updateData.title || ""}
-                onChange={(e) => updateField("title", e.target.value)}
+                value={updateData.heading || ""}
+                onChange={(e) => updateField("heading", e.target.value)}
                 placeholder="MENU"
               />
             </label>
@@ -61,17 +93,17 @@ export default function PosterEditor({children, data, onChange }) {
         <div className={styles.card}>
           <h3 className={styles.sectionTitle}>Image</h3>
           <label className={styles.label}>
-            <span className={styles.labelText}>Image URL</span>
+            <span className={styles.labelText}>Model URL</span>
             <input
               className={styles.input}
-              value={updateData.imageUrl || ""}
-              onChange={(e) => updateField("imageUrl", e.target.value)}
-              placeholder="https://example.com/image.jpg"
+              value={firstContent.model || ""}
+              onChange={(e) => updateContentField("model", e.target.value)}
+              placeholder="https://example.com/model.glb"
             />
           </label>
-          {updateData.imageUrl && (
+          {firstContent.model && (
             <div className={styles.imagePreview}>
-              <img src={updateData.imageUrl} alt="Preview" />
+              <img src={firstContent.model} alt="Preview" />
             </div>
           )}
         </div>
@@ -84,8 +116,8 @@ export default function PosterEditor({children, data, onChange }) {
               <span className={styles.labelText}>Badge Small Text</span>
               <input
                 className={styles.input}
-                value={updateData.badgeSmall || ""}
-                onChange={(e) => updateField("badgeSmall", e.target.value)}
+                value={more.badgeSmall || ""}
+                onChange={(e) => updateMoreField("badgeSmall", e.target.value)}
                 placeholder="SPECIAL MENU"
               />
             </label>
@@ -94,8 +126,8 @@ export default function PosterEditor({children, data, onChange }) {
               <span className={styles.labelText}>Badge Large Text</span>
               <input
                 className={styles.input}
-                value={updateData.badgeLarge || ""}
-                onChange={(e) => updateField("badgeLarge", e.target.value)}
+                value={more.badgeLarge || ""}
+                onChange={(e) => updateMoreField("badgeLarge", e.target.value)}
                 placeholder="ENJOY 20% OFF"
               />
             </label>
@@ -109,10 +141,10 @@ export default function PosterEditor({children, data, onChange }) {
                 className={styles.slider}
                 min="-15"
                 max="15"
-                value={updateData.badgeRotation ?? -5}
-                onChange={(e) => updateField("badgeRotation", Number(e.target.value))}
+                value={more.badgeRotation ?? -5}
+                onChange={(e) => updateMoreField("badgeRotation", Number(e.target.value))}
               />
-              <span className={styles.sliderValue}>{updateData.badgeRotation ?? -5}°</span>
+              <span className={styles.sliderValue}>{more.badgeRotation ?? -5}°</span>
             </div>
           </label>
         </div>
@@ -125,8 +157,8 @@ export default function PosterEditor({children, data, onChange }) {
               <span className={styles.labelText}>Hours</span>
               <input
                 className={styles.input}
-                value={updateData.hours || ""}
-                onChange={(e) => updateField("hours", e.target.value)}
+                value={more.hours || ""}
+                onChange={(e) => updateMoreField("hours", e.target.value)}
                 placeholder="OPEN 2 PM - 11 PM"
               />
             </label>
@@ -135,8 +167,8 @@ export default function PosterEditor({children, data, onChange }) {
               <span className={styles.labelText}>Phone</span>
               <input
                 className={styles.input}
-                value={updateData.phone || ""}
-                onChange={(e) => updateField("phone", e.target.value)}
+                value={info.phone || ""}
+                onChange={(e) => updateInfoField("phone", e.target.value)}
                 placeholder="123-555-2414"
               />
             </label>
@@ -146,8 +178,8 @@ export default function PosterEditor({children, data, onChange }) {
             <span className={styles.labelText}>Address</span>
             <input
               className={styles.input}
-              value={updateData.address || ""}
-              onChange={(e) => updateField("address", e.target.value)}
+              value={info.address || ""}
+              onChange={(e) => updateInfoField("address", e.target.value)}
               placeholder="555 YOUR CITY, AMAZING STATE 28888"
             />
           </label>
@@ -156,8 +188,8 @@ export default function PosterEditor({children, data, onChange }) {
             <span className={styles.labelText}>Website</span>
             <input
               className={styles.input}
-              value={updateData.website || ""}
-              onChange={(e) => updateField("website", e.target.value)}
+              value={info.website || ""}
+              onChange={(e) => updateInfoField("website", e.target.value)}
               placeholder="WWW.YOURWEBSITE.COM"
             />
           </label>
@@ -174,14 +206,14 @@ export default function PosterEditor({children, data, onChange }) {
                 <input
                   type="color"
                   className={styles.colorInput}
-                  value={updateData.bgColor || "#111111"}
-                  onChange={(e) => updateField("bgColor", e.target.value)}
+                  value={more.bgColor || "#111111"}
+                  onChange={(e) => updateMoreField("bgColor", e.target.value)}
                 />
                 <input
                   type="text"
                   className={styles.colorText}
-                  value={updateData.bgColor || "#111111"}
-                  onChange={(e) => updateField("bgColor", e.target.value)}
+                  value={more.bgColor || "#111111"}
+                  onChange={(e) => updateMoreField("bgColor", e.target.value)}
                 />
               </div>
             </label>
@@ -192,14 +224,14 @@ export default function PosterEditor({children, data, onChange }) {
                 <input
                   type="color"
                   className={styles.colorInput}
-                  value={updateData.accentColor || "#f5a623"}
-                  onChange={(e) => updateField("accentColor", e.target.value)}
+                  value={more.accentColor || "#f5a623"}
+                  onChange={(e) => updateMoreField("accentColor", e.target.value)}
                 />
                 <input
                   type="text"
                   className={styles.colorText}
-                  value={updateData.accentColor || "#f5a623"}
-                  onChange={(e) => updateField("accentColor", e.target.value)}
+                  value={more.accentColor || "#f5a623"}
+                  onChange={(e) => updateMoreField("accentColor", e.target.value)}
                 />
               </div>
             </label>
@@ -210,14 +242,14 @@ export default function PosterEditor({children, data, onChange }) {
                 <input
                   type="color"
                   className={styles.colorInput}
-                  value={updateData.textColor || "#ffffff"}
-                  onChange={(e) => updateField("textColor", e.target.value)}
+                  value={more.textColor || "#ffffff"}
+                  onChange={(e) => updateMoreField("textColor", e.target.value)}
                 />
                 <input
                   type="text"
                   className={styles.colorText}
-                  value={updateData.textColor || "#ffffff"}
-                  onChange={(e) => updateField("textColor", e.target.value)}
+                  value={more.textColor || "#ffffff"}
+                  onChange={(e) => updateMoreField("textColor", e.target.value)}
                 />
               </div>
             </label>
@@ -228,14 +260,14 @@ export default function PosterEditor({children, data, onChange }) {
                 <input
                   type="color"
                   className={styles.colorInput}
-                  value={updateData.mutedColor || "#bbbbbb"}
-                  onChange={(e) => updateField("mutedColor", e.target.value)}
+                  value={more.mutedColor || "#bbbbbb"}
+                  onChange={(e) => updateMoreField("mutedColor", e.target.value)}
                 />
                 <input
                   type="text"
                   className={styles.colorText}
-                  value={updateData.mutedColor || "#bbbbbb"}
-                  onChange={(e) => updateField("mutedColor", e.target.value)}
+                  value={more.mutedColor || "#bbbbbb"}
+                  onChange={(e) => updateMoreField("mutedColor", e.target.value)}
                 />
               </div>
             </label>
@@ -249,10 +281,10 @@ export default function PosterEditor({children, data, onChange }) {
                 className={styles.slider}
                 min="150"
                 max="400"
-                value={updateData.plateSize ?? 280}
-                onChange={(e) => updateField("plateSize", Number(e.target.value))}
+                value={more.plateSize ?? 280}
+                onChange={(e) => updateMoreField("plateSize", Number(e.target.value))}
               />
-              <span className={styles.sliderValue}>{updateData.plateSize ?? 280}px</span>
+              <span className={styles.sliderValue}>{more.plateSize ?? 280}px</span>
             </div>
           </label>
         </div>
