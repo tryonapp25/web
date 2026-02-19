@@ -104,7 +104,9 @@ export default function PosterTemplateWraper() {
         <TemplateEditor
           data={template}
           onChange={(d) => handleUpdateMenuTemplate(d)}
-        />
+        >
+          <Template/>
+        </TemplateEditor>
       </PdfPageWrapper>
     );
   } else if(isEditMode && isMobile) {
@@ -112,7 +114,9 @@ export default function PosterTemplateWraper() {
       <TemplateEditor
         data={template}
         onChange={(d) => handleUpdateMenuTemplate(d)}
-      />
+      >
+        <Template/>
+      </TemplateEditor>
     );
   }
 
