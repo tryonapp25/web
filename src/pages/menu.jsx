@@ -10,6 +10,7 @@ import QuickAction from "../components/quickAction";
 import UploadFileCard from "../components/uploadFile";
 import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
+import PosterTemplateGrid from "../components/posterTemplateGrid";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
 import PagesRows from "../components/pagesRows";
 
@@ -37,6 +38,7 @@ export default function MenuPage() {
 
   const [quickAction, setQuickAction] = useState([
     {tabName: "templates", name: "Explore"},
+    {tabName: "posters", name: "Posters"},
   ])
 
 
@@ -44,6 +46,9 @@ export default function MenuPage() {
     switch(tab){
       case "menu_book":
         handleGetMenuBooks();
+        break;
+      case "posters":
+        handleGetPosterTemplates();
         break;
       default:
         handleGetTemplates(currentPage + 1);
@@ -65,8 +70,29 @@ export default function MenuPage() {
       return [...prev, { tabName: "menu_book", name: "MenuBooks" }];
     });
   };
+
+  const handleGetPosterTemplates = async () => {
+    if(loading) return;
+    try{
+      setLoading(true);
+      setTemplates([]);
+      const res = await http.get(`/poster/demo/templates`);
+      if(res.data.success){
+        setTemplates(res.data.data);
+      }
+    }
+    catch(err){
+      console.log(httpMessage(err));
+    }
+    finally{
+      setLoading(false);
+    }
+  };
+
+
   const handleGetMenuBooks = async () => {
     if(loading) return;
+    setCurrentPage(0);
     try{
       setLoading(true);
       setTemplates([]);
@@ -85,7 +111,7 @@ export default function MenuPage() {
 
   const handleGetTemplates = async (page) => {
     try{
-      setLoading(true)
+      setLoading(true);
       const res = await http.get(`/demo/templates?page=${page}`);
       if(res.data.success){
         setTemplates(res.data.data);
@@ -141,6 +167,8 @@ export default function MenuPage() {
           <div className={[styles.content, {backgroundColor:"transparent"}]}>
             {tab === "menu_book" || tab === "mine_menu_book" ? (
               <MenuBookGrid templates={templates} />
+            ) : tab === "posters" ? (
+              <PosterTemplateGrid templates={templates} />
             ) : (
               <TemplateGrid templates={templates} />
             )}

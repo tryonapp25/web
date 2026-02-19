@@ -13,9 +13,11 @@ import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import MenuPage from "./pages/menu";
 import RenderProductionMenu from "./pages/renderProductionMenu";
+import RenderProductionPoster from "./pages/renderProductionPoster";
 import RenderProductionMenuBook from "./pages/renderProductionMenuBook";
 import TemplateWraper from "./pages/templateWraper";
 import MenuBookWraper from "./pages/menuBookWrapper";
+import PosterTemplateWraper from "./pages/posterTemplateWrapper";
 import MyCollection from "./pages/collection";
 
 
@@ -44,6 +46,7 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
+            <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
             {/* <Route path="/test" element={<TestTemplate />} /> */}
       
             {/*Protect routers */}
@@ -53,6 +56,7 @@ export default function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/collection" element={<MyCollection />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
+              <Route path="/:type/poster/template/:id" element={<PosterTemplateWraper />} />
               <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />
 
               {/* Admin route */}

@@ -6,7 +6,7 @@ const config = {
 }
 
 
-export default function Template({ data }) {
+export default function Template({ data = {}, pressable, onPress,  onClickModel }) {
   const d = data;
   const info = d.information || {};
   const more = info.more || {};
@@ -29,8 +29,14 @@ export default function Template({ data }) {
     height: more.plateSize 
   };
 
+
+  const onSelectedTemplate = () => {
+    if(!pressable) return;
+    onPress(data);
+  }
+
   return (
-    <div className={styles.page}>
+    <div className={styles.page} onClick={onSelectedTemplate}>
       <div className={styles.poster} style={posterStyle}>
 
         {/* top */}
@@ -39,7 +45,7 @@ export default function Template({ data }) {
         <h1 className={styles.title}>{d.heading}</h1>
 
         {/* plate */}
-        <div className={styles.plateWrap}>
+        <div className={styles.plateWrap} onClick={() => onClickModel({data: data, config: config})} >
           <div className={styles.plate} style={plateStyle}>
             <Model3D model={firstContent.model} config={config} images={firstContent?.images} />
           </div>

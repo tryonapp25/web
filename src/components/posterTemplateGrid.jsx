@@ -16,7 +16,7 @@ const defaultMessage = { visible: false, type: "", msg: "" };
 // include templates in root and subfolders (e.g. templates/menu)
 const modules = import.meta.glob("../templates/**/*.jsx");
 
-export default function TemplateGrid({ templates = [] }) {
+export default function PosterTemplateGrid({ templates = [] }) {
   const navigate = useNavigate();
   const {publicUser, setPublicUser} = useContext(UserContext);
   const [tokens, setTokens] = useState(publicUser?.token?.tokens);
@@ -39,7 +39,7 @@ export default function TemplateGrid({ templates = [] }) {
   };
 
   const handleClickEditTemplate = (tem) => {
-    navigate(`/${tem?.type}/template/${tem?.id}?code=${tem?.code}`);
+    navigate(`/${tem?.type}/poster/template/${tem?.id}?code=${tem?.code}`);
   };
 
   const lazyByPath = useMemo(() => {
@@ -56,7 +56,7 @@ export default function TemplateGrid({ templates = [] }) {
     }
     try{
       setLoading(true);
-      const res = await http.post(`/production/buy/template/uid/${publicUser?.uid}`, selectedTemplate);
+      const res = await http.post(`/poster/production/buy/template/uid/${publicUser?.uid}`, selectedTemplate);
       if(res.data.success){
         setMessage({visible: true, type: "success", msg: res.data.message});
         setPublicUser(res.data.data);
@@ -74,7 +74,7 @@ export default function TemplateGrid({ templates = [] }) {
     setOpenModal(false);
     if (!selectedTemplate?.code || !selectedTemplate?.id) return;
     navigate(
-      `/${selectedTemplate?.type}/template/${selectedTemplate.id}?code=${selectedTemplate.code}`
+      `/${selectedTemplate?.type}/poster/template/${selectedTemplate.id}?code=${selectedTemplate.code}`
     );
   };
 
@@ -82,7 +82,7 @@ export default function TemplateGrid({ templates = [] }) {
     try {
       setLoading(true);
       tem.isPublic = !status;
-      const res = await http.put(`/template/status`, tem);
+      const res = await http.put(`/poster/template/status`, tem);
       if (res.data.success) {
         setMessage({
           visible: true,
@@ -146,7 +146,7 @@ export default function TemplateGrid({ templates = [] }) {
         onClose={() => setOpenConfirmModal(false)}
         onEdit={(tem) => handleClickEditTemplate(tem)}
         onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
-        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}menu/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
+        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}poster/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
       />
 
       <FlashMessage

@@ -9,6 +9,7 @@ import LoadingModal from "../components/loading";
 import QuickAction from "../components/quickAction";
 import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
+import PosterTemplateGrid from "../components/posterTemplateGrid";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 
@@ -33,6 +34,7 @@ export default function MyCollection() {
 
   const [quickAction, setQuickAction] = useState([
     {tabName: "mine", name: "My templates", isActive: true},
+    {tabName: "posters", name: "My posters", isActive: true},
   ])
 
 
@@ -40,6 +42,9 @@ export default function MyCollection() {
     switch(tab){
       case "mine_menu_book":
         handleGetUserMenuBooks();
+        break;
+      case "posters":
+        handleGetUserProductionPosterTemplates(publicUser?.uid);
         break;
       default:
         handleGetUserProductionTemaplate(publicUser?.uid);
@@ -67,6 +72,23 @@ export default function MyCollection() {
       setLoading(true);
       setTemplates([]);
       const res = await http.get(`/production/menu-book/templates`);
+      if(res.data.success){
+        setTemplates(res.data.data);
+      }
+    }
+    catch(err){
+      console.log(httpMessage(err));
+    }
+    finally{
+      setLoading(false);
+    }
+  }
+
+  const handleGetUserProductionPosterTemplates = async (uid) => {
+    try{
+      setLoading(true);
+      setTemplates([]);
+      const res = await http.get(`/poster/user/${uid}/production/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
       }
@@ -120,8 +142,10 @@ export default function MyCollection() {
             <QuickAction onPress={(t) => setTab(t)} data={quickAction}/>
           </div>
           <div className={[styles.content, {backgroundColor:"transparent"}]}>
-            {tab === "mine_menu_book" ? (
+            {tab === "menu_book" || tab === "mine_menu_book" ? (
               <MenuBookGrid templates={templates} />
+            ) : tab === "posters" ? (
+              <PosterTemplateGrid templates={templates} />
             ) : (
               <TemplateGrid templates={templates} />
             )}
