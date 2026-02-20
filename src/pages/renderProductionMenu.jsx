@@ -13,7 +13,7 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import { HandeleConnect, sendOrder, getGuestToken } from "../utils/socketio";
+import { HandeleConnect, sendOrder } from "../utils/socketio";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 

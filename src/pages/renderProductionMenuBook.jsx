@@ -1,4 +1,4 @@
-import { useMemo, useState, Suspense, lazy, useEffect } from "react";
+import { useMemo, useState, Suspense, lazy, useEffect, useRef } from "react";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import NoFoundTemplate from "../components/noFoundTemplate";
@@ -6,9 +6,10 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
+import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import {HandeleConnect} from "../utils/socketio";
+import {HandeleConnect, sendOrder} from "../utils/socketio";
 
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
@@ -21,6 +22,7 @@ const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function RenderProductionMenuBook() {
+  const socketRef = useRef(null);
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
 
@@ -63,6 +65,7 @@ export default function RenderProductionMenuBook() {
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
+    if(flags == true && socketRef.current === null) socketRef.current = await HandeleConnect(publicCode);
   }
 
   const handleSelectOrder = (order) => {
@@ -108,31 +111,16 @@ export default function RenderProductionMenuBook() {
   };
 
   const handleCheckout = async () => {
-    console.log("Checkout with orders:", orders);
-    if (!orders || orders.length === 0) {
-      console.warn("No orders to checkout");
+    const ordersWithTemplate = [...orders, {data: {uid: data?.uid}}];
+    const res = await sendOrder(socketRef, ordersWithTemplate);
+    if(!res.success) {
+      setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
       return;
-    }
-
-    try {
-      const socket = await HandeleConnect();
-      if (!socket || !socket.emit) {
-        console.error("Socket not available");
-        return;
-      }
-
-      const payload = {
-        orders,
-        templateCode: data?.templateCode || null,
-        menuBookCode: data?.menuBookCode || null,
-      };
-
-      socket.emit("new_order", payload, (response) => {
-        console.log("Server response to new_order:", response);
-      });
-    } catch (err) {
-      console.error("Error during checkout emit:", err);
-    }
+    } 
+    setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+    setOrders([]);
+    setOrderModalOpen(false);
+    setShowPaymentMethod(false);
   };
 
 
@@ -211,6 +199,14 @@ export default function RenderProductionMenuBook() {
         onClose={() => setShowPaymentMethod(false)}
         onPayInKasse={() => console.log("pay in kasse")}
         onPayNow={() => handleCheckout()}
+      />
+
+      <FlashMessage
+        show={message?.visible}
+        type={message?.type || ""}
+        message={message?.msg || ""}
+        onClose={() => setMessage(null)}
+        duration={3000}
       />
 
       {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
