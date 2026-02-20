@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import styles from "../styles/Profile.module.css";
+import styles from "../styles/profile.module.css";
 import { UserContext } from "../ApiContext/userContext";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
