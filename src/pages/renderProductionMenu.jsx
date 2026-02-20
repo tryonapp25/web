@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState, useRef} from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
@@ -10,13 +10,19 @@ import { getFeatureFlags } from "../featureFlags/featureFlags";
 import CartBubble from "../components/cartBubble";
 import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
+import FlashMessage from "../components/flashMessage";
+import defaultMessage from "../utils/defaultMessage";
+
+import { HandeleConnect, sendOrder, getGuestToken } from "../utils/socketio";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
+  const socketRef = useRef(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
+  const [message, setMessage] = useState(defaultMessage);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
@@ -69,6 +75,7 @@ export default function RenderProductionMenu() {
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
+    if(flags == true && socketRef.current === null) socketRef.current = await HandeleConnect(publicCode);
   }
 
   const handleSelectOrder = (order) => {
@@ -113,9 +120,17 @@ export default function RenderProductionMenu() {
     setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
   };
 
-  const handleCheckout = () => {
-    console.log("Checkout with orders:", orders);
-    // Add your checkout logic here
+  const handleCheckout = async () => {
+    const ordersWithTemplate = [...orders, {template: {uid: template.uid}}];
+    const res = await sendOrder(socketRef, ordersWithTemplate);
+    if(!res.success) {
+      setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
+      return;
+    } 
+    setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+    setOrders([]);
+    setOrderModalOpen(false);
+    setShowPaymentMethod(false);
   };
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
@@ -182,6 +197,14 @@ export default function RenderProductionMenu() {
         onClose={() => setShowPaymentMethod(false)}
         onPayInKasse={() => console.log("pay in kasse")}
         onPayNow={() => handleCheckout()}
+      />
+
+      <FlashMessage
+        show={message?.visible}
+        type={message?.type || ""}
+        message={message?.msg || ""}
+        onClose={() => setMessage(null)}
+        duration={3000}
       />
 
     </div>

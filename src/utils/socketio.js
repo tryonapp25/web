@@ -1,36 +1,72 @@
 import { io } from "socket.io-client";
+import axios from "axios";
 const SOCKET_SERVER = import.meta.env.VITE_SOCKET_SERVER;
-const SOCKET_USERNAME = import.meta.env.VITE_SOCKET_USERNAME;
-const SOCKET_PASSWORD = import.meta.env.VITE_SOCKET_PASSWORD;
+const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 
+const publicCode = new URLSearchParams(window.location.search).get("public");
 
+export async function getGuestToken(publicCode) {
+    try {
+        const res = await axios.get(
+          `${ORDER_SERVER}/gen-guest-token/${publicCode}`
+        );
+        if(res.data?.success){
+            sessionStorage.setItem("token", res.data.token);
+        }
+    } catch (err) {
+        console.error("Failed to get guest token:", err);
+        throw err;
+    }
+}
 
-async function HandeleConnect() {
-    socketIO = io(SOCKET_SERVER, {
+export async function HandeleConnect(publicCode) {
+    await getGuestToken(publicCode);
+    const socketIO = io(SOCKET_SERVER, {
         transports: ['websocket'], // Use WebSocket to avoid polling
         forceNew: true, // Ensures a new connection is created
         reconnection: true,
-        /* extraHeaders:{
-            socketUsername: SOCKET_USERNAME,
-            socketPassword: SOCKET_PASSWORD
-        }, */
-        auth: {
-            userName: SOCKET_USERNAME,
-            password: SOCKET_PASSWORD
-        }
+        auth: {token: sessionStorage.getItem("token")},
     });
+
     socketIO.on('connect', () => {
-        log.debug(`Connecting to socketio..`);
-        // Now it's safe to use socketIO.id
-        socketIO.emit('connection', {
-            socketID: socketIO.id,
-            userID: publicUser?.userID
-        });
-        setConnected(true);
+        console.log(`Connected to socketio server with ID: ${socketIO.id}`);
+    });
+    socketIO.on('connect_error', (err) => {
+        console.error('Socket connect_error', err);
     });
     // listen for disconnection //
     socketIO.on('disconnect', (reason) => {
-        log.warn({'Disconnected from server': reason});
+        console.log({'Disconnected from server': reason});
     });
     return socketIO
+}
+
+
+
+export async function sendOrder(socketRef, data) {
+    try {
+        if (!socketRef.current) {
+            socketRef.current = await HandeleConnect(publicCode);
+        }
+        if (!socketRef.current) {
+            return { success: false, error: "Socket not available" };
+        }
+        const result = await new Promise((resolve) => {
+            socketRef.current.emit("new_order", data, (response) => {
+                console.log("Server response:", response);
+                if (response?.success)
+                    resolve({ success: true });
+                else
+                    resolve({
+                        success: false,
+                        error: response?.error || "Unknown error"
+                });
+            });
+        });
+        return result;
+    }
+    catch (err) {
+        return { success: false, error: err.message };
+    }
+
 }

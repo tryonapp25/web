@@ -55,7 +55,6 @@ export default function Onboarding() {
     const interval = setInterval(() => {
       setCurrentModelIndex((prev) => (prev + 1) % modelUrls.length);
     }, 15000);
-
     return () => clearInterval(interval);
   }, []);
 
