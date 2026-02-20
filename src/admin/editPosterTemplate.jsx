@@ -6,7 +6,7 @@ import httpMessage from "../http/httpMessage";
 import FlashMessage from "../components/flashMessage";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 
-const files = import.meta.glob("../templates/posters/POST*.jsx");
+const files = import.meta.glob("../templates/posters/*.jsx");
 
 // filenames without extension
 const jsxFileList = Object.keys(files).map((path) =>

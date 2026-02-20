@@ -173,7 +173,7 @@ export default function OrderViewModal({
               <span className={styles.summaryValue}>{totalItems}</span>
             </div>
             <button className={styles.checkoutBtn} onClick={onCheckout}>
-              Place Order
+              Pay
             </button>
           </div>
         )}

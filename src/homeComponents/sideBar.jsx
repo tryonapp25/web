@@ -48,7 +48,7 @@ export default function Sidebar({items}) {
     <aside className={styles.sidebar}>
       {/* LOGO */}
       <div className={styles.logoRow}>
-        <div className={styles.logoMark}>
+        <div className={styles.logoMark} onClick={() => navigate("/menu")}>
           <img
             src={`${import.meta.env.BASE_URL}logos/logo.png`}
             alt="logo"

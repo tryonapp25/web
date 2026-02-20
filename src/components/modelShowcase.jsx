@@ -166,11 +166,11 @@ export default function ModelShowcase({
                   <p className={styles.itemDesc}>{item.data.description}</p>
                 )}
               </div>
-
-              {orderFeatureEnabled && (
+                
+              {orderFeatureEnabled == true && (
                 <>
                   <div className={styles.actions}>
-                    {ingredients.length > 0 && (
+                    {ingredients.length > 0 ? 
                       <button
                         className={styles.nextBtn}
                         onClick={handleNextClick}
@@ -178,7 +178,24 @@ export default function ModelShowcase({
                       >
                         Next
                       </button>
-                    )}
+                      :
+                      <button
+                        className={styles.orderBtn}
+                        onClick={() =>
+                          onOrder?.({
+                            ...item,
+                            data: {
+                              ...item.data,
+                              ingredients,
+                              extras: [],
+                            },
+                          })
+                        }
+                        aria-label="Order"
+                      >
+                        Order
+                      </button>
+                    }
                   </div>
                   <div className={styles.glow} />
                 </>

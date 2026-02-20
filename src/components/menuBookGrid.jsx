@@ -63,7 +63,7 @@ export default function MenuBookGrid({ templates = []}) {
         }
         try {
             setLoading(true);
-            const response = await http.post(`/menu-book/buy/template/${selectedMenuBook.id}`, publicUser);          
+            const response = await http.post(`/menu-book/buy/template/${selectedMenuBook.id}/uid/${publicUser.uid}`, publicUser);          
             if(response?.data.success) {
                setMessage({ visible:true, type: "success", msg: "Menu Book purchased successfully!" });
                setPublicUser(response.data.data);
@@ -134,8 +134,8 @@ export default function MenuBookGrid({ templates = []}) {
                                 ) : (
                                     <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
                                         {LazyMenuBook && LazyTemplate ?  (
-                                            <LazyMenuBook data={item} onClick={(item) => handleMenuBookSelect(item)}>
-                                                <LazyTemplate />
+                                            <LazyMenuBook data={item}  pressable onPress={(item) => handleMenuBookSelect(item)}>
+                                                <LazyTemplate/>
                                             </LazyMenuBook>
                                         ) : (
                                             <NoFoundTemplate onGoback={() => navigate("menu")}/>
