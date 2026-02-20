@@ -1,4 +1,4 @@
-import styles from "../styles/topbar.module.css";
+import styles from "../styles/topBar.module.css";
 import { Search } from "lucide-react";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
