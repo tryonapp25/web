@@ -1,13 +1,11 @@
 import styles from "../styles/Sidebar.module.css";
 import {
-  Image,
-  FilePlus,
   Star,
   Download,
   LayoutGrid,
-  Plus,
   Library 
 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 
