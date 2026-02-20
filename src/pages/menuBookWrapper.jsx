@@ -156,8 +156,8 @@ export default function MenuBookWraper() {
             <div style={emptyStateStyles.text}>Add page</div>
           </div>
         ) : LazyMenuBook && LazyTemplate ? (
-          <LazyMenuBook data={data}>
-            <LazyTemplate onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}} />
+          <LazyMenuBook data={data} onClickModel={(item) => {setSelectedModel(item); setModelOpen(true)}}>
+            <LazyTemplate />
           </LazyMenuBook>
         ) : (
           <NoFoundTemplate  onGoback={() => navigate("menu")}/>

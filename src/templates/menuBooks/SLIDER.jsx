@@ -6,7 +6,7 @@ const templateModules = import.meta.glob([
 ]);
 
 // Component to load a single content item with its own template
-function ContentItem({ content, currentIndex }) {
+function ContentItem({ content, currentIndex, onClickModel }) {
   const DynamicTemplate = useMemo(() => {
     const code = content?.code;
     if (!code) return null;
@@ -23,12 +23,12 @@ function ContentItem({ content, currentIndex }) {
 
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <DynamicTemplate data={content} />
+      <DynamicTemplate data={content} onClickModel={onClickModel} />
     </Suspense>
   );
 }
 
-export default function Template({ data = {}, pressable, onPress }) {
+export default function Template({ data = {}, pressable, onPress, onClickModel }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const contents = Array.isArray(data?.contents) ? data.contents : [];
@@ -58,7 +58,7 @@ export default function Template({ data = {}, pressable, onPress }) {
       }}
       onClick={onSelectedTemplate}
     >
-      <ContentItem content={contents[currentIndex]} currentIndex={currentIndex} />
+      <ContentItem content={contents[currentIndex]} currentIndex={currentIndex} onClickModel={(d) => onClickModel(d)}/>
 
       {/* LEFT ARROW */}
       <button
