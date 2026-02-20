@@ -1,16 +1,13 @@
 import styles from "../styles/Sidebar.module.css";
 import {
-  Image,
-  FilePlus,
   Star,
   Download,
   LayoutGrid,
-  Plus,
   Library 
 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
-import {UserContext} from "../ApiContext/userContext";
+
 
 function Item({ icon: Icon, label, active, onPress }) {
   return (
