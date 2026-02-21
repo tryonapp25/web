@@ -121,9 +121,9 @@ export default function TemplateGrid({ templates = [] }) {
                 {item?.type === "production" && <StatusBadge item={item} />}
               </div>
           
-                <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
-                  <Template data={item} pressable onPress={handleSelectTemplate} />
-                </Suspense>
+              <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
+                <Template data={item} pressable onPress={handleSelectTemplate} />
+              </Suspense>
               
             </div>
           );
