@@ -53,7 +53,7 @@ const styless = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 1000,
+    zIndex: 999999999,
   },
   modal: {
     position: "relative",

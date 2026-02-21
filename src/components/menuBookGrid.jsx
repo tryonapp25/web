@@ -132,6 +132,10 @@ export default function MenuBookGrid({ templates = []}) {
                                         <div className={styles.addPageText}>Add page</div>
                                     </div>
                                 ) : (
+                                <>
+                                    <div className={styles.badgeWrap}>
+                                        {item?.type === "production" && <StatusBadge item={item} />}
+                                    </div>
                                     <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
                                         {LazyMenuBook && LazyTemplate ?  (
                                             <LazyMenuBook data={item}  pressable onPress={(item) => handleMenuBookSelect(item)}>
@@ -141,6 +145,7 @@ export default function MenuBookGrid({ templates = []}) {
                                             <NoFoundTemplate onGoback={() => navigate("menu")}/>
                                         )}
                                     </Suspense>
+                                </>
                                 )}
                             </div>
 
@@ -182,3 +187,15 @@ export default function MenuBookGrid({ templates = []}) {
 
 
 
+const StatusBadge = ({ item }) => {
+  const isPublic = !!item?.isPublic;
+  return (
+    <div
+      className={styles.badge}
+      data-public={isPublic ? "true" : "false"}
+      title={isPublic ? "Public" : "Private"}
+    >
+      {isPublic ? "Public" : "Private"}
+    </div>
+  );
+};
