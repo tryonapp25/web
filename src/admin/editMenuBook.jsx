@@ -18,26 +18,28 @@ function removeJsxExtension(filename) {
 }
 
 const defaultText = `
-    "id": 14,
-    "uid": 5,
-    "isPublic": false,
-    "publicCode": {
-        "String": "",
-        "Valid": false
-    },
-    "price": 2,
-    "category": "menubook",
-    "type": "demo",
-    "heading": "Welcome to Our Menu Book",
-    "subheading": "menu",
-    "templateCode": "ABCD12",
-    "menuBookCode": "DEFAULT",
-    "information": {
-        "email": "",
-        "phone": "",
-        "address": ""
-    },
-    "contents": []
+    {
+      "id": 14,
+      "uid": 5,
+      "isPublic": false,
+      "publicCode": {
+          "String": "",
+          "Valid": false
+      },
+      "price": 2,
+      "category": "menubook",
+      "type": "demo",
+      "heading": "Welcome to Our Menu Book",
+      "subheading": "menu",
+      "templateCode": "ABCD12",
+      "menuBookCode": "DEFAULT",
+      "information": {
+          "email": "",
+          "phone": "",
+          "address": ""
+      },
+      "contents": []
+    }
 `;
 
 const defaultMessage = { visible: false, type: "", msg: "" };
@@ -45,16 +47,35 @@ const defaultMessage = { visible: false, type: "", msg: "" };
 export default function EditMenuBook() {
   const [text, setText] = useState(defaultText);
   const [message, setMessage] = useState(defaultMessage);
-  const [selected, setSelected] = useState(jsxFileList[0] || "DEFAULT");
+  const [selected, setSelected] = useState(jsxFileList[0]);
+  const [showDefault, setShowDefault] = useState(false);
 
 
   useEffect(() => {
-    getTemplateDataByCode(removeJsxExtension(selected));
-  }, [selected]);
+    if(!selected) return;
+    const code = removeJsxExtension(selected);
+    if(showDefault){
+      getDefaultTemplateDataByCode(code);
+    }else{
+      getTemplateDataByCode(code);
+    }
+  }, [selected, showDefault]);
 
   const getTemplateDataByCode = async (code) => {
     try{
       const res = await http.get(`/admin/demo/menu-book/code/${code}`);
+      if(res.data.success){
+        setText(JSON.stringify(res.data.data, null, 2));
+      }
+    }
+    catch(err){
+      setMessage(httpMessage(err));
+    }
+  }
+
+  const getDefaultTemplateDataByCode = async (code) => {
+    try{
+      const res = await http.get(`/admin/demo/menu-book/default/code/${code}`);
       if(res.data.success){
         setText(JSON.stringify(res.data.data, null, 2));
       }
@@ -129,6 +150,17 @@ export default function EditMenuBook() {
             </option>
           ))}
         </select>
+
+        <div style={{ marginTop: 8 }}>
+          <label style={{ display: "inline-flex", alignItems: "center" }}>
+            <input
+              type="checkbox"
+              checked={showDefault}
+              onChange={(e) => setShowDefault(e.target.checked)}
+            />
+            <span style={{ marginLeft: 6 }}>Show Default</span>
+          </label>
+        </div>
 
         <h2 className={styles.title}>Create (JSON / JS Object)</h2>
 
