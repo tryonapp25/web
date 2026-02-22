@@ -3,10 +3,12 @@ import {
   Star,
   Download,
   LayoutGrid,
-  Library 
+  Library ,
+  Shield
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import {UserContext} from "../ApiContext/userContext";
 
 
 function Item({ icon: Icon, label, active, onPress }) {
@@ -35,6 +37,7 @@ const defaultItems = [
 
 export default function Sidebar({items}) {
   const navigate = useNavigate();
+  const {publicUser} = useContext(UserContext);
   const { pathname } = useLocation(); // ✅ current route
   const [sidebarItems] = useState(items || defaultItems);
 
@@ -66,6 +69,16 @@ export default function Sidebar({items}) {
             onPress={() => navigate(path)}
           />
         ))}
+        {publicUser?.role === "admin" && (
+          <Item
+            icon={Shield}
+            label="Admin"
+            active={isActive("/admin")}
+            onPress={() => navigate("/admin")}
+          />
+        )
+          
+        }
       </div>
 
       <div className={styles.divider} />
