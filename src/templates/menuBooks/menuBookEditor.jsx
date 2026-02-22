@@ -1,12 +1,14 @@
 import styles from "./menuBookEditor.module.css";
 import EditButom from "../../components/editButton";
 import { useEffect, useState, useContext} from "react";
-import TemplateGridModal from "../../components/templateGridModal";
+import CollectionTemplatesGrid from "../../components/collectionTemplatesGrid";
 import http from "../../http/http";
 import httpMessage from "../../http/httpMessage";
 import { UserContext } from "../../ApiContext/userContext";
 import LoadingModal from "../../components/loading";
-
+import TemplateGrid from "../../components/templateGrid";
+import PosterTemplateGrid from "../../components/posterTemplateGrid";
+import FlashMessage from "../../components/flashMessage";
 
 const defaultMessage = { visible: false, type: "", msg: "" };
 
@@ -183,20 +185,67 @@ export default function MenuBookEditor({ data, onChange}) {
   };
 
   const handleGetUserProductionTemaplate = async (uid) => {
-    try{
+    try {
       setLoading(true);
+
+      // get normal templates
       const res = await http.get(`/user/${uid}/production/templates`);
-      if(res.data.success){
-        setTemplates(res.data.data);
+
+      let baseTemplates = [];
+
+      if (res.data.success) {
+        baseTemplates = res.data.data;
+        setTemplates(baseTemplates);
       }
-    }
-    catch(err){
+
+      // get poster templates and merge
+      await handleGetUserProductionPosterTemplates(uid);
+
+    } catch (err) {
       console.log(httpMessage(err));
-    }
-    finally{
+    } finally {
       setLoading(false);
       setShowTemplateModal(true);
     }
+  };
+
+
+  const handleGetUserProductionPosterTemplates = async (uid) => {
+    try {
+      const res = await http.get(`/poster/user/${uid}/production/templates`);
+
+      if (res.data.success) {
+        setTemplates(prev => [
+          ...(prev ?? []),
+          ...res.data.data
+        ]);
+      }
+
+    } catch (err) {
+      console.log(httpMessage(err));
+    }
+  };
+
+  const handleAddTemplate = (t) => {
+    setUpdateData((prev) => {
+      const nextTemplates = [...(prev.contents ?? [])];
+
+      // check if id already exists
+      const exists = nextTemplates.some(template => template.id === t.id);
+
+      // if not exists, add it
+      if (!exists) {
+        nextTemplates.push(t);
+      }
+      else{
+        setMessage({visible: true, type: "error", msg: "Template already added!"});
+        setTimeout(() => setMessage(defaultMessage), 3000);
+      }
+
+      return { ...prev, contents: nextTemplates };
+    });
+
+    console.log("Selected template to add:", t);
   };
 
 
@@ -273,195 +322,40 @@ export default function MenuBookEditor({ data, onChange}) {
         </div>
 
         {(updateData.contents ?? []).map((tpl, t) => (
-          <div key={tpl.id ?? t} className={styles.section}>
-            <div className={styles.sectionTop}>
-              <h3 className={styles.sectionTitle}>
-                Template {t + 1}
-                <span className={styles.sectionPill}>{tpl.code || "No code"}</span>
-              </h3>
-
-              <button
-                type="button"
-                className={styles.removeTemplate}
-                onClick={() => removeTemplate(t)}
-                title="Remove template"
-              >
-                Remove
-              </button>
-            </div>
-
-            <div className={styles.sectionCard}>
-              <div className={styles.grid2}>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Template Heading</span>
-                  <input
-                    className={styles.input}
-                    value={tpl.heading ?? ""}
-                    onChange={(e) => updateTemplate(t, { heading: e.target.value })}
-                  />
-                </label>
-
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Template Subheading</span>
-                  <input
-                    className={styles.input}
-                    value={tpl.subheading ?? ""}
-                    onChange={(e) => updateTemplate(t, { subheading: e.target.value })}
-                  />
-                </label>
-              </div>
-
-              <div className={styles.grid3}>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Email</span>
-                  <input
-                    className={styles.input}
-                    value={tpl.information?.email ?? ""}
-                    onChange={(e) => updateTemplateInfo(t, "email", e.target.value)}
-                  />
-                </label>
-
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Phone</span>
-                  <input
-                    className={styles.input}
-                    value={tpl.information?.phone ?? ""}
-                    onChange={(e) => updateTemplateInfo(t, "phone", e.target.value)}
-                  />
-                </label>
-
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Address</span>
-                  <input
-                    className={styles.input}
-                    value={tpl.information?.address ?? ""}
-                    onChange={(e) => updateTemplateInfo(t, "address", e.target.value)}
-                  />
-                </label>
-              </div>
-
-              {/* Sections inside template */}
-              <div className={styles.rows}>
-                <div className={styles.rowsHeader}>
-                  <span>Sections</span>
-                  <button
-                    type="button"
-                    className={styles.addRow}
-                    onClick={() => addSection(t)}
-                  >
-                    + Add section
-                  </button>
-                </div>
-
-                {(tpl.contents ?? []).map((section, s) => (
-                  <div key={s} className={styles.sectionBox}>
-                    <div className={styles.sectionBoxTop}>
-                      <div className={styles.sectionBoxTitle}>
-                        Section {s + 1}
-                        <span className={styles.sectionPill}>{section.title || "Untitled"}</span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className={styles.removeSection}
-                        onClick={() => removeSection(t, s)}
-                        title="Remove section"
-                      >
-                        Remove
-                      </button>
-                    </div>
-
-                    <div className={styles.grid2}>
-                      <label className={styles.label}>
-                        <span className={styles.labelText}>Title</span>
-                        <input
-                          className={styles.input}
-                          value={section.title ?? ""}
-                          onChange={(e) => updateSection(t, s, { title: e.target.value })}
-                        />
-                      </label>
-
-                      <label className={styles.label}>
-                        <span className={styles.labelText}>Model URL</span>
-                        <input
-                          className={styles.input}
-                          value={section.model ?? ""}
-                          onChange={(e) => updateSection(t, s, { model: e.target.value })}
-                        />
-                      </label>
-                    </div>
-
-                    {/* Items */}
-                    <div className={styles.items}>
-                      <div className={styles.rowsHeader}>
-                        <span>Items</span>
-                        <button
-                          type="button"
-                          className={styles.addRow}
-                          onClick={() => addRow(t, s)}
-                        >
-                          + Add item
-                        </button>
-                      </div>
-
-                      {(section.data ?? []).map((row, r) => (
-                        <div key={r} className={styles.itemRow}>
-                          <input
-                            className={styles.input}
-                            placeholder="Name"
-                            value={row.name ?? ""}
-                            onChange={(e) => updateRow(t, s, r, { name: e.target.value })}
-                          />
-
-                          <input
-                            className={styles.input}
-                            placeholder="Description"
-                            value={row.description ?? ""}
-                            onChange={(e) =>
-                              updateRow(t, s, r, { description: e.target.value })
-                            }
-                          />
-
-                          <input
-                            className={`${styles.input} ${styles.price}`}
-                            placeholder="Price"
-                            value={row.price ?? ""}
-                            onChange={(e) => updateRow(t, s, r, { price: e.target.value })}
-                          />
-
-                          <input
-                            className={`${styles.input} ${styles.qty}`}
-                            placeholder="Qty"
-                            value={row.quantity ?? ""}
-                            onChange={(e) =>
-                              updateRow(t, s, r, { quantity: e.target.value })
-                            }
-                          />
-
-                          <button
-                            type="button"
-                            className={styles.removeRow}
-                            onClick={() => removeRow(t, s, r)}
-                            title="Remove item"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div key={tpl.id ?? t} className={styles.card} style={{marginTop:"10px"}}>
+            <button
+              type="button"
+              className={styles.removeRow}
+              onClick={() => removeTemplate(t)}
+            >
+              &times;
+            </button>
+            {tpl.category === "poster" ? 
+              <PosterTemplateGrid
+                templates={[tpl]}
+              />
+              :(
+              <TemplateGrid
+                templates={[tpl]}
+              />
+            )}
           </div>
         ))}
       </main>
 
-      <TemplateGridModal
+      <CollectionTemplatesGrid
         open={showTemplateModal}
         onClose={() => setShowTemplateModal(false)}
         templates={templates}
         title="Select a template to add"
+        onSelect={(t) => handleAddTemplate(t)}
+      />
+
+      <FlashMessage
+        show={message.visible}
+        type={message.type}
+        message={message.msg}
+        onClose={() => setMessage(defaultMessage)}
       />
 
       <LoadingModal open={loading} title="Loading templates..."/>
