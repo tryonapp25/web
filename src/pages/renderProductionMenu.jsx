@@ -19,6 +19,7 @@ const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
   const socketRef = useRef(null);
+  const hasConnected = useRef(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
@@ -75,7 +76,12 @@ export default function RenderProductionMenu() {
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
-    if(flags == true && socketRef.current === null) socketRef.current = await HandeleConnect(publicCode);
+    if(flags == true){
+      if (!hasConnected.current) {
+        hasConnected.current = true;
+        HandeleConnect(publicCode);
+      }
+    }
   }
 
   const handleSelectOrder = (order) => {
@@ -121,7 +127,7 @@ export default function RenderProductionMenu() {
   };
 
   const handleCheckout = async () => {
-    const ordersWithTemplate = [...orders, {template: {uid: template.uid}}];
+    const ordersWithTemplate = { receiver: template.uid, orders: orders };
     const res = await sendOrder(socketRef, ordersWithTemplate);
     if(!res.success) {
       setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
