@@ -23,6 +23,7 @@ const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function RenderProductionMenuBook() {
   const socketRef = useRef(null);
+  const hasConnected = useRef(false);
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
 
@@ -65,7 +66,12 @@ export default function RenderProductionMenuBook() {
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
-    if(flags == true && socketRef.current === null) socketRef.current = await HandeleConnect(publicCode);
+    if(flags == true){
+      if (!hasConnected.current) {
+        hasConnected.current = true;
+        HandeleConnect(publicCode);
+      }
+    }
   }
 
   const handleSelectOrder = (order) => {
@@ -111,7 +117,7 @@ export default function RenderProductionMenuBook() {
   };
 
   const handleCheckout = async () => {
-    const ordersWithTemplate = [...orders, {data: {uid: data?.uid}}];
+    const ordersWithTemplate = { receiver: data?.uid, orders: orders };
     const res = await sendOrder(socketRef, ordersWithTemplate);
     if(!res.success) {
       setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
