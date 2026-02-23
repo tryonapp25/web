@@ -1,0 +1,29 @@
+.wrap {
+  display: flex;
+  gap: 10px;
+  padding: 10px 10px;
+  background: #ffffff;
+  border: 1px solid #e9edf4;
+  border-radius: 16px;
+  overflow-x: auto;
+}
+
+.tab {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: #f3f4f6;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.tab:hover {
+  filter: brightness(0.98);
+}
+
+.active {
+  background: #111827;
+  color: #ffffff;
+}

@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useContext } from "react";
 import styles from "../styles/menupage.module.css";
-import Sidebar from "../homeComponents/sideBar";
-import Topbar from "../homeComponents/topbar";
+import Sidebar from "../components_home/sideBar";
+import Topbar from "../components_home/topbar";
 import http from "../http/http";
 import httpMessage  from "../http/httpMessage";
 import TemplateGrid from "../components/templateGrid";

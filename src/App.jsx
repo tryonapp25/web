@@ -29,7 +29,7 @@ import EditMenuBook from "./admin/editMenuBook";
 import EditPosterTemplate from "./admin/editPosterTemplate";
 
 // Business //
-import DashboardPage from "./business/dashboard";
+import PosPage from "./business/posPage";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
@@ -70,7 +70,7 @@ export default function App() {
 
               {/* Business route */}
               <Route element={<BusinessProtection />}>
-                <Route path="/business/dashboard" element={<DashboardPage />} />
+                <Route path="/business" element={<PosPage />} />
               </Route>
             </Route>
             
