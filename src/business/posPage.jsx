@@ -52,6 +52,14 @@ export default function PosPage() {
     }
   }, []);
 
+  if (hasConnected.current == true) {
+    socketRef.current.on("new-order", (order, ack) => {
+      alert("Ny ordre modtaget! Tjek ordreliste.");
+      console.log("New order received:", order);
+      if (ack) ack({ success: true });
+    });
+  }
+
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
       const inCategory =

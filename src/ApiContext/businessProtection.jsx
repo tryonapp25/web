@@ -7,7 +7,7 @@ export default function BusinessProtection() {
     return <Navigate to="/" replace />;
   }
   if (user?.role !== "business"){ 
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/menu" replace />;
   }
 
   return <Outlet />;
