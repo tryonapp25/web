@@ -77,7 +77,7 @@ export default function Sidebar({items}) {
             onPress={() => navigate("/admin")}
           />
         )}
-        {publicUser?.role === "admin" || publicUser?.role === "business" && (
+        {publicUser?.role === "admin" && (
           <Item
             icon={Shield}
             label="Business"

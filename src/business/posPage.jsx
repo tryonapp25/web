@@ -79,6 +79,7 @@ export default function PosPage() {
 
       <main className={styles.main}>
         <div className={styles.topRow}>
+          <p style={{marginRight:"12px"}}>{hasConnected.current === true ? "Connected" : "Not connected"}</p>
           <div className={styles.searchWrap}>
             <span className={styles.searchIcon} aria-hidden="true">
               🔍
