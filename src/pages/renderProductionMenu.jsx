@@ -13,7 +13,7 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import { HandeleConnect, sendOrder } from "../utils/socketio";
+import { HandeSocketConnect, sendOrder } from "../utils/socketio";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
@@ -79,7 +79,7 @@ export default function RenderProductionMenu() {
     if(flags == true){
       if (!hasConnected.current) {
         hasConnected.current = true;
-        HandeleConnect(publicCode);
+        HandeSocketConnect(publicCode);
       }
     }
   }
