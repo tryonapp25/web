@@ -76,9 +76,15 @@ export default function Sidebar({items}) {
             active={isActive("/admin")}
             onPress={() => navigate("/admin")}
           />
-        )
-          
-        }
+        )}
+        {publicUser?.role === "admin" && (
+          <Item
+            icon={Shield}
+            label="Business"
+            active={isActive("/business")}
+            onPress={() => navigate("/business")}
+          />
+        )}
       </div>
 
       <div className={styles.divider} />

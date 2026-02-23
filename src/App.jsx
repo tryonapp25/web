@@ -48,6 +48,7 @@ export default function App() {
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
             <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
             {/* <Route path="/test" element={<TestTemplate />} /> */}
+            <Route path="/business" element={<PosPage />} />
       
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
@@ -70,7 +71,7 @@ export default function App() {
 
               {/* Business route */}
               <Route element={<BusinessProtection />}>
-                <Route path="/business" element={<PosPage />} />
+                
               </Route>
             </Route>
             

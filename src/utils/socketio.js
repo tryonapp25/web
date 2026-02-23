@@ -11,7 +11,7 @@ export async function getGuestToken(publicCode) {
           `${ORDER_SERVER}/gen-guest-token/${publicCode}`
         );
         if(res.data?.success){
-            sessionStorage.setItem("token", res.data.token);
+            sessionStorage.setItem("socket_token", res.data.token);
         }
     } catch (err) {
         console.error("Failed to get guest token:", err);
@@ -25,7 +25,7 @@ export async function getBusinessToken(uid) {
           `${ORDER_SERVER}/gen-business-token/${uid}`
         );
         if(res.data?.success){
-            sessionStorage.setItem("token", res.data.token);
+            sessionStorage.setItem("socket_token", res.data.token);
         }
     } catch (err) {
         console.error("Failed to get business token:", err);
@@ -33,13 +33,13 @@ export async function getBusinessToken(uid) {
     }
 }
 
-export async function HandeleConnect(publicCode) {
+export async function HandeSocketConnect(publicCode) {
     await getGuestToken(publicCode);
     const socketIO = io(SOCKET_SERVER, {
-        transports: ['websocket'], // Use WebSocket to avoid polling
-        forceNew: true, // Ensures a new connection is created
+        transports: ["polling", "websocket"],
+        forceNew: true,
         reconnection: true,
-        auth: {token: sessionStorage.getItem("token")},
+        auth: { token: sessionStorage.getItem("socket_token") },
     });
 
     socketIO.on("connect", () => {
@@ -60,10 +60,10 @@ export async function HandeleSocketConnectForBusiness(user) {
     try{
         await getBusinessToken(user?.uid);
         const socketIO = io(SOCKET_SERVER, {
-            transports: ['websocket'], // Use WebSocket to avoid polling
-            forceNew: true, // Ensures a new connection is created
+            transports: ["polling", "websocket"],
+            forceNew: true,
             reconnection: true,
-            auth: {token: sessionStorage.getItem("token")},
+            auth: { token: sessionStorage.getItem("socket_token") },
         });
         
 
@@ -83,6 +83,10 @@ export async function HandeleSocketConnectForBusiness(user) {
                 }
             );
         });
+
+        socketIO.on('connect_error', (err) => {
+            console.error('Socket connect_error', err);
+        });
     
 
         socketIO.on('disconnect', (reason) => {
@@ -101,7 +105,7 @@ export async function HandeleSocketConnectForBusiness(user) {
 export async function sendOrder(socketRef, data) {
     try {
         if (!socketRef.current) {
-            socketRef.current = await HandeleConnect(publicCode);
+            socketRef.current = await HandeSocketConnect(publicCode);
         }
         if (!socketRef.current) {
             return { success: false, error: "Socket not available" };

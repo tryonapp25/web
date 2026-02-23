@@ -9,7 +9,7 @@ import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import {HandeleConnect, sendOrder} from "../utils/socketio";
+import {HandeSocketConnect, sendOrder} from "../utils/socketio";
 
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
@@ -69,7 +69,7 @@ export default function RenderProductionMenuBook() {
     if(flags == true){
       if (!hasConnected.current) {
         hasConnected.current = true;
-        HandeleConnect(publicCode);
+        HandeSocketConnect(publicCode);
       }
     }
   }
