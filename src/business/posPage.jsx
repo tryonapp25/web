@@ -30,6 +30,7 @@ export default function PosPage() {
   const hasConnected = useRef(false);
   const socketRef = useRef(null);
   const { publicUser } = useContext(UserContext);
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Alle produkter");
   const [query, setQuery] = useState("");
 
@@ -37,6 +38,17 @@ export default function PosPage() {
     const connectSocket = async () => {
       try {
         socketRef.current = await HandeleSocketConnectForBusiness(publicUser);
+        if (socketRef.current) {
+          // update connection state and attach event listeners
+          setIsSocketConnected(socketRef.current.connected ?? true);
+          socketRef.current.on("connect", () => setIsSocketConnected(true));
+          socketRef.current.on("disconnect", () => setIsSocketConnected(false));
+          socketRef.current.on("new-order", (order, ack) => {
+            alert("Ny ordre modtaget! Tjek ordreliste.");
+            console.log("New order received:", order);
+            if (ack) ack({ success: true });
+          });
+        }
       } catch (err) {
         console.error("Socket connect error:", err);
       }
@@ -50,15 +62,22 @@ export default function PosPage() {
       hasConnected.current = true;
       connectSocket();
     }
+    return () => {
+      // cleanup listeners on unmount
+      if (socketRef.current) {
+        try {
+          socketRef.current.off && socketRef.current.off("connect");
+          socketRef.current.off && socketRef.current.off("disconnect");
+          socketRef.current.off && socketRef.current.off("new-order");
+          socketRef.current.close && socketRef.current.close();
+        } catch (e) {
+          console.warn("Error cleaning up socket:", e);
+        }
+        socketRef.current = null;
+      }
+    };
   }, []);
-
-  if (hasConnected.current == true) {
-    socketRef.current.on("new-order", (order, ack) => {
-      alert("Ny ordre modtaget! Tjek ordreliste.");
-      console.log("New order received:", order);
-      if (ack) ack({ success: true });
-    });
-  }
+  
 
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
@@ -79,7 +98,7 @@ export default function PosPage() {
 
       <main className={styles.main}>
         <div className={styles.topRow}>
-          <p style={{marginRight:"12px"}}>{hasConnected.current === true ? "Connected" : "Not connected"}</p>
+          <p style={{marginRight:"12px"}}>{socketRef.current !== null ? "Connected" : "Not connected"}</p>
           <div className={styles.searchWrap}>
             <span className={styles.searchIcon} aria-hidden="true">
               🔍
