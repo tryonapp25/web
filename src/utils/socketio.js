@@ -11,7 +11,7 @@ export async function getGuestToken(publicCode) {
           `${ORDER_SERVER}/gen-guest-token/${publicCode}`
         );
         if(res.data?.success){
-            sessionStorage.setItem("token", res.data.token);
+            sessionStorage.setItem("socket_token", res.data.token);
         }
     } catch (err) {
         console.error("Failed to get guest token:", err);
@@ -25,7 +25,7 @@ export async function getBusinessToken(uid) {
           `${ORDER_SERVER}/gen-business-token/${uid}`
         );
         if(res.data?.success){
-            sessionStorage.setItem("token", res.data.token);
+            sessionStorage.setItem("socket_token", res.data.token);
         }
     } catch (err) {
         console.error("Failed to get business token:", err);
@@ -39,7 +39,7 @@ export async function HandeleConnect(publicCode) {
         transports: ['websocket'], // Use WebSocket to avoid polling
         forceNew: true, // Ensures a new connection is created
         reconnection: true,
-        auth: {token: sessionStorage.getItem("token")},
+        auth: {token: sessionStorage.getItem("socket_token")},
     });
 
     socketIO.on("connect", () => {
@@ -63,7 +63,7 @@ export async function HandeleSocketConnectForBusiness(user) {
             transports: ['websocket'], // Use WebSocket to avoid polling
             forceNew: true, // Ensures a new connection is created
             reconnection: true,
-            auth: {token: sessionStorage.getItem("token")},
+            auth: {token: sessionStorage.getItem("socket_token")},
         });
         
 
