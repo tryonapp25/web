@@ -1,0 +1,102 @@
+.card {
+
+background:white;
+
+padding:15px;
+
+border-radius:12px;
+
+border:1px solid #eee;
+
+}
+
+
+.header {
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:10px;
+
+}
+
+
+.orderNumber {
+
+font-weight:bold;
+
+font-size:18px;
+
+}
+
+
+.model {
+
+font-size:12px;
+
+background:black;
+
+color:white;
+
+padding:4px 8px;
+
+border-radius:6px;
+
+}
+
+
+.items {
+
+margin-top:10px;
+
+}
+
+
+.item {
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:8px;
+
+}
+
+
+.name {
+
+font-weight:bold;
+
+}
+
+
+.description {
+
+font-size:12px;
+
+color:gray;
+
+}
+
+
+.qty {
+
+font-weight:bold;
+
+}
+
+
+.ingredients {
+
+margin-top:10px;
+
+background:#f4f4f4;
+
+padding:8px;
+
+border-radius:6px;
+
+font-size:12px;
+
+}
