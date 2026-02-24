@@ -42,18 +42,37 @@ export async function HandeSocketConnect(publicCode) {
         auth: { token: sessionStorage.getItem("socket_token") },
     });
 
-    socketIO.on("connect", () => {
-        console.log("connected", socketIO.id);
-    });
+    return await new Promise((resolve, reject) => {
+        const onConnect = () => {
+            socketIO.off('connect_error', onError);
+            socketIO.off('disconnect', onDisconnect);
+            console.log("connected", socketIO.id);
+            resolve(socketIO);
+        };
 
-    socketIO.on('connect_error', (err) => {
-        console.error('Socket connect_error', err);
+        const onError = (err) => {
+            socketIO.off('connect', onConnect);
+            console.error('Socket connect_error', err);
+            reject(err);
+        };
+
+        const onDisconnect = (reason) => {
+            // if disconnected before connect resolved, treat as error
+            console.log({'Disconnected from server': reason});
+        };
+
+        socketIO.once("connect", onConnect);
+        socketIO.once('connect_error', onError);
+        socketIO.on('disconnect', onDisconnect);
+        // safety timeout: reject if not connected in 10s
+        setTimeout(() => {
+            if (!socketIO.connected) {
+                socketIO.off('connect', onConnect);
+                socketIO.off('connect_error', onError);
+                reject(new Error('Socket connection timeout'));
+            }
+        }, 10000);
     });
-    // listen for disconnection //
-    socketIO.on('disconnect', (reason) => {
-        console.log({'Disconnected from server': reason});
-    });
-    return socketIO
 }
 
 export async function HandeleSocketConnectForBusiness(user) {
@@ -65,34 +84,50 @@ export async function HandeleSocketConnectForBusiness(user) {
             reconnection: true,
             auth: { token: sessionStorage.getItem("socket_token") },
         });
-        
 
-        socketIO.on("connect", () => {
-            console.log("connected", socketIO.id);
-            socketIO.emit(
-                "business-connection",
-                {...user}, // or whatever data you need
-                (res) => {
-                if (!res?.success) {
-                    console.error("business connect failed", res);
-                    socketIO.disconnect();
-                    return;
+        return await new Promise((resolve, reject) => {
+            const onConnect = () => {
+                // request business auth and wait for server callback
+                socketIO.emit(
+                    "business-connection",
+                    { ...user },
+                    (res) => {
+                        if (!res?.success) {
+                            console.error("business connect failed", res);
+                            socketIO.disconnect();
+                            reject(res || new Error('Business auth failed'));
+                            return;
+                        }
+                        console.log("business connect success", res);
+                        // cleanup listeners that were only for initial connect/auth
+                        socketIO.off('connect_error', onError);
+                        resolve(socketIO);
+                    }
+                );
+            };
+
+            const onError = (err) => {
+                console.error('Socket connect_error', err);
+                reject(err);
+            };
+
+            const onDisconnect = (reason) => {
+                console.log({'Disconnected from server': reason});
+            };
+
+            socketIO.once('connect', onConnect);
+            socketIO.once('connect_error', onError);
+            socketIO.on('disconnect', onDisconnect);
+
+            // safety timeout in case server doesn't respond
+            setTimeout(() => {
+                if (!socketIO.connected) {
+                    socketIO.off('connect', onConnect);
+                    socketIO.off('connect_error', onError);
+                    reject(new Error('Business socket connection timeout'));
                 }
-                console.log("business connect success", res);
-                // ✅ now you are authenticated as business
-                }
-            );
+            }, 15000);
         });
-
-        socketIO.on('connect_error', (err) => {
-            console.error('Socket connect_error', err);
-        });
-    
-
-        socketIO.on('disconnect', (reason) => {
-            console.log({'Disconnected from server': reason});
-        });
-        return socketIO
     }
     catch(err){
         console.error("Error during business socket connection:", err);

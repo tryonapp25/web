@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState, useRef} from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext} from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
@@ -13,13 +13,13 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import { HandeSocketConnect, sendOrder } from "../utils/socketio";
+import { SocketContext } from "../ApiContext/socketContext";
+
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
-  const socketRef = useRef(null);
-  const hasConnected = useRef(false);
+  const { sendOrder, connected, connectGuest } = useContext(SocketContext);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
@@ -73,15 +73,16 @@ export default function RenderProductionMenu() {
     };
   }, [type, id, code, publicCode]);
 
+  useEffect(() => {
+    // If order feature is enabled after template load, connect to socket
+    if (orderFeatureEnabled && !connected) {
+      connectGuest(publicCode);
+    }
+  }, [orderFeatureEnabled, connected]);
+
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
-    if(flags == true){
-      if (!hasConnected.current) {
-        hasConnected.current = true;
-        HandeSocketConnect(publicCode);
-      }
-    }
   }
 
   const handleSelectOrder = (order) => {
@@ -128,7 +129,7 @@ export default function RenderProductionMenu() {
 
   const handleCheckout = async () => {
     const ordersWithTemplate = { receiver: template.uid, orders: orders };
-    const res = await sendOrder(socketRef, ordersWithTemplate);
+    const res = await sendOrder(ordersWithTemplate);
     if(!res.success) {
       setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
       return;

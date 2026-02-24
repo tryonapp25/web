@@ -94,3 +94,34 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+
+/* RESET LINK COLOR */
+.navItem {
+  color: #6b7280; /* gray */
+  text-decoration: none;
+}
+
+.navItem:visited {
+  color: #6b7280; /* prevent purple visited color */
+}
+
+.navItem:hover {
+  color: #111827; /* black */
+}
+
+/* ACTIVE */
+.navItemActive {
+  background: #f3f4f6;
+  color: #111827; /* black */
+}
+
+.navItemActive .icon {
+  color: #111827;
+  opacity: 1;
+}
+
+/* make sure svg follows color */
+.icon {
+  color: inherit;
+}
