@@ -3,7 +3,7 @@ import OrdersGrid from "../components_business/ordersGrid";
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 
-const orders = [
+const ORDERS = [
   {
     title: "Order #1001",
     model: "Food",
@@ -34,13 +34,15 @@ const orders = [
 
 export default function BusinessOrders() {
   const { socketRef, connected } = useContext(SocketContext);
+  const [orders, setOrders] = useState(ORDERS);
 
   useEffect(() => {
     if (!socketRef?.current) return;
 
     const handleNewOrder = (order, ack) => {
-      alert("Ny ordre modtaget! Tjek ordreliste.");
+      //alert("Ny ordre modtaget! Tjek ordreliste.");
       console.log("New order received:", order);
+      setOrders(prevOrders => [...prevOrders, order]);
       if (ack) ack({ success: true });
     };
 
