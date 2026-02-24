@@ -32,28 +32,42 @@ const ORDERS = [
   },
 ];
 
+const newOrder = {
+  title: "Order #1002",
+  model: "Food",
+  ingredients: "Extra cheese",
+  data: [
+    {
+      name: "Burger",
+      description: "No onion",
+      price: "80",
+      quantity: "1",
+    },
+  ],
+};
+
 export default function BusinessOrders() {
   const { socketRef, connected } = useContext(SocketContext);
   const [orders, setOrders] = useState(ORDERS);
 
   useEffect(() => {
-    if (!socketRef?.current) return;
+    const socket = socketRef?.current;
+    if (!socket) return;
 
     const handleNewOrder = (order, ack) => {
       //alert("Ny ordre modtaget! Tjek ordreliste.");
-      console.log("New order received:", order);
-      setOrders(prevOrders => [...prevOrders, order]);
+      console.log("Received new order:", order);
+      setOrders((prev) => [newOrder, ...prev]);
       if (ack) ack({ success: true });
     };
 
-    socketRef.current.on("new-order", handleNewOrder);
+    // server-side/sendOrder uses `new_order` (underscore)
+    socket.on("new_order", handleNewOrder);
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.off("new-order", handleNewOrder);
-      }
+      socket.off("new_order", handleNewOrder);
     };
-  }, [socketRef]); // ✅ correct dependency
+  }, [socketRef?.current, connected]);
 
   return (
     <main className={styles.main}>
