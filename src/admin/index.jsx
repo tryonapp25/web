@@ -15,7 +15,8 @@ import {
   FileEdit,
   Image,
   BookOpen,
-  Puzzle
+  Puzzle,
+  CreditCard 
 } from "lucide-react";
 
 const defaultItems = [
@@ -23,6 +24,7 @@ const defaultItems = [
   { icon: FileEdit, label: "Edit Template", path: "/admin/edit/template" },
   { icon: Image, label: "Edit Poster", path: "/admin/edit/poster" },
   { icon: BookOpen, label: "Edit Menu Book", path: "/admin/edit/menubook" },
+  { icon: CreditCard, label: "Edit Pricing", path: "/admin/edit/pricing-business" },
   { icon: Puzzle, label: "Features", path: "/admin/features" },
 ];
 
