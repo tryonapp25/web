@@ -1,6 +1,6 @@
 import styles from "../styles/OrderBoard.module.css";
 import OrdersGrid from "../components_business/ordersGrid";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 
 const ORDERS = [

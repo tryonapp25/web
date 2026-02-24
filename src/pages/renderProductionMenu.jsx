@@ -20,6 +20,7 @@ const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
   const { sendOrder, connected, connectGuest } = useContext(SocketContext);
+  const connectingRef = useRef(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
@@ -75,8 +76,18 @@ export default function RenderProductionMenu() {
 
   useEffect(() => {
     // If order feature is enabled after template load, connect to socket
-    if (orderFeatureEnabled && !connected) {
-      connectGuest(publicCode);
+    if (orderFeatureEnabled) {
+      if(connected) return; // already connected
+      if (connectingRef.current) return; // connection already in progress
+      connectingRef.current = true;
+      (async () => {
+        try {
+          await connectGuest(publicCode);
+        } catch (err) {
+          connectingRef.current = false; // allow retry on error
+          console.error("connectGuest failed", err);
+        }
+      })();
     }
   }, [orderFeatureEnabled, connected]);
 

@@ -22,6 +22,7 @@ const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function RenderProductionMenuBook() {
   const { sendOrder, connected, connectGuest } = useContext(SocketContext);
+  const connectingRef = useRef(false);
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
 
@@ -62,11 +63,21 @@ export default function RenderProductionMenuBook() {
   }, [type, id, templatecode, menubookCode]);
 
   useEffect(() => {
-      // If order feature is enabled after template load, connect to socket
-      if (orderFeatureEnabled && !connected) {
-        connectGuest(publicCode);
-      }
-    }, [orderFeatureEnabled, connected]);
+    // If order feature is enabled after template load, connect to socket
+    if (orderFeatureEnabled) {
+      if(connected) return; // already connected
+      if (connectingRef.current) return; // connection already in progress
+      connectingRef.current = true;
+      (async () => {
+        try {
+          await connectGuest(publicCode);
+        } catch (err) {
+          connectingRef.current = false; // allow retry on error
+          console.error("connectGuest failed", err);
+        }
+      })();
+    }
+  }, [orderFeatureEnabled, connected]);
 
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
