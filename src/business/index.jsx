@@ -1,6 +1,6 @@
 import styles from "../styles/OrderBoard.module.css";
 import Sidebar from "../components_business/businessSidebar";
-import BusinessOrders from "./BusinessOrders";
+import BusinessOrders from "./businessOrders";
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 import { UserContext } from "../ApiContext/userContext";
