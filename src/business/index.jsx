@@ -25,7 +25,7 @@ const PRODUCTS = [
   { id: "p12", name: "Surdejs bolle", price: 0, category: "Mad", subtitle: "3 varianter" },
 ];
 
-export default function PosPage() {
+export default function BusinessBoard() {
   const navigate = useNavigate();
   const hasConnected = useRef(false);
   const socketRef = useRef(null);

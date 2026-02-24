@@ -1,8 +1,9 @@
 // Payment.jsx
 import { useEffect, useState, useContext, useMemo } from "react";
-import styles from "../styles/PricingPayment.module.css";
+import styles from "../styles/BusinessPayment.module.css";
 import { UserContext } from "../ApiContext/userContext";
 import http from "../http/http";
+import { useNavigate } from "react-router-dom";
 import FlashMessage from "../components/flashMessage";
 
 import { loadStripe } from "@stripe/stripe-js";
@@ -113,7 +114,8 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
   );
 }
 
-export default function Payment() {
+export default function BusinessPayment() {
+  const navigate = useNavigate();
   const { publicUser, setPublicUser } = useContext(UserContext);
 
   const [pricing, setPricing] = useState([]);
@@ -132,7 +134,7 @@ export default function Payment() {
   useEffect(() => {
     const fetchPricing = async () => {
       try {
-        const res = await http.get(`/token-pricing`);
+        const res = await http.get(`/business/pricing`);
         if (res.data?.success) {
           const data = res.data.data || [];
           setPricing(data);
@@ -202,13 +204,16 @@ export default function Payment() {
     };
 
     try{
-      const res = await http.put(`/payment/tokens/payment-success/${paymentData?.paymentIntentId}`,{
+      const res = await http.put(`/payment/business/payment-success/${paymentData?.paymentIntentId}`,{
         user: publicUser,
         package: selected
       });
       if(res.data.success){
         setPublicUser(res.data.data);
-        setMessage({visible: true, type: "success", msg: res.data.message})
+        setMessage({visible: true, type: "success", msg: res.data.message});
+        setTimeout(() => {
+          navigate("/business");
+        }, 3500);
       }
     }
     catch(err){

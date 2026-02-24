@@ -4,7 +4,8 @@ import {
   Download,
   LayoutGrid,
   Library ,
-  Shield
+  Plus,
+  Building2 
 } from "lucide-react";
 import { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -69,28 +70,18 @@ export default function Sidebar({items}) {
             onPress={() => navigate(path)}
           />
         ))}
-        {publicUser?.role === "admin" && (
-          <Item
-            icon={Shield}
-            label="Admin"
-            active={isActive("/admin")}
-            onPress={() => navigate("/admin")}
-          />
-        )}
-        {publicUser?.role === "admin" && (
-          <Item
-            icon={Shield}
-            label="Business"
-            active={isActive("/business")}
-            onPress={() => navigate("/business")}
-          />
-        )}
       </div>
 
       <div className={styles.divider} />
 
       {/* SECONDARY */}
       <div className={styles.section}>
+        <Item
+          icon={Building2}
+          label="Business"
+          active={isActive("/business")}
+          onPress={() => navigate("/business")}
+        />
         <Item
           icon={Star}
           label="Favorites"
@@ -107,14 +98,14 @@ export default function Sidebar({items}) {
       </div>
 
       {/* BOTTOM */}
-      {/* <div className={styles.bottom}>
+      <div className={styles.bottom}>
         <div className={styles.artboardsRow}>
           <span>Artboards</span>
           <button className={styles.addBtn}>
             <Plus size={16} />
           </button>
         </div>
-      </div> */}
+      </div>
     </aside>
   );
 }

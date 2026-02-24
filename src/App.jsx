@@ -29,7 +29,9 @@ import EditMenuBook from "./admin/editMenuBook";
 import EditPosterTemplate from "./admin/editPosterTemplate";
 
 // Business //
-import PosPage from "./business/posPage";
+import BusinessBoard from "./business/index";
+import OrderBoard from "./business/orderBoard";
+import BusinessPayment from "./business/businessPayments";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
@@ -48,12 +50,12 @@ export default function App() {
             <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
             <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
             {/* <Route path="/test" element={<TestTemplate />} /> */}
-            <Route path="/business" element={<PosPage />} />
       
             {/*Protect routers */}
             <Route element={<ProtectedRoute />}>
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/payment" element={<Payment />} />
+              <Route path="/business/payment" element={<BusinessPayment />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/collection" element={<MyCollection />} />
               <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
@@ -71,7 +73,8 @@ export default function App() {
 
               {/* Business route */}
               <Route element={<BusinessProtection />}>
-                
+                <Route path="/business" element={<BusinessBoard />} />
+                <Route path="/business/orderboard" element={<OrderBoard/>} />
               </Route>
             </Route>
             
