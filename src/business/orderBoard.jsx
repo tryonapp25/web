@@ -1,4 +1,4 @@
-import styles from "../styles/orderBoard.module.css";
+import styles from "../styles/OrderBoard.module.css";
 import Sidebar from "../components_business/businessSidebar";
 import OrdersGrid from "../components_business/ordersGrid";
 
