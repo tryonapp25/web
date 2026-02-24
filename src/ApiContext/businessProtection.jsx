@@ -6,8 +6,8 @@ export default function BusinessProtection() {
   if (!user) {
     return <Navigate to="/" replace />;
   }
-  if (user?.role !== "business"){ 
-    return <Navigate to="/menu" replace />;
+  if (user?.isCustomer !== true){ 
+    return <Navigate to="/business/payment" replace />;
   }
 
   return <Outlet />;
