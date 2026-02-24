@@ -1,4 +1,4 @@
-import { useMemo, useState, Suspense, lazy, useEffect, useRef } from "react";
+import { useMemo, useState, Suspense, lazy, useEffect, useRef, useContext } from "react";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import NoFoundTemplate from "../components/noFoundTemplate";
@@ -8,8 +8,7 @@ import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
-
-import {HandeSocketConnect, sendOrder} from "../utils/socketio";
+import { SocketContext } from "../ApiContext/socketContext";
 
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
@@ -22,8 +21,7 @@ const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function RenderProductionMenuBook() {
-  const socketRef = useRef(null);
-  const hasConnected = useRef(false);
+  const { sendOrder, connected, connectGuest } = useContext(SocketContext);
   const isMobile = useIsMobile();
   const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
 
@@ -63,15 +61,16 @@ export default function RenderProductionMenuBook() {
     fetchData();
   }, [type, id, templatecode, menubookCode]);
 
+  useEffect(() => {
+      // If order feature is enabled after template load, connect to socket
+      if (orderFeatureEnabled && !connected) {
+        connectGuest(publicCode);
+      }
+    }, [orderFeatureEnabled, connected]);
+
   const getFlags = async () => {
     const flags = await getFeatureFlags("ORDER_FEATURE");
     setOrderFeatureEnabled(flags);
-    if(flags == true){
-      if (!hasConnected.current) {
-        hasConnected.current = true;
-        HandeSocketConnect(publicCode);
-      }
-    }
   }
 
   const handleSelectOrder = (order) => {
@@ -118,7 +117,7 @@ export default function RenderProductionMenuBook() {
 
   const handleCheckout = async () => {
     const ordersWithTemplate = { receiver: data?.uid, orders: orders };
-    const res = await sendOrder(socketRef, ordersWithTemplate);
+    const res = await sendOrder(ordersWithTemplate);
     if(!res.success) {
       setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
       return;

@@ -1,42 +1,92 @@
+"use client";
+
 import styles from "../styles/BusinessSidebar.module.css";
+import {
+  ScanLine,
+  ShoppingCart,
+  ClipboardList,
+  StickyNote,
+  Tag,
+  Receipt,
+  Smile,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
+
+function Item({ icon: Icon, label, to, badge }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `${styles.navItem} ${isActive ? styles.navItemActive : ""}`
+      }
+      aria-label={label}
+    >
+      <span className={styles.iconWrapper}>
+        <Icon
+          className={`${styles.icon}`}
+          size={22}
+          strokeWidth={2}
+          aria-hidden="true"
+        />
+
+        {typeof badge === "number" && (
+          <span className={styles.badge} aria-label={`${badge} nye`}>
+            {badge}
+          </span>
+        )}
+      </span>
+
+      <span className={styles.srOnly}>{label}</span>
+    </NavLink>
+  );
+}
 
 const items = [
-  { id: "scan", label: "Scan", icon: "⌁" },
-  { id: "cart", label: "Kurv", icon: "🛒", badge: 2 },
-  { id: "orders", label: "Ordrer", icon: "👤" },
-  { id: "notes", label: "Noter", icon: "🧾" },
-  { id: "discount", label: "Rabat", icon: "🏷️" },
-  { id: "receipt", label: "Kvittering", icon: "🧾" },
+  { id: "orders", label: "Ordrer", icon: ClipboardList, to: "/business/orders" },
+  { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
+  { id: "cart", label: "Kurv", icon: ShoppingCart, to: "/business/cart", badge: 2 },
+  { id: "notes", label: "Noter", icon: StickyNote, to: "/business/notes" },
+  { id: "discount", label: "Rabat", icon: Tag, to: "/business/discount" },
+  { id: "receipt", label: "Kvittering", icon: Receipt, to: "/business/receipt" },
 ];
 
 export default function BusinessSidebar() {
   return (
     <aside className={styles.sidebar}>
+      {/* Brand */}
       <div className={styles.brand} aria-label="Brand">
         <div className={styles.brandDot} />
       </div>
 
-      <nav className={styles.nav} aria-label="Sidebar">
+      {/* Nav */}
+      <nav className={styles.nav} aria-label="Business Sidebar">
         {items.map((it) => (
-          <button key={it.id} className={styles.navItem} type="button">
-            <span className={styles.icon} aria-hidden="true">
-              {it.icon}
-            </span>
-            <span className={styles.srOnly}>{it.label}</span>
-
-            {typeof it.badge === "number" && (
-              <span className={styles.badge} aria-label={`${it.badge} nye`}>
-                {it.badge}
-              </span>
-            )}
-          </button>
+          <Item
+            key={it.id}
+            icon={it.icon}
+            label={it.label}
+            to={it.to}
+            badge={it.badge}
+          />
         ))}
       </nav>
 
+      {/* Footer */}
       <div className={styles.footer}>
-        <button className={styles.profile} type="button" aria-label="Profil">
-          <span aria-hidden="true">🙂</span>
-        </button>
+        <NavLink
+          to="/business/profile"
+          className={({ isActive }) =>
+            `${styles.profile} ${isActive ? styles.navItemActive : ""}`
+          }
+          aria-label="Profil"
+        >
+          <Smile
+            className={styles.icon}
+            size={22}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+        </NavLink>
       </div>
     </aside>
   );

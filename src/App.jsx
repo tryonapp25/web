@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css"
 import { UserProvider } from "./ApiContext/userContext";
+import { SocketProvider } from "./ApiContext/socketContext";
 import ProtectedRoute from "./ApiContext/protectedRoute";
 import AdminProtection from "./ApiContext/adminProtection";
 import BusinessProtection from "./ApiContext/businessProtection";
@@ -29,8 +30,8 @@ import EditMenuBook from "./admin/editMenuBook";
 import EditPosterTemplate from "./admin/editPosterTemplate";
 
 // Business //
-import BusinessBoard from "./business/index";
-import OrderBoard from "./business/orderBoard";
+import  BusinessProducts from "./business/businessProducts";
+import OrderBoard from "./business/index";
 import BusinessPayment from "./business/businessPayments";
 
 
@@ -41,6 +42,7 @@ import BusinessPayment from "./business/businessPayments";
 export default function App() {
   return (
     <UserProvider>
+      <SocketProvider>
         <main>
           <Routes>
             <Route path="/" element={<Onboarding />} />
@@ -73,13 +75,14 @@ export default function App() {
 
               {/* Business route */}
               <Route element={<BusinessProtection />}>
-                <Route path="/business" element={<BusinessBoard />} />
-                <Route path="/business/orderboard" element={<OrderBoard/>} />
+                <Route path="/business/orders" element={<OrderBoard />} />
+                <Route path="/business/products" element={<BusinessProducts />} />
               </Route>
             </Route>
             
           </Routes>
         </main>
+      </SocketProvider>
     </UserProvider>
   );
 }
