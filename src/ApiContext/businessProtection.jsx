@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { BusinessProvider } from "./businessContext";
 
 export default function BusinessProtection() {
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -10,5 +11,9 @@ export default function BusinessProtection() {
     return <Navigate to="/business/payment" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <BusinessProvider>
+      <Outlet />
+    </BusinessProvider>
+  );
 }

@@ -211,9 +211,10 @@ export default function BusinessPayment() {
       if(res.data.success){
         setPublicUser(res.data.data);
         setMessage({visible: true, type: "success", msg: res.data.message});
+        const { id } = res.data.business;
         setTimeout(() => {
-          navigate("/business");
-        }, 3500);
+          navigate(`/business/orders`);
+        }, 1500);
       }
     }
     catch(err){

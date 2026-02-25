@@ -7,11 +7,12 @@ import FlashMessage from "../components/flashMessage";
 const defaultMsg = { visible: false, type: "", msg: "" };
 
 const emptyPackage = {
-  id: "",
+  id: 0,
   pack: "",
+  type: "business_package",
   price: 0,
   currency: "usd",
-  tokens: 0,
+  tokens: 0,    
   description: "",
   items: [],
   highlighted: false,
@@ -20,12 +21,12 @@ const emptyPackage = {
 
 export default function EditPricing() {
   const [packages, setPackages] = useState([]);
-  const [selectedId, setSelectedId] = useState("");
+  const [selectedId, setSelectedId] = useState(0);
   const [form, setForm] = useState(emptyPackage);
   const [message, setMessage] = useState(defaultMsg);
   const [loading, setLoading] = useState(false);
 
-  const createMode = selectedId === "";
+  const createMode = selectedId === 0;
   useEffect(() => {
     fetchPackages();
   }, []);
@@ -42,7 +43,7 @@ export default function EditPricing() {
       const res = await http.get(`/business/pricing`);
       if (res.data?.success) {
         setPackages(res.data.data || []);
-        if ((res.data.data || []).length > 0) setSelectedId((res.data.data || [])[0].id || "");
+        if ((res.data.data || []).length > 0) setSelectedId((res.data.data || [])[0].id || 0);
       } else {
         setMessage({ visible: true, type: "error", msg: res.data?.message || "Failed to load pricing" });
       }
@@ -115,7 +116,7 @@ export default function EditPricing() {
       if (res.data?.success) {
         setMessage({ visible: true, type: "success", msg: res.data.message || "Deleted" });
         await fetchPackages();
-        setSelectedId("");
+        setSelectedId(0);
       } else {
         setMessage({ visible: true, type: "error", msg: res.data?.message || "Delete failed" });
       }
@@ -135,7 +136,7 @@ export default function EditPricing() {
           <button
             className={styles.secondary}
             onClick={() => {
-              setSelectedId("");
+              setSelectedId(0);
               setForm(emptyPackage);
             }}
           >
@@ -148,6 +149,9 @@ export default function EditPricing() {
 
         <label className={styles.label}>Pack name</label>
         <input className={styles.input} value={form.pack} onChange={(e) => onChange("pack", e.target.value)} />
+
+        <label className={styles.label}>Type</label>
+        <input className={styles.input} value={form.type} onChange={(e) => onChange("type", e.target.value)} />
 
         <label className={styles.label}>Price</label>
         <input className={styles.input} type="number" value={form.price} onChange={(e) => onChange("price", parseFloat(e.target.value || 0))} />
