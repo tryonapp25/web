@@ -1,5 +1,6 @@
 "use client";
-
+import { useState, useContext, useEffect } from "react";
+import { SocketContext } from "../ApiContext/socketContext";
 import styles from "../styles/BusinessSidebar.module.css";
 import {
   ScanLine,
@@ -41,16 +42,37 @@ function Item({ icon: Icon, label, to, badge }) {
   );
 }
 
-const items = [
-  { id: "orders", label: "Ordrer", icon: ClipboardList, to: "/business/orders" },
-  { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
-  { id: "cart", label: "Kurv", icon: ShoppingCart, to: "/business/cart", badge: 2 },
-  { id: "notes", label: "Noter", icon: StickyNote, to: "/business/notes" },
-  { id: "discount", label: "Rabat", icon: Tag, to: "/business/discount" },
-  { id: "receipt", label: "Kvittering", icon: Receipt, to: "/business/receipt" },
-];
 
 export default function BusinessSidebar() {
+  const { socketRef, connected } = useContext(SocketContext);
+  const [orderBadge, setOrderBadge] = useState(null);
+
+  const items = [
+    { id: "orders", label: "Ordrer", icon: ClipboardList, to: "/business/orders", badge: orderBadge },
+    { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
+    { id: "cart", label: "Kurv", icon: ShoppingCart, to: "/business/cart", badge: 0 },
+    { id: "notes", label: "Noter", icon: StickyNote, to: "/business/notes" },
+    { id: "discount", label: "Rabat", icon: Tag, to: "/business/discount" },
+    { id: "receipt", label: "Kvittering", icon: Receipt, to: "/business/receipt" },
+  ];
+
+  useEffect(() => {
+      const socket = socketRef?.current;
+      if (!socket) return;
+
+      const handleNewOrder = (order) => {
+        console.log("Received new order:", order);
+        setOrderBadge((prev) => (prev === null ? 1 : prev + 1));
+      };
+
+      // server-side/sendOrder uses `new_order` (underscore)
+      socket.on("new_order", handleNewOrder);
+
+      return () => {
+        socket.off("new_order", handleNewOrder);
+      };
+  }, [socketRef?.current, connected]);
+
   return (
     <aside className={styles.sidebar}>
       {/* Brand */}

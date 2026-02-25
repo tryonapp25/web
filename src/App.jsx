@@ -31,8 +31,9 @@ import EditPosterTemplate from "./admin/editPosterTemplate";
 import EditPricing from "./admin/editPricing";
 
 // Business //
+import BusinessPage from "./business/index";
 import  BusinessProducts from "./business/businessProducts";
-import OrderBoard from "./business/index";
+import BusinessOrders from "./business/businessOrders";
 import BusinessPayment from "./business/businessPayments";
 
 
@@ -77,7 +78,8 @@ export default function App() {
 
               {/* Business route */}
               <Route element={<BusinessProtection />}>
-                <Route path="/business/orders" element={<OrderBoard />} />
+                <Route path="/business" element={<BusinessPage />} />
+                <Route path="/business/orders" element={<BusinessOrders />} />
                 <Route path="/business/products" element={<BusinessProducts />} />
               </Route>
             </Route>

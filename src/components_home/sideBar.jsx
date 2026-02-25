@@ -79,8 +79,8 @@ export default function Sidebar({items}) {
         <Item
           icon={Building2}
           label="Business"
-          active={isActive("/business/orders")}
-          onPress={() => navigate("/business/orders")}
+          active={isActive("/business")}
+          onPress={() => navigate("/business")}
         />
         <Item
           icon={Star}
