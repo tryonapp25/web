@@ -1,11 +1,13 @@
 import styles from "../styles/BusinessOrder.module.css";
 import OrdersGrid from "../components_business/ordersGrid";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 import { UserContext } from "../ApiContext/userContext";
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
+
+import handleBusinessSocketConnection from "./connection.js";
 
 const ORDERS = [
   {
@@ -51,7 +53,8 @@ const newOrder = {
 };
 
 export default function BusinessOrders() {
-  const { socketRef,connectBusiness, connected, socketEnabled } = useContext(SocketContext);
+  const { socketRef, connectBusiness, connected, socketEnabled, setSocketEnabled } = useContext(SocketContext);
+  const connectingRef = useRef(false);
   const { publicUser } = useContext(UserContext);
   const [orders, setOrders] = useState(ORDERS);
 
@@ -75,26 +78,31 @@ export default function BusinessOrders() {
     return () => {
       socket.off("new_order", handleNewOrder);
     };
-  }, [socketRef?.current, connected]);
+  }, [socketRef?.current, connected, socketEnabled]);
 
-  const handleEnableSocket = () => {
+  const handleEnableOrderOnline = () => {
     // TODO: Implement socket enable logic
-    console.log("Enable socket feature clicked");
+    console.log("Enable order online feature clicked");
   };
 
-  const handleReconnect = () => {
-    setLoading(true);
-    connectBusiness(publicUser).catch((err) => {
-      console.error("connectBusiness failed", err);
+  const handleReconnect = async() => {
+    try {
+      setLoading(true);
+      await handleBusinessSocketConnection({
+        publicUser,
+        setSocketEnabled,
+        connectBusiness,
+        connectingRef,
+      });
+      setMessage({ visible: true, type: "success", msg: "Reconnected successfully!" });
+    } catch (err) {
+      console.error("Reconnection failed", err);
+      setMessage({ visible: true, type: "error", msg: "Failed to reconnect. Please try again." });
+    } finally {
       setLoading(false);
-      setMessage({ visible: true, type: "error", msg: "Failed to reconnect to the server." });
-      return;
-    });
-    setTimeout(() => {
-      setLoading(false);
-      setMessage({ visible: true, type: "success", msg: "Reconnected to the server successfully." });
-    }, 5000); // Simulate loading for 5 seconds
+    }
   };
+
 
   return (
     <div className={styles.shell}>
@@ -105,7 +113,7 @@ export default function BusinessOrders() {
             <div className={styles.overlayContent}>
               <h2>Order Online Feature Disabled</h2>
               <p>Enable this feature to receive online orders in real-time.</p>
-              <button className={styles.enableButton} onClick={handleEnableSocket}>
+              <button className={styles.enableButton} onClick={handleEnableOrderOnline}>
                 Enable Online Orders
               </button>
             </div>
