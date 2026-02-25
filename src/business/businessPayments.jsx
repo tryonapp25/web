@@ -198,30 +198,35 @@ export default function BusinessPayment() {
       setMessage({
         visible: true,
         type: "warn",
-        msg: "Faild to update payment."
+        msg: "Failed to update payment."
       });
       return
     };
 
+    let endpoint = `/payment/business/payment-success/${paymentData?.paymentIntentId}`;
+    if(publicUser?.isCustomer === true){
+      endpoint = `/payment/business/update-subscription/${paymentData?.paymentIntentId}`;
+    }
+
     try{
-      const res = await http.put(`/payment/business/payment-success/${paymentData?.paymentIntentId}`,{
+      const res = await http.put(endpoint,{
         user: publicUser,
         package: selected
       });
       if(res.data.success){
         setPublicUser(res.data.data);
         setMessage({visible: true, type: "success", msg: res.data.message});
-        const { id } = res.data.business;
+        setPublicUser(res.data.data);
         setTimeout(() => {
-          navigate(`/business/orders`);
-        }, 1500);
+          navigate(`/business`);
+        }, 700);
       }
     }
     catch(err){
       setMessage({
         visible: true,
         type: "error",
-        message: httpMessage(err)
+        msg: httpMessage(err)
       });
     }
   }

@@ -1,7 +1,11 @@
-import styles from "../styles/OrderBoard.module.css";
+import styles from "../styles/BusinessOrder.module.css";
 import OrdersGrid from "../components_business/ordersGrid";
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
+import { UserContext } from "../ApiContext/userContext";
+import Sidebar from "../components_business/businessSidebar";
+import LoadingModal from "../components/loading";
+import FlashMessage from "../components/flashMessage";
 
 const ORDERS = [
   {
@@ -47,8 +51,12 @@ const newOrder = {
 };
 
 export default function BusinessOrders() {
-  const { socketRef, connected } = useContext(SocketContext);
+  const { socketRef,connectBusiness, connected, socketEnabled } = useContext(SocketContext);
+  const { publicUser } = useContext(UserContext);
   const [orders, setOrders] = useState(ORDERS);
+
+  const [message, setMessage] = useState({ visible: false, type: "", msg: "" });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const socket = socketRef?.current;
@@ -69,10 +77,57 @@ export default function BusinessOrders() {
     };
   }, [socketRef?.current, connected]);
 
+  const handleEnableSocket = () => {
+    // TODO: Implement socket enable logic
+    console.log("Enable socket feature clicked");
+  };
+
+  const handleReconnect = () => {
+    setLoading(true);
+    connectBusiness(publicUser).catch((err) => {
+      console.error("connectBusiness failed", err);
+      setLoading(false);
+      setMessage({ visible: true, type: "error", msg: "Failed to reconnect to the server." });
+      return;
+    });
+    setTimeout(() => {
+      setLoading(false);
+      setMessage({ visible: true, type: "success", msg: "Reconnected to the server successfully." });
+    }, 5000); // Simulate loading for 5 seconds
+  };
+
   return (
-    <main className={styles.main}>
-      <p>Socket Status: {connected ? "Connected" : "Disconnected"}</p>
-      <OrdersGrid orders={orders} />
-    </main>
+    <div className={styles.shell}>
+      <Sidebar />
+      <main className={styles.main}>
+        {!socketEnabled && (
+          <div className={styles.overlay}>
+            <div className={styles.overlayContent}>
+              <h2>Order Online Feature Disabled</h2>
+              <p>Enable this feature to receive online orders in real-time.</p>
+              <button className={styles.enableButton} onClick={handleEnableSocket}>
+                Enable Online Orders
+              </button>
+            </div>
+          </div>
+        )}
+        {!connected && socketEnabled &&(
+          <div className={styles.overlay}>
+            <div className={styles.overlayContent}>
+              <h2>Connection Lost</h2>
+              <p>Your connection appears to be unstable. Please reconnect to continue.</p>
+              <button className={styles.enableButton} onClick={handleReconnect}>
+                Reconnect
+              </button>
+            </div>
+          </div>
+        )}
+        <p>Socket Status: {connected ? "Connected" : "Disconnected"}</p>
+        <OrdersGrid orders={orders} />
+      </main>
+
+      <LoadingModal open={loading} title="Reconnecting…" subtitle="Attempting to reconnect to the server." />
+      <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage({ visible: false, type: "", msg: "" })} />
+    </div>
   );
 }

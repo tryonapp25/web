@@ -1,0 +1,62 @@
+.shell {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  background: #f6f7f9;
+}
+
+.main {
+  padding: 18px 18px 24px;
+  overflow: auto;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.overlayContent {
+  background: #fff;
+  padding: 32px 48px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.overlayContent h2 {
+  margin: 0 0 12px;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.overlayContent p {
+  margin: 0 0 24px;
+  color: #666;
+}
+
+.enableButton {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.enableButton:hover {
+  background: #4338ca;
+}

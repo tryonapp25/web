@@ -12,6 +12,7 @@ export const SocketContext = createContext(null);
 export function SocketProvider({ children }) {
   const socketRef = useRef(null);
   const [connected, setConnected] = useState(false);
+  const [socketEnabled, setSocketEnabled] = useState(false);
   const listenersRef = useRef(null);
 
   async function connectGuest(publicCode) {
@@ -99,6 +100,8 @@ export function SocketProvider({ children }) {
         disconnect,
         getGuestToken,
         getBusinessToken,
+        socketEnabled,
+        setSocketEnabled,
       }}
     >
       {children}
