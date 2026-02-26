@@ -3,12 +3,14 @@ import { BusinessProvider } from "./businessContext";
 import { useContext, useRef, useEffect } from "react";
 import { SocketContext } from "./socketContext";
 import { UserContext } from "./userContext";
-import handleBusinessSocketConnection from "../utils/businessConnection";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
+import handleBusinessSocketConnection from "../utils/socket_businessConnection";
 
 export default function BusinessProtection() {
   const user = JSON.parse(sessionStorage.getItem("user"));
   const { publicUser } = useContext(UserContext);
   const { connected, setSocketEnabled, connectBusiness } = useContext(SocketContext);
+  
 
   // Prevent duplicate connect attempts (including StrictMode dev double-mount)
   const startedRef = useRef(false);
@@ -23,6 +25,8 @@ export default function BusinessProtection() {
     // Only attempt once per component lifetime
     if (startedRef.current) return;
     startedRef.current = true;
+    const flag = getFlag(); // Preload flag for later use in business pages
+    if(!flag) return;
 
     try {
       handleBusinessSocketConnection({
@@ -35,6 +39,12 @@ export default function BusinessProtection() {
       console.error("Error handling business socket connection:", err);
     }
   }, [publicUser, connected, setSocketEnabled, connectBusiness]);
+
+
+  const getFlag = () => {
+    const flag = getFeatureFlags("ORDER_FEATURE");
+    return flag || false; // Default to false if flag is undefined
+  }
 
   // Do redirects AFTER hooks (avoids Rules of Hooks violations)
   if (!user) return <Navigate to="/" replace />;

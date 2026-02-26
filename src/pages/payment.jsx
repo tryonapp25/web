@@ -1,5 +1,5 @@
 // Payment.jsx
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext, useMemo, useRef } from "react";
 import styles from "../styles/PricingPayment.module.css";
 import { UserContext } from "../ApiContext/userContext";
 import http from "../http/http";
@@ -114,6 +114,7 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
 }
 
 export default function Payment() {
+  const fetchingRef = useRef(false);
   const { publicUser, setPublicUser } = useContext(UserContext);
 
   const [pricing, setPricing] = useState([]);
@@ -146,7 +147,8 @@ export default function Payment() {
       }
     };
 
-    if(pricing.length > 0) return; // avoid refetching if we already have pricing
+    if(fetchingRef.current) return;
+    fetchingRef.current = true;
     fetchPricing();
   }, []);
 

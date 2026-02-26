@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import http from "../http/http";
 import styles from "../styles/BusinessSetting.module.css";
 import { UserContext } from "../ApiContext/userContext";
+import { SocketContext } from "../ApiContext/socketContext";
 import Sidebar from "../components_business/businessSidebar";
 
 // ---------- helpers ----------
@@ -94,7 +95,9 @@ function FeaturesGrid({ features, busyId, onToggle }) {
 
 // ---------- page ----------
 export default function BusinessSetting() {
+  const fetchingRef = useRef(false);
   const { publicUser } = useContext(UserContext);
+  const { setSocketEnabled } = useContext(SocketContext);
 
   const businessId = publicUser?.business?.id;
 
@@ -108,6 +111,8 @@ export default function BusinessSetting() {
 
     async function fetchBusinessInfo() {
       try {
+        if (fetchingRef.current) return; // prevent duplicate fetches
+        fetchingRef.current = true;
         const res = await http.get(`/business/features/business/${businessId}`);
         if (res?.data?.success) {
           setRawFeatures(res.data.data);
@@ -149,6 +154,7 @@ export default function BusinessSetting() {
           return same ? { ...f, _saving: false, _error: "" } : f;
         })
       );
+      setSocketEnabled(nextEnabled); // immediately reflect socket-related changes
     } catch (err) {
       console.error("Failed to update feature:", err);
 

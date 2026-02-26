@@ -7,8 +7,9 @@ import { UserContext } from "../ApiContext/userContext";
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
+import { getFeatureFlags } from "../featureFlags/featureFlags.js";
 
-import handleBusinessSocketConnection from "../utils/businessConnection.js";
+import handleBusinessSocketConnection from "../utils/socket_businessConnection.js";
 
 const ORDERS = [
   {
@@ -55,17 +56,36 @@ const newOrder = {
 
 export default function BusinessOrders() {
   const navigation = useNavigate();
-  const connectingRef = useRef(false);
   const { socketRef, connectBusiness, connected, socketEnabled, setSocketEnabled } = useContext(SocketContext);
+  const connectingRef = useRef(false);
+  const connectedRef = useRef(connected);
+  const flagRef = useRef(false);
+  
   const { publicUser } = useContext(UserContext);
+  const [orderFlag, setOrderFlag] = useState(null);
   const [orders, setOrders] = useState(ORDERS);
 
   const [message, setMessage] = useState({ visible: false, type: "", msg: "" });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    getFlag(); // Awlays check feature flag on mount to determine if socket connection should be established
+    const id = setInterval(async () => {
+      console.log("Checking socket connection status...", connectedRef.current);
+
+      if (connectedRef.current) return;
+      console.warn("Socket disconnected. Attempting to reconnect...");
+      flagRef.current = false; // reset startup flag to allow feature flag check after reconnection
+      const flag = await getFlag(); // check feature flag before attempting reconnection
+      if(flag) await handleReconnect();
+    }, 15000); // Check every 15 seconds
+
+    return () => clearInterval(id);
+  }, []); // create interval once
+
+  useEffect(() => {
     const socket = socketRef?.current;
-    keepUpdateSocketStatus();
+    connectedRef.current = connected;
     if (!socket) return;
     const handleNewOrder = (order, ack) => {
       //alert("Ny ordre modtaget! Tjek ordreliste.");
@@ -76,11 +96,12 @@ export default function BusinessOrders() {
 
     // server-side/sendOrder uses `new_order` (underscore)
     socket.on("new_order", handleNewOrder);
-
+    
     return () => {
       socket.off("new_order", handleNewOrder);
     };
   }, [socketRef?.current, connected, socketEnabled]);
+
 
   const handleEnableOrderOnline = () => {
     // TODO: Implement socket enable logic
@@ -88,20 +109,21 @@ export default function BusinessOrders() {
     navigation("/business/setting");
   };
 
-  const keepUpdateSocketStatus = () => {
-    setInterval(async () => {
-      console.log("Checking socket connection status...");
-      if(connected) return; // If already connected, no need to set up interval
-      await handleReconnect();
-    }, 20000); // Check every 20 seconds
-  };
+
+  const getFlag = async() => {
+    if(flagRef.current) return;
+    flagRef.current = true;
+    const flag = await getFeatureFlags("ORDER_FEATURE");
+    setOrderFlag(flag);
+    return flag;
+  }
 
 
 
   const handleReconnect = async() => {
-    if(connectingRef.current) return; // Prevent multiple simultaneous connection attempts
     try {
       setLoading(true);
+      if(connectingRef.current) return; // Prevent multiple simultaneous connection attempts
       connectingRef.current = true;
       await handleBusinessSocketConnection({
         publicUser,
@@ -122,7 +144,18 @@ export default function BusinessOrders() {
     <div className={styles.shell}>
       <Sidebar />
       <main className={styles.main}>
-        {!socketEnabled && (
+        {orderFlag !== null && !orderFlag && (
+          <div className={styles.overlay}>
+            <div className={styles.overlayContent}>
+              <h2>Order Online Feature Disabled</h2>
+              <p>Enable this feature to receive online orders in real-time.</p>
+              <button className={styles.enableButton} onClick={() => console.log("Redirect to settings to enable")}>
+                 Online Orders is Disabled by Admin. Please contact admin to enable this feature.
+              </button>
+            </div>
+          </div>
+        )}
+        {!socketEnabled && orderFlag && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
               <h2>Order Online Feature Disabled</h2>
@@ -133,7 +166,7 @@ export default function BusinessOrders() {
             </div>
           </div>
         )}
-        {!connected && socketEnabled &&(
+        {!connected && socketEnabled && orderFlag && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
               <h2>Connection Lost</h2>
