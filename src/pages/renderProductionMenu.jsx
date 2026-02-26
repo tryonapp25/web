@@ -174,7 +174,7 @@ export default function RenderProductionMenu() {
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
-        socketEnabled={socketEnabled}
+        orderFeatureEnabled={socketEnabled}
         onOrder={handleSelectOrder}
         extras={template?.extras || []}
       />

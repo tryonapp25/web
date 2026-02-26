@@ -163,7 +163,7 @@ export default function RenderProductionMenuBook() {
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
-        socketEnabled={socketEnabled}
+        orderFeatureEnabled={socketEnabled}
         onOrder={handleSelectOrder}
         extras={data?.extras || []}
       />

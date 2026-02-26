@@ -8,13 +8,13 @@ const getFlag = async () => {
     return flag
 }
 
-const getEnabledBusinessOrderOnlineFeature = async () => {
+const getEnabledBusinessOrderOnlineFeatureByPublicCode = async () => {
     return true;
 }
 
 export default async function connectToSocket(connectGuest, connected, setSocketEnabled) {
     const orderFlagEnabled = await getFlag();
-    const businessOrderOnlineEnabled = await getEnabledBusinessOrderOnlineFeature();
+    const businessOrderOnlineEnabled = await getEnabledBusinessOrderOnlineFeatureByPublicCode();
 
     setSocketEnabled(orderFlagEnabled);
     if(!orderFlagEnabled && !businessOrderOnlineEnabled) return;
