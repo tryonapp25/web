@@ -36,6 +36,7 @@ import BusinessPage from "./business/index";
 import  BusinessProducts from "./business/businessProducts";
 import BusinessOrders from "./business/businessOrders";
 import BusinessPayment from "./business/businessPayments";
+import BusinessSetting from "./business/businessSetting";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
@@ -85,6 +86,7 @@ export default function App() {
                 <Route path="/business" element={<BusinessPage />} />
                 <Route path="/business/orders" element={<BusinessOrders />} />
                 <Route path="/business/products" element={<BusinessProducts />} />
+                <Route path="/business/setting" element={<BusinessSetting />} />
               </Route>
             </Route>
             

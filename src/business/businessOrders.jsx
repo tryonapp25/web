@@ -1,6 +1,7 @@
 import styles from "../styles/BusinessOrder.module.css";
 import OrdersGrid from "../components_business/ordersGrid";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../ApiContext/socketContext";
 import { UserContext } from "../ApiContext/userContext";
 import Sidebar from "../components_business/businessSidebar";
@@ -53,6 +54,8 @@ const newOrder = {
 };
 
 export default function BusinessOrders() {
+  const navigation = useNavigate();
+  const connectingRef = useRef(false);
   const { socketRef, connectBusiness, connected, socketEnabled, setSocketEnabled } = useContext(SocketContext);
   const { publicUser } = useContext(UserContext);
   const [orders, setOrders] = useState(ORDERS);
@@ -62,8 +65,8 @@ export default function BusinessOrders() {
 
   useEffect(() => {
     const socket = socketRef?.current;
+    keepUpdateSocketStatus();
     if (!socket) return;
-
     const handleNewOrder = (order, ack) => {
       //alert("Ny ordre modtaget! Tjek ordreliste.");
       console.log("Received new order:", order);
@@ -82,11 +85,23 @@ export default function BusinessOrders() {
   const handleEnableOrderOnline = () => {
     // TODO: Implement socket enable logic
     console.log("Enable order online feature clicked");
+    navigation("/business/setting");
   };
 
+  const keepUpdateSocketStatus = () => {
+    setInterval(async () => {
+      console.log("Checking socket connection status...");
+      await handleReconnect();
+    }, 15000); // Check every 15 seconds
+  };
+
+
+
   const handleReconnect = async() => {
+    if(connectingRef.current) return; // Prevent multiple simultaneous connection attempts
     try {
       setLoading(true);
+      connectingRef.current = true;
       await handleBusinessSocketConnection({
         publicUser,
         setSocketEnabled,
@@ -97,6 +112,7 @@ export default function BusinessOrders() {
       setMessage({ visible: true, type: "error", msg: "Failed to reconnect. Please try again." });
     } finally {
       setLoading(false);
+      connectingRef.current = false;
     }
   };
 
