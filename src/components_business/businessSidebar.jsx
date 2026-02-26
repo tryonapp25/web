@@ -96,7 +96,7 @@ export default function BusinessSidebar() {
       {/* Footer */}
       <div className={styles.footer}>
         <NavLink
-          to="/business/profile"
+          to="/business/setting"
           className={({ isActive }) =>
             `${styles.profile} ${isActive ? styles.navItemActive : ""}`
           }

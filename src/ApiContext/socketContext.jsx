@@ -1,7 +1,5 @@
 import React, { createContext, useEffect, useState, useRef } from "react";
 import {
-  getGuestToken,
-  getBusinessToken,
   HandeGuestSocketConnect,
   HandeleSocketConnectForBusiness,
   sendOrder as sendOrderUtil,
@@ -98,8 +96,6 @@ export function SocketProvider({ children }) {
         connectBusiness,
         sendOrder,
         disconnect,
-        getGuestToken,
-        getBusinessToken,
         socketEnabled,
         setSocketEnabled,
       }}

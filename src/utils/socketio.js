@@ -16,7 +16,7 @@ function generateRandomString(length = 6) {
   return result;
 }
 
-export async function getGuestToken() {
+async function getGuestToken() {
     alert(publicCode)
     try {
         const res = await axios.get(
@@ -31,7 +31,7 @@ export async function getGuestToken() {
     }
 }
 
-export async function getBusinessToken(uid) {
+async function getBusinessToken(uid) {
     try {
         const res = await axios.get(
           `${ORDER_SERVER}/gen-business-token/${uid}`
@@ -152,7 +152,7 @@ export async function HandeleSocketConnectForBusiness(user) {
 export async function sendOrder(socketRef, data) {
     try {
         if (!socketRef.current) {
-            socketRef.current = await HandeSocketConnect(publicCode);
+            socketRef.current = await HandeGuestSocketConnect();
         }
         if (!socketRef.current) {
             return { success: false, error: "Socket not available" };
