@@ -91,8 +91,9 @@ export default function BusinessOrders() {
   const keepUpdateSocketStatus = () => {
     setInterval(async () => {
       console.log("Checking socket connection status...");
+      if(connected) return; // If already connected, no need to set up interval
       await handleReconnect();
-    }, 15000); // Check every 15 seconds
+    }, 20000); // Check every 20 seconds
   };
 
 
