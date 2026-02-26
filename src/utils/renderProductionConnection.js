@@ -9,15 +9,26 @@ const getFlag = async () => {
 }
 
 const getEnabledBusinessOrderOnlineFeatureByPublicCode = async () => {
-    return true;
+    try {
+        const response = await http.get(`/business/feature/ORDER_ONLINE/publicCode/${publicCode}`);
+        return response.data.data || false;
+    } catch (error) {        console.error("Error fetching business order online feature status:", error);
+        return false; // Default to false if there's an error
+    }
 }
 
 export default async function connectToSocket(connectGuest, connected, setSocketEnabled) {
     const orderFlagEnabled = await getFlag();
     const businessOrderOnlineEnabled = await getEnabledBusinessOrderOnlineFeatureByPublicCode();
-
-    setSocketEnabled(orderFlagEnabled);
+;
     if(!orderFlagEnabled && !businessOrderOnlineEnabled) return;
+    if(orderFlagEnabled || businessOrderOnlineEnabled) {
+        setSocketEnabled(true);
+    }
+    if(businessOrderOnlineEnabled && !orderFlagEnabled) return setSocketEnabled(false)
+    if(orderFlagEnabled && !businessOrderOnlineEnabled) return setSocketEnabled(false) // NEED TO FIX //
+
+
     if(connected) return; // already connected
         (async () => {
         try {
