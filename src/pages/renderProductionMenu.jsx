@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext} from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext, useCallback} from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
@@ -6,7 +6,6 @@ import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import ModelShowcase from "../components/modelShowcase";
-import { getFeatureFlags } from "../featureFlags/featureFlags";
 import CartBubble from "../components/cartBubble";
 import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
@@ -19,12 +18,13 @@ import { SocketContext } from "../ApiContext/socketContext";
 const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
-  const { sendOrder, connected, connectGuest } = useContext(SocketContext);
-  const connectingRef = useRef(false);
+  const { sendOrder, connected, socketEnabled } = useContext(SocketContext);
+  const fetchedRef = useRef(false);
+
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
   const [message, setMessage] = useState(defaultMessage);
+  const [showCartBubble, setShowCartBubble] = useState(false);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
@@ -41,17 +41,20 @@ export default function RenderProductionMenu() {
 
   const [orders, setOrders] = useState([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
+  // ✅ connect socket ONLY ONCE per mount (and guarded for StrictMode double-invoke)
 
   useEffect(() => {
-    let alive = true;
+    if (connected && socketEnabled) setShowCartBubble(true);
+  }, [connected, socketEnabled]);
 
+  useEffect(() => {
     const fetchTemplate = async () => {
       setLoading(true);
       setFetchFailed(false);
-
+      if(fetchedRef.current) return; // if you want to prevent refetching on param changes, otherwise remove this guard
       try {
+        fetchedRef.current = true;
         const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
-        if (!alive) return;
         if (res.data?.success && res.data?.data) {
           setTemplate(res.data.data);
         } else {
@@ -59,45 +62,20 @@ export default function RenderProductionMenu() {
           setFetchFailed(true);
         }
       } catch (err) {
-        if (!alive) return;
         setTemplate(null);
         setFetchFailed(true);
       } finally {
-        if (alive) setLoading(false);
+        setLoading(false);
+        fetchedRef.current = false;
       }
     };
 
     fetchTemplate();
-    getFlags();
-    return () => {
-      alive = false;
-    };
   }, [type, id, code, publicCode]);
 
-  useEffect(() => {
-    // If order feature is enabled after template load, connect to socket
-    if (orderFeatureEnabled) {
-      if(connected) return; // already connected
-      if (connectingRef.current) return; // connection already in progress
-      connectingRef.current = true;
-      (async () => {
-        try {
-          await connectGuest(publicCode);
-        } catch (err) {
-          connectingRef.current = false; // allow retry on error
-          console.error("connectGuest failed", err);
-        }
-      })();
-    }
-  }, [orderFeatureEnabled, connected]);
-
-  const getFlags = async () => {
-    const flags = await getFeatureFlags("ORDER_FEATURE");
-    setOrderFeatureEnabled(flags);
-  }
 
   const handleSelectOrder = (order) => {
-    if (!orderFeatureEnabled) return;
+    if (!socketEnabled) return;
     console.log("Ordering item:", order);
     
     setOrders((prevOrders) => {
@@ -189,14 +167,14 @@ export default function RenderProductionMenu() {
   return (
     <div>
       {wrappedContent}
-      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {showCartBubble && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
 
       {/* Render modal ONCE */}
       <ModelShowcase
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
-        orderFeatureEnabled={orderFeatureEnabled}
+        socketEnabled={socketEnabled}
         onOrder={handleSelectOrder}
         extras={template?.extras || []}
       />

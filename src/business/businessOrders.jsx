@@ -1,13 +1,13 @@
 import styles from "../styles/BusinessOrder.module.css";
 import OrdersGrid from "../components_business/ordersGrid";
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 import { UserContext } from "../ApiContext/userContext";
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
 
-import handleBusinessSocketConnection from "./connection.js";
+import handleBusinessSocketConnection from "../utils/businessConnection.js";
 
 const ORDERS = [
   {
@@ -54,7 +54,6 @@ const newOrder = {
 
 export default function BusinessOrders() {
   const { socketRef, connectBusiness, connected, socketEnabled, setSocketEnabled } = useContext(SocketContext);
-  const connectingRef = useRef(false);
   const { publicUser } = useContext(UserContext);
   const [orders, setOrders] = useState(ORDERS);
 
@@ -91,10 +90,8 @@ export default function BusinessOrders() {
       await handleBusinessSocketConnection({
         publicUser,
         setSocketEnabled,
-        connectBusiness,
-        connectingRef,
+        connectBusiness
       });
-      setMessage({ visible: true, type: "success", msg: "Reconnected successfully!" });
     } catch (err) {
       console.error("Reconnection failed", err);
       setMessage({ visible: true, type: "error", msg: "Failed to reconnect. Please try again." });
