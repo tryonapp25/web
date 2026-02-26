@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState, useRef } from "react";
 import {
   getGuestToken,
   getBusinessToken,
-  HandeSocketConnect,
+  HandeGuestSocketConnect,
   HandeleSocketConnectForBusiness,
   sendOrder as sendOrderUtil,
 } from "../utils/socketio";
@@ -15,10 +15,10 @@ export function SocketProvider({ children }) {
   const [socketEnabled, setSocketEnabled] = useState(false);
   const listenersRef = useRef(null);
 
-  async function connectGuest(publicCode) {
+  async function connectGuest() {
     try {
       // underlying util will set token in sessionStorage and return socket instance
-      const newSocket = await HandeSocketConnect(publicCode);
+      const newSocket = await HandeGuestSocketConnect();
       // detach previous listeners (if any) and attach to the new socket
       detachListeners();
       socketRef.current = newSocket;

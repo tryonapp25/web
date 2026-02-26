@@ -1,4 +1,4 @@
-import { useMemo, useState, Suspense, lazy, useEffect, useRef, useContext } from "react";
+import { useMemo, useState, Suspense, lazy, useEffect, useContext, useRef } from "react";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import NoFoundTemplate from "../components/noFoundTemplate";
@@ -8,24 +8,26 @@ import httpMessage from "../http/httpMessage";
 import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
+
 import { SocketContext } from "../ApiContext/socketContext";
 
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
 import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
-import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 // load templates from templates folder (including subfolders) and menuBook wrappers
 const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function RenderProductionMenuBook() {
-  const { sendOrder, connected, connectGuest } = useContext(SocketContext);
-  const connectingRef = useRef(false);
+  const { sendOrder, socketEnabled, connected } = useContext(SocketContext);
   const isMobile = useIsMobile();
-  const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(true);
 
+  // guards
+  const fetchedRef = useRef(false);
+
+  const [showCartBubble, setShowCartBubble] = useState(false);
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
   const templatecode = searchParams.get("template");
@@ -45,81 +47,52 @@ export default function RenderProductionMenuBook() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);     
+      setLoading(true);
+      fetchedRef.current = true; // mark that we've fetched at least once
       try {
-        const response = await http.get(`/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}/public/${publicCode}`);
-        if(response?.data.success) {
-          setData(response.data.data);
-        }
+        const response = await http.get(
+          `/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}/public/${publicCode}`
+        );
+        if (response?.data?.success) setData(response.data.data);
       } catch (error) {
-        const msg = httpMessage(error);
-        setMessage(msg);
+        setMessage(httpMessage(error));
       } finally {
         setLoading(false);
-      } 
-    }
-    getFlags();
+        fetchedRef.current = false;
+      }
+    };
+    if(fetchedRef.current) return;
     fetchData();
-  }, [type, id, templatecode, menubookCode]);
+  }, [type, id, templatecode, menubookCode, publicCode]);
 
   useEffect(() => {
-    // If order feature is enabled after template load, connect to socket
-    if (orderFeatureEnabled) {
-      if(connected) return; // already connected
-      if (connectingRef.current) return; // connection already in progress
-      connectingRef.current = true;
-      (async () => {
-        try {
-          await connectGuest(publicCode);
-        } catch (err) {
-          connectingRef.current = false; // allow retry on error
-          console.error("connectGuest failed", err);
-        }
-      })();
-    }
-  }, [orderFeatureEnabled, connected]);
-
-  const getFlags = async () => {
-    const flags = await getFeatureFlags("ORDER_FEATURE");
-    setOrderFeatureEnabled(flags);
-  }
+    if (connected && socketEnabled) setShowCartBubble(true);
+  }, [connected, socketEnabled]);
 
   const handleSelectOrder = (order) => {
-    if (!orderFeatureEnabled) return;
-    console.log("Ordering item:", order);
-    
+    if (!socketEnabled) return;
+
     setOrders((prevOrders) => {
-      const existingIndex = prevOrders.findIndex(
-        (item) => item.title === order.data.title
-      );
-      
+      const existingIndex = prevOrders.findIndex((item) => item.title === order.data.title);
+
       if (existingIndex !== -1) {
-        // Item exists, increment quantity
         return prevOrders.map((item, index) =>
-          index === existingIndex
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
-            : item
+          index === existingIndex ? { ...item, quantity: (item.quantity || 1) + 1 } : item
         );
-      } else {
-        // New item, add with quantity 1
-        return [...prevOrders, { ...order.data, quantity: 1 }];
       }
+      return [...prevOrders, { ...order.data, quantity: 1 }];
     });
-    
+
     setModelOpen(false);
     setOrderModalOpen(true);
   };
 
   const handleUpdateQuantity = (index, newQuantity) => {
     if (newQuantity < 1) {
-      handleRemoveItem(index);
+      setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
       return;
     }
-    setOrders((prevOrders) =>
-      prevOrders.map((item, i) =>
-        i === index ? { ...item, quantity: newQuantity } : item
-      )
-    );
+    setOrders((prevOrders) => prevOrders.map((item, i) => (i === index ? { ...item, quantity: newQuantity } : item)));
   };
 
   const handleRemoveItem = (index) => {
@@ -127,18 +100,17 @@ export default function RenderProductionMenuBook() {
   };
 
   const handleCheckout = async () => {
-    const ordersWithTemplate = { receiver: data?.uid, orders: orders };
+    const ordersWithTemplate = { receiver: data?.uid, orders };
     const res = await sendOrder(ordersWithTemplate);
-    if(!res.success) {
+    if (!res.success) {
       setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
       return;
-    } 
-    setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+    }
+    setMessage({ visible: true, type: "success", msg: "Order placed successfully!" });
     setOrders([]);
     setOrderModalOpen(false);
     setShowPaymentMethod(false);
   };
-
 
   const templateMap = useMemo(() => {
     const out = {};
@@ -152,28 +124,24 @@ export default function RenderProductionMenuBook() {
     return out;
   }, []);
 
-  // tolerantly read possible code fields (handles typos like `teplateCode`)
-  const templateCode = data?.templateCode 
-  const menuBookCode = data?.menuBookCode
-
+  const templateCode = data?.templateCode;
+  const menuBookCode = data?.menuBookCode;
 
   const templatePath = `../templates/${templateCode}.jsx`;
   const templatePathAlt = `../templates/menu/${templateCode}.jsx`;
   const menuBookPath = `../templates/menuBooks/${menuBookCode}.jsx`;
 
-
-
   const LazyTemplate = templateMap[templatePath] || templateMap[templatePathAlt] || null;
   const LazyMenuBook = menuBookMap[menuBookPath] || null;
 
-  if (loading) {
-    return <LoadingModal message="Loading Menu Book..." />;
-  }
+  if (loading) return <LoadingModal message="Loading Menu Book..." />;
 
   const Preview = (
     <Suspense fallback={<div style={{ padding: 12 }}>Loading…</div>}>
       {LazyMenuBook && LazyTemplate ? (
-        <LazyMenuBook data={data} onSave={(tem) => console.log(tem)}
+        <LazyMenuBook
+          data={data}
+          onSave={(tem) => console.log(tem)}
           onClickModel={(item) => {
             setSelectedModel(item);
             setModelOpen(true);
@@ -187,16 +155,15 @@ export default function RenderProductionMenuBook() {
     </Suspense>
   );
 
-  return(
+  return (
     <div>
       {isMobile ? Preview : <PdfPageWrapper>{Preview}</PdfPageWrapper>}
 
-      {/* Render modal ONCE */}
       <ModelShowcase
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
-        orderFeatureEnabled={orderFeatureEnabled}
+        socketEnabled={socketEnabled}
         onOrder={handleSelectOrder}
         extras={data?.extras || []}
       />
@@ -214,7 +181,7 @@ export default function RenderProductionMenuBook() {
         open={showPaymentMethod}
         onClose={() => setShowPaymentMethod(false)}
         onPayInKasse={() => console.log("pay in kasse")}
-        onPayNow={() => handleCheckout()}
+        onPayNow={handleCheckout}
       />
 
       <FlashMessage
@@ -225,7 +192,7 @@ export default function RenderProductionMenuBook() {
         duration={3000}
       />
 
-      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {showCartBubble && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
     </div>
-  )
+  );
 }

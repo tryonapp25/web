@@ -146,6 +146,7 @@ export default function Payment() {
       }
     };
 
+    if(pricing.length > 0) return; // avoid refetching if we already have pricing
     fetchPricing();
   }, []);
 

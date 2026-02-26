@@ -5,6 +5,7 @@ import { SocketProvider } from "./ApiContext/socketContext";
 import ProtectedRoute from "./ApiContext/protectedRoute";
 import AdminProtection from "./ApiContext/adminProtection";
 import BusinessProtection from "./ApiContext/businessProtection";
+import RenderProductionSocketConnection from "./ApiContext/renderProductionSocketConnection";
 
 
 import Login from "./pages/login";
@@ -50,9 +51,12 @@ export default function App() {
             <Route path="/" element={<Onboarding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
-            <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
+
             <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
+            <Route element={<RenderProductionSocketConnection />}>
+              <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
+              <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
+            </Route>
             {/* <Route path="/test" element={<TestTemplate />} /> */}
       
             {/*Protect routers */}

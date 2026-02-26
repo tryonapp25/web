@@ -5,10 +5,22 @@ const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 
 const publicCode = new URLSearchParams(window.location.search).get("public");
 
-export async function getGuestToken(publicCode) {
+function generateRandomString(length = 6) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  return result;
+}
+
+export async function getGuestToken() {
+    alert(publicCode)
     try {
         const res = await axios.get(
-          `${ORDER_SERVER}/gen-guest-token/${publicCode}`
+          `${ORDER_SERVER}/gen-guest-token/${publicCode ?? generateRandomString()}`
         );
         if(res.data?.success){
             sessionStorage.setItem("socket_token", res.data.token);
@@ -33,8 +45,8 @@ export async function getBusinessToken(uid) {
     }
 }
 
-export async function HandeSocketConnect(publicCode) {
-    await getGuestToken(publicCode);
+export async function HandeGuestSocketConnect() {
+    await getGuestToken();
     const socketIO = io(SOCKET_SERVER, {
         transports: ["polling", "websocket"],
         forceNew: true,

@@ -1,4 +1,5 @@
 import http from "../http/http";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
 
 /**
  * Handles business connection logic.
@@ -7,17 +8,21 @@ import http from "../http/http";
  * @param {object} params.publicUser - User from UserContext
  * @param {function} params.setSocketEnabled - From SocketContext
  * @param {function} params.connectBusiness - From SocketContext
- * @param {object} params.connectingRef - useRef() hook result
  */
+
+const getFlag = async () => {
+    const flag = await getFeatureFlags("ORDER_FEATURE");
+    return flag;
+}
 export default async function handleBusinessSocketConnection({
     publicUser,
     setSocketEnabled,
-    connectBusiness,
-    connectingRef,
+    connectBusiness
 }) {
     const isEnabled = await checkEnableOrderOnlineFeature(publicUser);
+    const flag = await getFlag();
     setSocketEnabled(isEnabled);
-    if (isEnabled) await socketConnect(publicUser, connectingRef, connectBusiness);
+    if (isEnabled && flag) await socketConnect(publicUser, connectBusiness);
 }
 
 const checkEnableOrderOnlineFeature = async (user) => {
@@ -31,14 +36,12 @@ const checkEnableOrderOnlineFeature = async (user) => {
     }
 };
 
-const socketConnect = async (user, connectingRef, connectBusiness) => {
-    if (!user?.isCustomer || connectingRef.current) return;
+const socketConnect = async (user, connectBusiness) => {
+    if (!user?.isCustomer) return;
 
-    connectingRef.current = true;
     try {
         await connectBusiness(user);
     } catch (err) {
-        connectingRef.current = false;
         console.error("connectBusiness failed", err);
     }
 };
