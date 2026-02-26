@@ -27,7 +27,7 @@ function HeroTitle() {
 
 export default function MenuPage() {
   const generatorRef = useRef(null);
-  const {publicUser} = useContext(UserContext);
+  const fetchingRef = useRef(false);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("templates");
@@ -42,33 +42,62 @@ export default function MenuPage() {
   ])
 
 
+  // Make  it so that if user switch tab too fast, it will not trigger multiple fetches //
   useEffect(() => {
-    switch(tab){
-      case "menu_book":
-        handleGetMenuBooks();
-        break;
-      case "posters":
-        handleGetPosterTemplates();
-        break;
-      default:
-        handleGetTemplates(currentPage + 1);
-        break;
-    }
-    checkFeatureFlags()
-  },[tab]);
+    let cancelled = false;
+
+    const run = async () => {
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
+
+      try {
+        switch (tab) {
+          case "menu_book":
+            await handleGetMenuBooks();
+            break;
+          case "posters":
+            await handleGetPosterTemplates();
+            break;
+          default:
+            await handleGetTemplates(currentPage + 1);
+            break;
+        }
+
+        await checkFeatureFlags();
+      } finally {
+        if (!cancelled) fetchingRef.current = false;
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tab]);
 
 
   const checkFeatureFlags = async () => {
-    const hasMenuBook = await getFeatureFlags("MENU_BOOK");
-    if (!hasMenuBook) return;
+    try{
+      const exists = quickAction.some(action => action.tabName === "menu_book");
+      if(exists) return;
 
-    setQuickAction(prev => {
-      const exists = prev.some(action => action.tabName === "menu_book");
-      if (exists) return prev;
+      const hasMenuBook = await getFeatureFlags("MENU_BOOK");
+      if (!hasMenuBook) return;
+      setQuickAction(prev => {
+        const exists = prev.some(action => action.tabName === "menu_book");
+        if (exists) return prev;
 
-      console.log('Adding menu_book quick action');
-      return [...prev, { tabName: "menu_book", name: "MenuBooks" }];
-    });
+        console.log('Adding menu_book quick action');
+        return [...prev, { tabName: "menu_book", name: "MenuBooks" }];
+      });
+    }
+    catch(err){
+      console.log("Error checking feature flags:", err);
+    }
+    finally{
+      fetchingRef.current = false;
+    }
   };
 
   const handleGetPosterTemplates = async () => {

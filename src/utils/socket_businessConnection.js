@@ -1,5 +1,5 @@
 import http from "../http/http";
-import { getFeatureFlags } from "../featureFlags/featureFlags";
+
 
 /**
  * Handles business connection logic.
@@ -10,19 +10,15 @@ import { getFeatureFlags } from "../featureFlags/featureFlags";
  * @param {function} params.connectBusiness - From SocketContext
  */
 
-const getFlag = async () => {
-    const flag = await getFeatureFlags("ORDER_FEATURE");
-    return flag;
-}
+
 export default async function handleBusinessSocketConnection({
     publicUser,
     setSocketEnabled,
     connectBusiness
 }) {
     const isEnabled = await checkEnableOrderOnlineFeature(publicUser);
-    const flag = await getFlag();
-    setSocketEnabled(isEnabled);
-    if (isEnabled && flag) await socketConnect(publicUser, connectBusiness);
+    setSocketEnabled(isEnabled)
+    if (isEnabled && publicUser?.isCustomer) await connectBusiness(publicUser);
 }
 
 const checkEnableOrderOnlineFeature = async (user) => {
@@ -36,12 +32,3 @@ const checkEnableOrderOnlineFeature = async (user) => {
     }
 };
 
-const socketConnect = async (user, connectBusiness) => {
-    if (!user?.isCustomer) return;
-
-    try {
-        await connectBusiness(user);
-    } catch (err) {
-        console.error("connectBusiness failed", err);
-    }
-};

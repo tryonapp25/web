@@ -27,6 +27,7 @@ function HeroTitle() {
 
 export default function MyCollection() {
   const generatorRef = useRef(null);
+  const fetchingRef = useRef(false);
   const {publicUser} = useContext(UserContext);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -39,21 +40,41 @@ export default function MyCollection() {
 
 
   useEffect(() => {
-    switch(tab){
-      case "mine_menu_book":
-        handleGetUserMenuBooks();
-        break;
-      case "posters":
-        handleGetUserProductionPosterTemplates(publicUser?.uid);
-        break;
-      default:
-        handleGetUserProductionTemaplate(publicUser?.uid);
-        break;
-    }
-    checkFeatureFlags();
-  },[tab]);
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        switch(tab){
+          case "mine_menu_book":
+            await handleGetUserMenuBooks();
+            break;
+          case "posters":
+            await handleGetUserProductionPosterTemplates(publicUser?.uid);
+            break;
+          default:
+            await handleGetUserProductionTemaplate(publicUser?.uid);
+            break;
+        }
+
+        await checkFeatureFlags();
+
+      } finally {
+        if (!cancelled) fetchingRef.current = false;
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+
+  }, [tab]);
 
   const checkFeatureFlags = async () => {
+    const exists = quickAction.some(action => action.tabName === "mine_menu_book");
+    if(exists) return;
+
     const hasMenuBook = await getFeatureFlags("MENU_BOOK");
     if (!hasMenuBook) return;
 

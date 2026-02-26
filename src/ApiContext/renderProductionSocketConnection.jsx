@@ -3,7 +3,7 @@ import { UserProvider } from "./userContext";
 import { useContext, useRef, useEffect } from "react";
 import { SocketContext } from "./socketContext";
 
-import connectToSocket from "../utils/renderProductionConnection";
+import connectToSocket from "../utils/socket_productionConnection";
 
 export default function RenderProductionSocketConnection() {
   const { connected, setSocketEnabled, connectBusiness } = useContext(SocketContext);
