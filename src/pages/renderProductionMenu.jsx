@@ -1,10 +1,12 @@
-import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext, useCallback} from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext} from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
+import useIsMobile from "../utils/deviceCheck";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
+
 import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
-import useIsMobile from "../utils/deviceCheck";
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
 import OrderViewModal from "../components/orderViewModal";
@@ -13,7 +15,6 @@ import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
 import { SocketContext } from "../ApiContext/socketContext";
-
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
@@ -24,7 +25,7 @@ export default function RenderProductionMenu() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [message, setMessage] = useState(defaultMessage);
-  const [showCartBubble, setShowCartBubble] = useState(false);
+  const [showCartBubble, setShowCartBubble] = useState(connected && socketEnabled);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
@@ -43,35 +44,39 @@ export default function RenderProductionMenu() {
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   // ✅ connect socket ONLY ONCE per mount (and guarded for StrictMode double-invoke)
 
-  useEffect(() => {
-    if (connected && socketEnabled) setShowCartBubble(true);
-  }, [connected, socketEnabled]);
 
   useEffect(() => {
-    const fetchTemplate = async () => {
-      setLoading(true);
-      setFetchFailed(false);
-      if(fetchedRef.current) return; // if you want to prevent refetching on param changes, otherwise remove this guard
-      try {
-        fetchedRef.current = true;
-        const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
-        if (res.data?.success && res.data?.data) {
-          setTemplate(res.data.data);
-        } else {
-          setTemplate(null);
-          setFetchFailed(true);
-        }
-      } catch (err) {
+    if(fetchedRef.current) return;
+    fetchedRef.current = true;
+    fetchTemplate();
+    getFlags();
+  }, [type, id, code, publicCode]);
+
+  const fetchTemplate = async () => {
+    setLoading(true);
+    setFetchFailed(false);
+    try {
+      const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
+      if (res.data?.success && res.data?.data) {
+        setTemplate(res.data.data);
+      } else {
         setTemplate(null);
         setFetchFailed(true);
-      } finally {
-        setLoading(false);
-        fetchedRef.current = false;
       }
-    };
+    } catch (err) {
+      setTemplate(null);
+      setFetchFailed(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchTemplate();
-  }, [type, id, code, publicCode]);
+  const getFlags = async () => {
+    const flag = await getFeatureFlags("ORDER_FEATURE").catch((err) =>{
+      console.error("Failed to fetch feature flags:", err);
+    });
+    setShowCartBubble(flag);
+  }
 
 
   const handleSelectOrder = (order) => {
