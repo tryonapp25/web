@@ -20,25 +20,31 @@ export default function BusinessProtection() {
     if(connected) return console.log("Socket already connected"); // ✅ prevent multiple connections
     const socket = new Socket(publicUser, socketContext);
     socket.connect();
-    //handleCheckSocketConnection();
+    handleCheckSocketConnection();
     console.log("Connecting to socket on business route change...");
 
   }, [location.pathname]);
 
 
-  const handleCheckSocketConnection = () => {
+  const handleCheckSocketConnection = async () => {
     if(connected){
       console.log("Socket already connected");
       return;
     } // ✅ prevent multiple connections
     const id = setInterval(async () => {
-      console.log("Socket disconnected. Attempting to reconnect...");
-      console.log("Connected:", connected);
-      const socket = new Socket(publicUser, socketContext);
-      socket.connect();
-    }, 20000); // Check every 15 seconds
+      await reConnectSocket();
+    }, 30000); // Check every 15 seconds
 
     return () => clearInterval(id);
+  }
+
+  const reConnectSocket = async() => {
+    if(connected){
+      console.log("Socket already connected");
+      return;
+    }
+    const socket = new Socket(publicUser, socketContext);
+    socket.connect();
   }
 
   if (!user) return <Navigate to="/" replace />;
