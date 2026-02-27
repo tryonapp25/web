@@ -5,7 +5,7 @@ import { SocketProvider } from "./ApiContext/socketContext";
 import ProtectedRoute from "./ApiContext/protectedRoute";
 import AdminProtection from "./ApiContext/adminProtection";
 import BusinessProtection from "./ApiContext/businessProtection";
-import RenderProductionSocketConnection from "./ApiContext/renderProductionSocketConnection";
+import ProductionProtection from "./ApiContext/productionProtection";
 
 
 import Login from "./pages/login";
@@ -21,6 +21,8 @@ import TemplateWraper from "./pages/templateWraper";
 import MenuBookWraper from "./pages/menuBookWrapper";
 import PosterTemplateWraper from "./pages/posterTemplateWrapper";
 import MyCollection from "./pages/collection";
+
+import TestPage from "./test/testPage";
 
 
 // Admin //
@@ -52,9 +54,10 @@ export default function App() {
             <Route path="/" element={<Onboarding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/test" element={<TestPage />} />
 
             <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
-            <Route element={<RenderProductionSocketConnection />}>
+            <Route element={<ProductionProtection />}>
               <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
               <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
             </Route>

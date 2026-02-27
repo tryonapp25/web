@@ -1,54 +1,49 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { BusinessProvider } from "./businessContext";
-import { useContext, useRef, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { SocketContext } from "./socketContext";
 import { UserContext } from "./userContext";
-import { getFeatureFlags } from "../featureFlags/featureFlags";
-import handleBusinessSocketConnection from "../utils/socket_businessConnection";
+import Socket from "../model/socket";
 
 export default function BusinessProtection() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const location = useLocation(); // ⭐ IMPORTANT
+  const startupRef = useRef(false);
+  const socketContext = useContext(SocketContext);
   const { publicUser } = useContext(UserContext);
-  const { connected, setSocketEnabled, connectBusiness } = useContext(SocketContext);
-  
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const { connected } = useContext(SocketContext);
 
-  // Prevent duplicate connect attempts (including StrictMode dev double-mount)
-  const startedRef = useRef(false);
-
+  // ✅ This runs EVERY time route changes
   useEffect(() => {
-    // Don’t connect if already connected
-    if (connected) return;
+    if(startupRef.current) return;
+    startupRef.current = true;
+    if(connected) return console.log("Socket already connected"); // ✅ prevent multiple connections
+    const socket = new Socket(publicUser, socketContext);
+    socket.connect();
+    //handleCheckSocketConnection();
+    console.log("Connecting to socket on business route change...");
 
-    // Wait until you actually have what you need
-    if (!publicUser) return;
-
-    // Only attempt once per component lifetime
-    if (startedRef.current) return;
-    startedRef.current = true;
-    const flag = getFlag(); // Preload flag for later use in business pages
-    if(!flag) return;
-
-    try {
-      handleBusinessSocketConnection({
-        publicUser,
-        setSocketEnabled,
-        connectBusiness,
-      });
-      console.log("BusinessProtection: Attempting to connect to business socket...");
-    } catch (err) {
-      console.error("Error handling business socket connection:", err);
-    }
-  }, [publicUser, connected, setSocketEnabled, connectBusiness]);
+  }, [location.pathname]);
 
 
-  const getFlag = () => {
-    const flag = getFeatureFlags("ORDER_FEATURE");
-    return flag || false; // Default to false if flag is undefined
+  const handleCheckSocketConnection = () => {
+    if(connected){
+      console.log("Socket already connected");
+      return;
+    } // ✅ prevent multiple connections
+    const id = setInterval(async () => {
+      console.log("Socket disconnected. Attempting to reconnect...");
+      console.log("Connected:", connected);
+      const socket = new Socket(publicUser, socketContext);
+      socket.connect();
+    }, 20000); // Check every 15 seconds
+
+    return () => clearInterval(id);
   }
 
-  // Do redirects AFTER hooks (avoids Rules of Hooks violations)
   if (!user) return <Navigate to="/" replace />;
   if (!user?.isCustomer) return <Navigate to="/business/payment" replace />;
+
 
   return (
     <BusinessProvider>

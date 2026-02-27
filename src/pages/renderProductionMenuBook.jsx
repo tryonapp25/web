@@ -1,20 +1,22 @@
 import { useMemo, useState, Suspense, lazy, useEffect, useContext, useRef } from "react";
-import PdfPageWrapper from "../components/pdfPageWrapper";
-import useIsMobile from "../utils/deviceCheck";
-import NoFoundTemplate from "../components/noFoundTemplate";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
-import LoadingModal from "../components/loading";
-import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
+import useIsMobile from "../utils/deviceCheck";
+import { getFeatureFlags } from "../featureFlags/featureFlags";
 
-import { SocketContext } from "../ApiContext/socketContext";
 
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
 import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
+import LoadingModal from "../components/loading";
+import FlashMessage from "../components/flashMessage";
+import NoFoundTemplate from "../components/noFoundTemplate";
+import PdfPageWrapper from "../components/pdfPageWrapper";
+
+import { SocketContext } from "../ApiContext/socketContext";
 
 // load templates from templates folder (including subfolders) and menuBook wrappers
 const templateModules = import.meta.glob("../templates/**/*.jsx");
@@ -27,7 +29,7 @@ export default function RenderProductionMenuBook() {
   // guards
   const fetchedRef = useRef(false);
 
-  const [showCartBubble, setShowCartBubble] = useState(false);
+  const [showCartBubble, setShowCartBubble] = useState(connected && socketEnabled);
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
   const templatecode = searchParams.get("template");
@@ -46,28 +48,33 @@ export default function RenderProductionMenuBook() {
   const [orderModalOpen, setOrderModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      fetchedRef.current = true; // mark that we've fetched at least once
-      try {
-        const response = await http.get(
-          `/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}/public/${publicCode}`
-        );
-        if (response?.data?.success) setData(response.data.data);
-      } catch (error) {
-        setMessage(httpMessage(error));
-      } finally {
-        setLoading(false);
-        fetchedRef.current = false;
-      }
-    };
     if(fetchedRef.current) return;
+    fetchedRef.current = true;
     fetchData();
+    getFlags();
   }, [type, id, templatecode, menubookCode, publicCode]);
 
-  useEffect(() => {
-    if (connected && socketEnabled) setShowCartBubble(true);
-  }, [connected, socketEnabled]);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await http.get(
+        `/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}/public/${publicCode}`
+      );
+      if (response?.data?.success) setData(response.data.data);
+    } catch (error) {
+      setMessage(httpMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getFlags = async () => {
+    const flag = await getFeatureFlags("ORDER_FEATURE").catch((err) =>{
+      console.error("Failed to fetch feature flags:", err);
+    });
+    setShowCartBubble(flag);
+  }
+
 
   const handleSelectOrder = (order) => {
     if (!socketEnabled) return;

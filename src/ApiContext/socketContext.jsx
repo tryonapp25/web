@@ -4,6 +4,9 @@ import {
   HandeleSocketConnectForBusiness,
   sendOrder as sendOrderUtil,
 } from "../utils/socketio";
+import http from "../http/http";
+
+const publicCode = new URLSearchParams(window.location.search).get("public");
 
 export const SocketContext = createContext(null);
 
@@ -15,7 +18,10 @@ export function SocketProvider({ children }) {
 
   async function connectGuest() {
     try {
-      // underlying util will set token in sessionStorage and return socket instance
+      const enabled = await checkEnableOrderOnlineFeatureForGuest();
+      setSocketEnabled(enabled);
+      if (!enabled) return;
+
       const newSocket = await HandeGuestSocketConnect();
       // detach previous listeners (if any) and attach to the new socket
       detachListeners();
@@ -29,6 +35,13 @@ export function SocketProvider({ children }) {
 
   async function connectBusiness(user) {
     try {
+      const enabled = await checkEnableOrderOnlineFeatureForBusiness(user?.business?.id).catch(err => {
+        console.error("Error checking business feature flag:", err);
+        return false; // Default to false on error
+      });
+      setSocketEnabled(enabled);
+      if(!enabled) return;
+      
       const newSocket = await HandeleSocketConnectForBusiness(user);
       detachListeners();
       socketRef.current = newSocket;
@@ -85,6 +98,26 @@ export function SocketProvider({ children }) {
       // ignore
     }
     listenersRef.current = null;
+  }
+
+  const checkEnableOrderOnlineFeatureForGuest = async () => {
+      try {
+          const response = await http.get(`/business/feature/ORDER_ONLINE/publicCode/${publicCode}`);
+          return response.data.data || false;
+      } catch (error) {        console.error("Error fetching business order online feature status:", error);
+          return false; // Default to false if there's an error
+      }
+  }
+
+  const checkEnableOrderOnlineFeatureForBusiness = async (businessId) => {
+      try {
+          const res = await http.get(`/business/feature/ORDER_ONLINE/business/${businessId}`);
+          const enabled = res.data?.data ?? false;
+          return enabled;
+      } catch (err) {
+          console.error("Error checking permissions:", err);
+          return false;
+      }
   }
 
   return (

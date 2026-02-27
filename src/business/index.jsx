@@ -9,7 +9,7 @@ export default function BusinessPage() {
   useEffect(() => {
     setTimeout(() => {
       navigate("/business/orders");
-    }, 1500);
+    }, 700);
   }, []);
 
   return (

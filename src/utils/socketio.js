@@ -17,7 +17,6 @@ function generateRandomString(length = 6) {
 }
 
 async function getGuestToken() {
-    alert(publicCode)
     try {
         const res = await axios.get(
           `${ORDER_SERVER}/gen-guest-token/${publicCode ?? generateRandomString()}`
