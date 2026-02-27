@@ -56,12 +56,11 @@ const newOrder = {
 
 export default function BusinessOrders() {
   const navigation = useNavigate();
-  const { socketRef, connected, socketEnabled } = useContext(SocketContext);
+  const { socketRef, connected, orderFeatureEnabled } = useContext(SocketContext);
   const socketContext = useContext(SocketContext);
   const connectingRef = useRef(false);
   const flagRef = useRef(false);
   
-  const { publicUser } = useContext(UserContext);
   const [orderFlag, setOrderFlag] = useState(null);
   const [orders, setOrders] = useState(ORDERS);
 
@@ -77,8 +76,8 @@ export default function BusinessOrders() {
 
   // ✅ Establish socket connection and event listeners based on feature flag and connection status
   useEffect(() => {
-    if (!connected) return;
-
+    if (!orderFeatureEnabled) return; // Don't connect if feature is disabled
+    if(!connected) return; // Don't set up listeners if not connected
     const socket = socketRef.current;
     if (!socket) return;
 
@@ -96,7 +95,7 @@ export default function BusinessOrders() {
     return () => {
       socket.off("new_order", handleNewOrder);
     };
-  }, [connected]); // <- key change
+  }, [connected, orderFeatureEnabled]); // <- key change
   
 
   
@@ -121,7 +120,7 @@ export default function BusinessOrders() {
       if (connected) return;
       if(connectingRef.current) return; // Prevent multiple simultaneous connection attempts
       connectingRef.current = true;
-      const socketIo = new Socket(publicUser, socketContext); // ✅ pass value
+      const socketIo = new Socket(socketContext); // ✅ pass value
       socketIo.connect();
     } catch (err) {
       console.error("Reconnection failed", err);
@@ -148,7 +147,7 @@ export default function BusinessOrders() {
             </div>
           </div>
         )}
-        {!socketEnabled && orderFlag && (
+        {!orderFeatureEnabled && orderFlag && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
               <h2>Order Online Feature Disabled</h2>
@@ -159,7 +158,7 @@ export default function BusinessOrders() {
             </div>
           </div>
         )}
-        {!connected && socketEnabled && orderFlag && (
+        {!connected && orderFeatureEnabled && orderFlag && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
               <h2>Connection Lost</h2>

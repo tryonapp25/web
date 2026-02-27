@@ -97,7 +97,7 @@ function FeaturesGrid({ features, busyId, onToggle }) {
 export default function BusinessSetting() {
   const fetchingRef = useRef(false);
   const { publicUser } = useContext(UserContext);
-  const { setSocketEnabled } = useContext(SocketContext);
+  const { setOrderFeatureEnabled } = useContext(SocketContext);
 
   const businessId = publicUser?.business?.id;
 
@@ -154,7 +154,7 @@ export default function BusinessSetting() {
           return same ? { ...f, _saving: false, _error: "" } : f;
         })
       );
-      setSocketEnabled(nextEnabled); // immediately reflect socket-related changes
+      setOrderFeatureEnabled(nextEnabled); // immediately reflect socket-related changes
     } catch (err) {
       console.error("Failed to update feature:", err);
 

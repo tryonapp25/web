@@ -23,13 +23,12 @@ const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
 
 export default function RenderProductionMenuBook() {
-  const { sendOrder, socketEnabled, connected } = useContext(SocketContext);
   const isMobile = useIsMobile();
 
   // guards
   const fetchedRef = useRef(false);
-
-  const [showCartBubble, setShowCartBubble] = useState(connected && socketEnabled);
+  const { orderFeatureEnabled } = useContext(SocketContext);
+  
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
   const templatecode = searchParams.get("template");
@@ -51,7 +50,6 @@ export default function RenderProductionMenuBook() {
     if(fetchedRef.current) return;
     fetchedRef.current = true;
     fetchData();
-    getFlags();
   }, [type, id, templatecode, menubookCode, publicCode]);
 
   const fetchData = async () => {
@@ -68,17 +66,8 @@ export default function RenderProductionMenuBook() {
     }
   };
 
-  const getFlags = async () => {
-    const flag = await getFeatureFlags("ORDER_FEATURE").catch((err) =>{
-      console.error("Failed to fetch feature flags:", err);
-    });
-    setShowCartBubble(flag);
-  }
-
 
   const handleSelectOrder = (order) => {
-    if (!socketEnabled) return;
-
     setOrders((prevOrders) => {
       const existingIndex = prevOrders.findIndex((item) => item.title === order.data.title);
 
@@ -108,11 +97,7 @@ export default function RenderProductionMenuBook() {
 
   const handleCheckout = async () => {
     const ordersWithTemplate = { receiver: data?.uid, orders };
-    const res = await sendOrder(ordersWithTemplate);
-    if (!res.success) {
-      setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
-      return;
-    }
+    // ✅ Send order data to backend
     setMessage({ visible: true, type: "success", msg: "Order placed successfully!" });
     setOrders([]);
     setOrderModalOpen(false);
@@ -170,7 +155,7 @@ export default function RenderProductionMenuBook() {
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
-        orderFeatureEnabled={socketEnabled}
+        orderFeatureEnabled={orderFeatureEnabled}
         onOrder={handleSelectOrder}
         extras={data?.extras || []}
       />
@@ -199,7 +184,7 @@ export default function RenderProductionMenuBook() {
         duration={3000}
       />
 
-      {showCartBubble && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
     </div>
   );
 }

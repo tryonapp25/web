@@ -1,48 +1,32 @@
-import React, { createContext, useEffect, useState, useRef } from "react";
-import {
-  HandeGuestSocketConnect,
-  HandeleSocketConnectForBusiness,
-  sendOrder as sendOrderUtil,
-} from "../utils/socketio";
+import { createContext, useState, useRef } from "react";
+import { HandeleSocketConnectForBusiness } from "../utils/socketio";
 import http from "../http/http";
-
-const publicCode = new URLSearchParams(window.location.search).get("public");
+import { useContext } from "react";
+import { UserContext } from "./userContext";
 
 export const SocketContext = createContext(null);
 
 export function SocketProvider({ children }) {
   const socketRef = useRef(null);
+  const { publicUser } = useContext(UserContext);
   const [connected, setConnected] = useState(false);
-  const [socketEnabled, setSocketEnabled] = useState(false);
+  const [orderFeatureEnabled, setOrderFeatureEnabled] = useState(false);
   const listenersRef = useRef(null);
 
-  async function connectGuest() {
+  async function connectBusiness() {
     try {
-      const enabled = await checkEnableOrderOnlineFeatureForGuest();
-      setSocketEnabled(enabled);
-      if (!enabled) return;
-
-      const newSocket = await HandeGuestSocketConnect();
-      // detach previous listeners (if any) and attach to the new socket
-      detachListeners();
-      socketRef.current = newSocket;
-      attachListeners(socketRef.current);
-      return socketRef.current;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async function connectBusiness(user) {
-    try {
-      const enabled = await checkEnableOrderOnlineFeatureForBusiness(user?.business?.id).catch(err => {
+      if(publicUser?.isCustomer === false) {
+        console.log("User is not a business, skipping socket connection.");
+        return null;
+      }
+      const enabled = await checkEnableOrderOnlineFeatureForBusiness(publicUser?.business?.id).catch(err => {
         console.error("Error checking business feature flag:", err);
         return false; // Default to false on error
-      });
-      setSocketEnabled(enabled);
+      }); 
+      setOrderFeatureEnabled(enabled);
       if(!enabled) return;
       
-      const newSocket = await HandeleSocketConnectForBusiness(user);
+      const newSocket = await HandeleSocketConnectForBusiness();
       detachListeners();
       socketRef.current = newSocket;
       attachListeners(socketRef.current);
@@ -52,15 +36,8 @@ export function SocketProvider({ children }) {
       throw err;
     }
   }
+  
 
-  async function sendOrder(data) {
-    try {
-      const res = await sendOrderUtil(socketRef, data);
-      return res;
-    } catch (err) {
-      return { success: false, error: err?.message || err };
-    }
-  }
 
   function disconnect() {
     try {
@@ -100,15 +77,6 @@ export function SocketProvider({ children }) {
     listenersRef.current = null;
   }
 
-  const checkEnableOrderOnlineFeatureForGuest = async () => {
-      try {
-          const response = await http.get(`/business/feature/ORDER_ONLINE/publicCode/${publicCode}`);
-          return response.data.data || false;
-      } catch (error) {        console.error("Error fetching business order online feature status:", error);
-          return false; // Default to false if there's an error
-      }
-  }
-
   const checkEnableOrderOnlineFeatureForBusiness = async (businessId) => {
       try {
           const res = await http.get(`/business/feature/ORDER_ONLINE/business/${businessId}`);
@@ -125,12 +93,10 @@ export function SocketProvider({ children }) {
       value={{
         socketRef,
         connected,
-        connectGuest,
         connectBusiness,
-        sendOrder,
         disconnect,
-        socketEnabled,
-        setSocketEnabled,
+        orderFeatureEnabled,
+        setOrderFeatureEnabled,
       }}
     >
       {children}
