@@ -18,9 +18,9 @@ export default function BusinessProtection() {
     if(startupRef.current) return;
     startupRef.current = true;
     if(connected) return console.log("Socket already connected"); // ✅ prevent multiple connections
-    const socket = new Socket(publicUser, socketContext);
+    const socket = new Socket(socketContext);
     socket.connect();
-    handleCheckSocketConnection();
+    //handleCheckSocketConnection();
     console.log("Connecting to socket on business route change...");
 
   }, [location.pathname]);
@@ -43,7 +43,7 @@ export default function BusinessProtection() {
       console.log("Socket already connected");
       return;
     }
-    const socket = new Socket(publicUser, socketContext);
+    const socket = new Socket(socketContext);
     socket.connect();
   }
 

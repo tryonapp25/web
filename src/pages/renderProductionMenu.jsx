@@ -3,7 +3,9 @@ import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
 import useIsMobile from "../utils/deviceCheck";
-import { getFeatureFlags } from "../featureFlags/featureFlags";
+
+import { SocketContext } from "../ApiContext/socketContext";
+import { sendOrder } from "../utils/socketio";
 
 import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
@@ -14,18 +16,16 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import { SocketContext } from "../ApiContext/socketContext";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
 export default function RenderProductionMenu() {
-  const { sendOrder, connected, socketEnabled } = useContext(SocketContext);
   const fetchedRef = useRef(false);
 
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [message, setMessage] = useState(defaultMessage);
-  const [showCartBubble, setShowCartBubble] = useState(connected && socketEnabled);
+  const { orderFeatureEnabled } = useContext(SocketContext);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
@@ -49,7 +49,6 @@ export default function RenderProductionMenu() {
     if(fetchedRef.current) return;
     fetchedRef.current = true;
     fetchTemplate();
-    getFlags();
   }, [type, id, code, publicCode]);
 
   const fetchTemplate = async () => {
@@ -71,16 +70,8 @@ export default function RenderProductionMenu() {
     }
   };
 
-  const getFlags = async () => {
-    const flag = await getFeatureFlags("ORDER_FEATURE").catch((err) =>{
-      console.error("Failed to fetch feature flags:", err);
-    });
-    setShowCartBubble(flag);
-  }
-
-
+ 
   const handleSelectOrder = (order) => {
-    if (!socketEnabled) return;
     console.log("Ordering item:", order);
     
     setOrders((prevOrders) => {
@@ -122,16 +113,18 @@ export default function RenderProductionMenu() {
   };
 
   const handleCheckout = async () => {
-    const ordersWithTemplate = { receiver: template.uid, orders: orders };
-    const res = await sendOrder(ordersWithTemplate);
-    if(!res.success) {
-      setMessage({ visible: true, type: "error", msg: `Failed to place order: ${res.error}` });
+    const ordersWithTemplate = { receiverId: template.uid, orders: orders };
+    const send = await sendOrder(ordersWithTemplate);
+
+    if(send?.success) {
+      setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+      setOrders([]);
+      setOrderModalOpen(false);
+      setShowPaymentMethod(false);
       return;
-    } 
-    setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
-    setOrders([]);
-    setOrderModalOpen(false);
-    setShowPaymentMethod(false);
+    }
+    
+    setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
   };
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
@@ -172,14 +165,14 @@ export default function RenderProductionMenu() {
   return (
     <div>
       {wrappedContent}
-      {showCartBubble && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
 
       {/* Render modal ONCE */}
       <ModelShowcase
         open={modelOpen}
         item={selectedModel}
         onClose={() => setModelOpen(false)}
-        orderFeatureEnabled={socketEnabled}
+        orderFeatureEnabled={orderFeatureEnabled}
         onOrder={handleSelectOrder}
         extras={template?.extras || []}
       />

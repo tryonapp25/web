@@ -1,7 +1,4 @@
-
-import http from "../http/http";
-
-
+import { sendOrder } from "../utils/socketio";
 
 class SocketManager {
   constructor(context) {
@@ -9,31 +6,18 @@ class SocketManager {
       socketRef,
       connected,
       setConnected,
-      socketEnabled,
+      orderFeatureEnabled,
       setSocketEnabled,
-      connectGuest,
       connectBusiness,
     } = context;
 
     this.socketRef = socketRef;
     this.connected = connected;
     this.setConnected = setConnected;
-    this.socketEnabled = socketEnabled;
+    this.orderFeatureEnabled = orderFeatureEnabled;
     this.setSocketEnabled = setSocketEnabled;
-    this.connectGuest = connectGuest;
     this.connectBusiness = connectBusiness;
   }
-
-  async connectToGuest() {
-    console.log("Connecting to guest socket...");
-    if (this.connected) return;
-    try {
-      await this.connectGuest();
-    } catch (err) {
-      console.error("connectGuest failed", err);
-    }
-  }
-
   async connectToBusiness() {
     console.log("Connecting to business socket...");
     if (this.connected) return;
@@ -50,20 +34,16 @@ class SocketManager {
 }
 
 class Socket extends SocketManager {
-  constructor(user, context) {
+  constructor(context) {
     super(context); // ✅ required
-    this.user = user;
   }
 
   connect() {
-    if (this.user?.isCustomer == true) {
-      console.log("user is business..");
-      this.connectToBusiness();
-    } else{
-      console.log("user is guest..");
-      this.connectToGuest();
-    }
+    this.connectToBusiness();
   }
+
 }
+
+
 
 export default Socket;
