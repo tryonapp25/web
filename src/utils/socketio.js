@@ -98,25 +98,12 @@ export async function HandeleSocketConnectForBusiness(user) {
 
         return await new Promise((resolve, reject) => {
             const onConnect = () => {
-                // request business auth and wait for server callback
-                socketIO.emit(
-                    "business-connection",
-                    { ...user },
-                    (res) => {
-                        if (!res?.success) {
-                            console.error("business connect failed", res);
-                            socketIO.disconnect();
-                            reject(res || new Error('Business auth failed'));
-                            return;
-                        }
-                        console.log("business connect success", res);
-                        // cleanup listeners that were only for initial connect/auth
-                        socketIO.off('connect_error', onError);
-                        resolve(socketIO);
-                    }
-                );
+                socketIO.off('connect_error', onError);
+                socketIO.off('disconnect', onDisconnect);
+                console.log("connected", socketIO.id);
+                resolve(socketIO);
             };
-
+            
             const onError = (err) => {
                 console.error('Socket connect_error', err);
                 reject(err);
