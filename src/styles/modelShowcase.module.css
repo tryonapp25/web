@@ -608,6 +608,105 @@
   border: 1px solid rgba(16, 185, 129, 0.22);
 }
 
+.activeOption {
+  outline: 2px solid #000;
+}
+
+/* ===============================
+   PRICE & SIZE CONTAINER
+================================ */
+.priceAndSizeContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ===============================
+   TITLE
+================================ */
+.priceAndSizeTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
+}
+/* ===============================
+   LIST
+================================ */
+.priceAndSizeList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+
+/* ===============================
+   ITEM
+================================ */
+.priceAndSizeItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.priceAndSizeItem:hover {
+  border-color: rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ===============================
+   ACTIVE (SELECTED)
+================================ */
+.activeOption {
+  border: 2px solid black;
+  background: #f8f8f8;
+  box-shadow:
+    0 0 0 3px rgba(0,0,0,0.05),
+    0 6px 16px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   NAME
+================================ */
+.optionName {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ===============================
+   PRICE
+================================ */
+.optionPrice {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+  .priceAndSizeContainer {
+    padding: 18px;
+  }
+  .priceAndSizeItem {
+    padding: 14px;
+  }
+}
+
 /* =========================
    Motion safety
 ========================= */

@@ -1,5 +1,5 @@
 // ModelShowcase.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "../styles/modelShowcase.module.css";
 import Model3D from "./3dModel";
 
@@ -12,18 +12,32 @@ export default function ModelShowcase({
   extras = [],
 }) {
   const [mounted, setMounted] = useState(open);
-  const [currentStep, setCurrentStep] = useState("model"); // 'model' | 'ingredients' | 'extras'
+  const [currentStep, setCurrentStep] = useState("model"); // 'model' | 'priceandsize' | 'ingredients' | 'extras'
   const [ingredients, setIngredients] = useState([]);
   const [selectedExtras, setSelectedExtras] = useState({});
+  const [priceandsize, setPriceAndSize] = useState([]);
+  const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
 
-  // Initialize ingredients from item data
+  const hasExtras = useMemo(() => Array.isArray(extras) && extras.length > 0, [extras]);
+
+  // ✅ Initialize ingredients + price/size from item
   useEffect(() => {
-    if (item?.data?.ingredients) {
+    if (item?.data?.ingredients && Array.isArray(item.data.ingredients)) {
       setIngredients(item.data.ingredients.map((ing) => ({ ...ing })));
+    } else {
+      setIngredients([]);
+    }
+
+    if (Array.isArray(item?.data?.data) && item.data.data.length > 0) {
+      setPriceAndSize(item.data.data);
+      setSelectedPriceIndex(0);
+    } else {
+      setPriceAndSize([]);
+      setSelectedPriceIndex(0);
     }
   }, [item]);
 
-  // Initialize selected extras state
+  // ✅ Initialize selected extras state
   useEffect(() => {
     if (extras && extras.length > 0) {
       const initialExtras = {};
@@ -34,22 +48,22 @@ export default function ModelShowcase({
         });
       });
       setSelectedExtras(initialExtras);
+    } else {
+      setSelectedExtras({});
     }
   }, [extras]);
 
-  // Reset step when modal closes
+  // ✅ Reset step when modal closes
   useEffect(() => {
-    if (!open) {
-      setCurrentStep("model");
-    }
+    if (!open) setCurrentStep("model");
   }, [open]);
 
-  // mount/unmount for fade animation
+  // ✅ mount/unmount for fade animation
   useEffect(() => {
     if (open) setMounted(true);
   }, [open]);
 
-  // ESC close
+  // ✅ ESC close
   useEffect(() => {
     if (!mounted) return;
 
@@ -61,7 +75,7 @@ export default function ModelShowcase({
     return () => document.removeEventListener("keydown", handleKey);
   }, [mounted, onClose]);
 
-  // lock scroll
+  // ✅ lock scroll
   useEffect(() => {
     if (!open) return;
 
@@ -81,7 +95,7 @@ export default function ModelShowcase({
     if (!open) setMounted(false);
   };
 
-  // Order Handlers //
+  // ===== Order Helpers =====
   const toggleIngredient = (index) => {
     setIngredients((prev) =>
       prev.map((ing, i) =>
@@ -94,33 +108,17 @@ export default function ModelShowcase({
     setSelectedExtras((prev) => ({
       ...prev,
       [categoryIndex]: {
-        ...prev[categoryIndex],
-        [itemIndex]: !prev[categoryIndex]?.[itemIndex],
+        ...(prev?.[categoryIndex] || {}),
+        [itemIndex]: !prev?.[categoryIndex]?.[itemIndex],
       },
     }));
-  };
-
-  const handleNextClick = () => {
-    if (currentStep === "model") {
-      setCurrentStep("ingredients");
-    } else if (currentStep === "ingredients" && extras && extras.length > 0) {
-      setCurrentStep("extras");
-    }
-  };
-
-  const handleBackClick = () => {
-    if (currentStep === "extras") {
-      setCurrentStep("ingredients");
-    } else if (currentStep === "ingredients") {
-      setCurrentStep("model");
-    }
   };
 
   const getSelectedExtrasData = () => {
     const selected = [];
     extras.forEach((category, catIndex) => {
       category.data?.forEach((it, itemIndex) => {
-        if (selectedExtras[catIndex]?.[itemIndex]) {
+        if (selectedExtras?.[catIndex]?.[itemIndex]) {
           selected.push({ ...it, category: category.title });
         }
       });
@@ -128,26 +126,77 @@ export default function ModelShowcase({
     return selected;
   };
 
-  const hasExtras = extras && extras.length > 0;
+  const buildOrderPayload = (extrasPayload = []) => {
+    const chosenOption =
+      priceandsize.length > 0 ? priceandsize[selectedPriceIndex] : null;
+
+    return {
+      ...item,
+      data: {
+        ...item?.data,
+        // store ONLY the selected option (keeps your structure)
+        data: chosenOption
+          ? [{ ...chosenOption, quantity: chosenOption.quantity ?? 1 }]
+          : [],
+        ingredients,
+        extras: extrasPayload,
+      },
+    };
+  };
+
+  // ✅ Better step flow (works for any combination)
+  const handleNextClick = () => {
+    if (currentStep === "model") {
+      if (priceandsize.length > 0) return setCurrentStep("priceandsize");
+      if (ingredients.length > 0) return setCurrentStep("ingredients");
+      if (hasExtras) return setCurrentStep("extras");
+      return;
+    }
+
+    if (currentStep === "priceandsize") {
+      if (ingredients.length > 0) return setCurrentStep("ingredients");
+      if (hasExtras) return setCurrentStep("extras");
+      return;
+    }
+
+    if (currentStep === "ingredients") {
+      if (hasExtras) return setCurrentStep("extras");
+      return;
+    }
+  };
+
+  const handleBackClick = () => {
+    if (currentStep === "extras") {
+      if (ingredients.length > 0) return setCurrentStep("ingredients");
+      if (priceandsize.length > 0) return setCurrentStep("priceandsize");
+      return setCurrentStep("model");
+    }
+
+    if (currentStep === "ingredients") {
+      if (priceandsize.length > 0) return setCurrentStep("priceandsize");
+      return setCurrentStep("model");
+    }
+
+    if (currentStep === "priceandsize") {
+      return setCurrentStep("model");
+    }
+  };
+
+  const hasNextStep = priceandsize.length > 0 || ingredients.length > 0 || hasExtras;
 
   return (
     <div
-      className={`${styles.overlay} ${
-        open ? styles.overlayIn : styles.overlayOut
-      }`}
+      className={`${styles.overlay} ${open ? styles.overlayIn : styles.overlayOut}`}
       onMouseDown={handleOverlayClick}
       onAnimationEnd={handleAnimationEnd}
     >
       <div className={styles.stageWrapper}>
         <div className={styles.stage}>
-          <button
-            className={styles.closeBtn}
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
             ✕
           </button>
 
+          {/* ================== MODEL STEP ================== */}
           {currentStep === "model" && (
             <>
               <Model3D
@@ -156,7 +205,6 @@ export default function ModelShowcase({
                 images={item?.data?.images}
               />
 
-              {/* ✅ Premium Title/Description Card */}
               <div className={styles.infoCard}>
                 <div className={styles.infoHeader}>
                   <h2 className={styles.itemTitle}>{item?.data?.title}</h2>
@@ -166,11 +214,11 @@ export default function ModelShowcase({
                   <p className={styles.itemDesc}>{item.data.description}</p>
                 )}
               </div>
-                
-              {orderFeatureEnabled == true && (
+
+              {orderFeatureEnabled === true && (
                 <>
                   <div className={styles.actions}>
-                    {ingredients.length > 0 ? 
+                    {hasNextStep ? (
                       <button
                         className={styles.nextBtn}
                         onClick={handleNextClick}
@@ -178,24 +226,15 @@ export default function ModelShowcase({
                       >
                         Next
                       </button>
-                      :
+                    ) : (
                       <button
                         className={styles.orderBtn}
-                        onClick={() =>
-                          onOrder?.({
-                            ...item,
-                            data: {
-                              ...item.data,
-                              ingredients,
-                              extras: [],
-                            },
-                          })
-                        }
+                        onClick={() => onOrder?.(buildOrderPayload([]))}
                         aria-label="Order"
                       >
                         Order
                       </button>
-                    }
+                    )}
                   </div>
                   <div className={styles.glow} />
                 </>
@@ -203,6 +242,55 @@ export default function ModelShowcase({
             </>
           )}
 
+          {/* ================== PRICE & SIZE STEP ================== */}
+          {currentStep === "priceandsize" && (
+            <div className={styles.priceAndSizeContainer}>
+              <h3 className={styles.priceAndSizeTitle}>Choose Size & Price</h3>
+
+              <div className={styles.priceAndSizeList}>
+                {priceandsize.map((option, index) => {
+                  const active = index === selectedPriceIndex;
+
+                  return (
+                    <button
+                      type="button"
+                      key={index}
+                      onClick={() => setSelectedPriceIndex(index)}
+                      className={`${styles.priceAndSizeItem} ${
+                        active ? styles.activeOption : ""
+                      }`}
+                    >
+                      <div className={styles.optionName}>{option.name}</div>
+                      <div className={styles.optionPrice}>{option.price}</div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className={styles.actions}>
+                <button className={styles.backBtn} onClick={handleBackClick} aria-label="Back">
+                  Back
+                </button>
+
+                {/* If no further steps after price/size, let user order here */}
+                {ingredients.length === 0 && !hasExtras ? (
+                  <button
+                    className={styles.orderBtn}
+                    onClick={() => onOrder?.(buildOrderPayload([]))}
+                    aria-label="Order"
+                  >
+                    Order
+                  </button>
+                ) : (
+                  <button className={styles.nextBtn} onClick={handleNextClick} aria-label="Next">
+                    Next
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ================== INGREDIENTS STEP ================== */}
           {currentStep === "ingredients" && (
             <>
               <div className={styles.ingredientsContainer}>
@@ -210,13 +298,10 @@ export default function ModelShowcase({
                   <div className={styles.sectionHeaderTop}>
                     <h3 className={styles.ingredientsTitle}>Ingredients</h3>
                     <span className={styles.sectionMeta}>
-                      {ingredients.filter((i) => i.included).length}/
-                      {ingredients.length} included
+                      {ingredients.filter((i) => i.included).length}/{ingredients.length} included
                     </span>
                   </div>
-                  <p className={styles.sectionSubTitle}>
-                    Toggle items to customize your order.
-                  </p>
+                  <p className={styles.sectionSubTitle}>Toggle items to customize your order.</p>
                 </div>
 
                 <div className={styles.ingredientsList}>
@@ -230,7 +315,7 @@ export default function ModelShowcase({
                       <span className={styles.checkWrap} aria-hidden="true">
                         <input
                           type="checkbox"
-                          checked={ing.included}
+                          checked={!!ing.included}
                           onChange={() => toggleIngredient(index)}
                           className={styles.ingredientCheckbox}
                         />
@@ -255,35 +340,18 @@ export default function ModelShowcase({
               </div>
 
               <div className={styles.actions}>
-                <button
-                  className={styles.backBtn}
-                  onClick={handleBackClick}
-                  aria-label="Back"
-                >
+                <button className={styles.backBtn} onClick={handleBackClick} aria-label="Back">
                   Back
                 </button>
 
                 {hasExtras ? (
-                  <button
-                    className={styles.nextBtn}
-                    onClick={handleNextClick}
-                    aria-label="Next"
-                  >
+                  <button className={styles.nextBtn} onClick={handleNextClick} aria-label="Next">
                     Next
                   </button>
                 ) : (
                   <button
                     className={styles.orderBtn}
-                    onClick={() =>
-                      onOrder?.({
-                        ...item,
-                        data: {
-                          ...item.data,
-                          ingredients,
-                          extras: [],
-                        },
-                      })
-                    }
+                    onClick={() => onOrder?.(buildOrderPayload([]))}
                     aria-label="Order"
                   >
                     Order
@@ -293,6 +361,7 @@ export default function ModelShowcase({
             </>
           )}
 
+          {/* ================== EXTRAS STEP ================== */}
           {currentStep === "extras" && (
             <>
               <div className={styles.extrasContainer}>
@@ -303,9 +372,7 @@ export default function ModelShowcase({
                       {getSelectedExtrasData().length} selected
                     </span>
                   </div>
-                  <p className={styles.sectionSubTitle}>
-                    Add upgrades and sides to your order.
-                  </p>
+                  <p className={styles.sectionSubTitle}>Add upgrades and sides to your order.</p>
                 </div>
 
                 <div className={styles.extrasCategoriesList}>
@@ -313,21 +380,16 @@ export default function ModelShowcase({
                     <div key={catIndex} className={styles.extrasCategory}>
                       <div className={styles.extrasCategoryHead}>
                         <div>
-                          <h4 className={styles.extrasCategoryTitle}>
-                            {category.title}
-                          </h4>
+                          <h4 className={styles.extrasCategoryTitle}>{category.title}</h4>
                           {category.description && (
-                            <p className={styles.extrasCategoryDesc}>
-                              {category.description}
-                            </p>
+                            <p className={styles.extrasCategoryDesc}>{category.description}</p>
                           )}
                         </div>
                       </div>
 
                       <div className={styles.extrasItemsList}>
                         {category.data?.map((extraItem, itemIndex) => {
-                          const checked =
-                            selectedExtras[catIndex]?.[itemIndex] || false;
+                          const checked = selectedExtras?.[catIndex]?.[itemIndex] || false;
 
                           return (
                             <label
@@ -347,17 +409,13 @@ export default function ModelShowcase({
                               </span>
 
                               <span className={styles.itemText}>
-                                <span className={styles.extrasItemName}>
-                                  {extraItem.name}
-                                </span>
+                                <span className={styles.extrasItemName}>{extraItem.name}</span>
                                 <span className={styles.itemHint}>
                                   {checked ? "Added" : "Not added"}
                                 </span>
                               </span>
 
-                              <span className={styles.extrasItemPrice}>
-                                {extraItem.price}
-                              </span>
+                              <span className={styles.extrasItemPrice}>{extraItem.price}</span>
                             </label>
                           );
                         })}
@@ -368,26 +426,13 @@ export default function ModelShowcase({
               </div>
 
               <div className={styles.actions}>
-                <button
-                  className={styles.backBtn}
-                  onClick={handleBackClick}
-                  aria-label="Back"
-                >
+                <button className={styles.backBtn} onClick={handleBackClick} aria-label="Back">
                   Back
                 </button>
 
                 <button
                   className={styles.orderBtn}
-                  onClick={() =>
-                    onOrder?.({
-                      ...item,
-                      data: {
-                        ...item.data,
-                        ingredients,
-                        extras: getSelectedExtrasData(),
-                      },
-                    })
-                  }
+                  onClick={() => onOrder?.(buildOrderPayload(getSelectedExtrasData()))}
                   aria-label="Order"
                 >
                   Order
@@ -400,4 +445,3 @@ export default function ModelShowcase({
     </div>
   );
 }
-

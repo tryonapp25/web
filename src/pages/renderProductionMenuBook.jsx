@@ -4,7 +4,7 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import defaultMessage from "../utils/defaultMessage";
 import useIsMobile from "../utils/deviceCheck";
-import { getFeatureFlags } from "../featureFlags/featureFlags";
+import { sendOrder } from "../utils/socketio";
 
 
 import ModelShowcase from "../components/modelShowcase";
@@ -96,12 +96,18 @@ export default function RenderProductionMenuBook() {
   };
 
   const handleCheckout = async () => {
-    const ordersWithTemplate = { receiver: data?.uid, orders };
-    // ✅ Send order data to backend
-    setMessage({ visible: true, type: "success", msg: "Order placed successfully!" });
-    setOrders([]);
-    setOrderModalOpen(false);
-    setShowPaymentMethod(false);
+    const ordersWithTemplate = { receiverId: template.uid, orders: orders };
+    const send = await sendOrder(ordersWithTemplate);
+
+    if(send?.success) {
+      setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+      setOrders([]);
+      setOrderModalOpen(false);
+      setShowPaymentMethod(false);
+      return;
+    }
+    
+    setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
   };
 
   const templateMap = useMemo(() => {

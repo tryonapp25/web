@@ -11,48 +11,138 @@ import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
 import OrdersGrid from "../components_business/ordersGrid";
 
+
 const ORDERS = [
   {
-    title: "Order #1001",
-    model: "Food",
-    ingredients: "No sugar",
+    id: 6,
+    businessId: 21,
     data: [
       {
-        name: "Latte",
-        description: "Oat milk",
-        price: "40",
-        quantity: "2",
-      },
+        data: [
+          {
+            "name": "Large",
+            "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
+            "price": "13.99",
+            "quantity": "1"
+          }
+        ],
+        model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
+        title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
+        extras: {
+          title: "Vegetable Pad Thai",
+          description: "",
+          data: null
+        },
+        images: [
+          "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
+        ],
+        quantity: 1,
+        description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
+        ingredients: []
+      }
     ],
+    status: 'PENDING',
+    createdAt: "2026-02-28T01:02:29.000Z",
+    updatedAt: "2026-02-28T01:02:29.000Z"
   },
   {
-    title: "Order #1002",
-    model: "Food",
-    ingredients: "Extra cheese",
+    id: 6,
+    businessId: 21,
     data: [
       {
-        name: "Burger",
-        description: "No onion",
-        price: "80",
-        quantity: "1",
-      },
+        data: [
+          {
+            "name": "Small",
+            "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
+            "price": "13.99",
+            "quantity": "1"
+          }
+        ],
+        model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
+        title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
+        extras: {
+          title: "",
+          description: "",
+          data: null
+        },
+        images: [
+          "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
+        ],
+        quantity: 1,
+        description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
+        ingredients: []
+      }
     ],
+    status: 'PENDING',
+    createdAt: "2026-02-28T01:02:29.000Z",
+    updatedAt: "2026-02-28T01:02:29.000Z"
   },
-];
+  {
+    id: 6,
+    businessId: 21,
+    data: [
+      {
+        data: [
+          {
+            "name": "Medium",
+            "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
+            "price": "13.99",
+            "quantity": "1"
+          }
+        ],
+        model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
+        title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
+        extras: {
+          title: "",
+          description: "",
+          data: null
+        },
+        images: [
+          "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
+        ],
+        quantity: 1,
+        description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
+        ingredients: []
+      }
+    ],
+    status: 'PENDING',
+    createdAt: "2026-02-28T01:02:29.000Z",
+    updatedAt: "2026-02-28T01:02:29.000Z"
+  }
+]
 
 const newOrder = {
-  title: "Order #1002",
-  model: "Food",
-  ingredients: "Extra cheese",
+  id: 6,
+  businessId: 21,
   data: [
     {
-      name: "Burger",
-      description: "No onion",
-      price: "80",
-      quantity: "1",
-    },
+      data: [
+        {
+          "name": "Vegetable Pad Thai",
+          "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
+          "price": "13.99",
+          "quantity": "1"
+        }
+      ],
+      model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
+      title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
+      extras: {
+        title: "",
+        description: "",
+        data: null
+      },
+      images: [
+        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
+      ],
+      quantity: 1,
+      description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
+      ingredients: []
+    }
   ],
-};
+  status: 'PENDING',
+  createdAt: "2026-02-28T01:02:29.000Z",
+  updatedAt: "2026-02-28T01:02:29.000Z"
+}
 
 export default function BusinessOrders() {
   const navigation = useNavigate();
@@ -62,7 +152,7 @@ export default function BusinessOrders() {
   const flagRef = useRef(false);
   
   const [orderFlag, setOrderFlag] = useState(null);
-  const [orders, setOrders] = useState(ORDERS);
+  const [orders, setOrders] = useState([]);
 
   const [message, setMessage] = useState({ visible: false, type: "", msg: "" });
   const [loading, setLoading] = useState(false);
@@ -83,8 +173,8 @@ export default function BusinessOrders() {
 
     console.log("✅ Socket connected, setting up event listeners...");
     const handleNewOrder = (order, ack) => {
-      console.log("✅ Received new order:");
-      setOrders(prev => [newOrder, ...prev]);  // if you want to add it
+      console.log("✅ Received new order:", order);
+      setOrders(prev => [order, ...prev]);  // if you want to add it
       if (ack) ack({ success: true }); // Acknowledge receipt to server
     };
 

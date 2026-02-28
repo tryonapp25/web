@@ -31,8 +31,14 @@ export default function OrderCard({ order }) {
             <div>
 
               <div className={styles.name}>
-                {item.name}
+                {item?.data[0]?.name} - {item.title}
               </div>
+              <p className={styles.description}>
+                {item?.data[0]?.description}
+              </p>
+              <p>
+                Price: {item?.data[0]?.price}
+              </p>
 
               <div className={styles.description}>
                 {item.description}
