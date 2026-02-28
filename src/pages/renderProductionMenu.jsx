@@ -113,18 +113,24 @@ export default function RenderProductionMenu() {
   };
 
   const handleCheckout = async () => {
-    const ordersWithTemplate = { receiverId: template.uid, orders: orders };
-    const send = await sendOrder(ordersWithTemplate);
+    try{
+      setLoading(true);
+      const ordersWithTemplate = { receiverId: template.uid, orders: orders };
+      const send = await sendOrder(ordersWithTemplate);
 
-    if(send?.success) {
-      setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
-      setOrders([]);
-      setOrderModalOpen(false);
-      setShowPaymentMethod(false);
-      return;
+      if(send?.success) {
+        setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+        setOrders([]);
+        setOrderModalOpen(false);
+        setShowPaymentMethod(false);
+        return;
+      }
+      
+      setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
     }
-    
-    setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
+    finally {
+      setLoading(false);
+    }
   };
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
