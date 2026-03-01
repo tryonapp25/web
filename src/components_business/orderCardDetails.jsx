@@ -1,11 +1,11 @@
-import styles from "../styles/OrderCard.module.css";
+import styles from "../styles/OrderCardDetails.module.css";
 import Model3D from "../components/3dModel";
 
 const config = {
   camera_orbit: "auto 70deg",
 }
 
-export default function OrderCard({ order, onSelected }) {
+export default function OrderCardDetails({ order }) {
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -30,7 +30,7 @@ export default function OrderCard({ order, onSelected }) {
 
 
   return (
-    <div className={styles.card} onClick={() => onSelected(order)}>
+    <div className={styles.card}>
       {/* Order Header */}
       <div className={styles.header}>
         <div className={styles.orderNumber}>
@@ -54,20 +54,19 @@ export default function OrderCard({ order, onSelected }) {
               <p className={styles.description}>
                 {item?.data[0]?.description}
               </p>
-              {/* <div className={styles.model3d} style={{width:"100%",height:"80px", display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                <div style={{width:"50%", height:"100%"}}>
+              <div className={styles.model3d} style={{width:"100%", height:"200px", display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                <div style={{width:"100%", height:"100%"}}>
                   <Model3D model={item?.model} config={config} images={item?.images} />
                 </div>
                 <div>
                   <p>
-                    Price: {item?.data[0]?.price}
+                    Price: {item?.data[0]?.price} {order?.currency}
                   </p>
                 </div>
-              </div> 
+              </div>
               <div className={styles.description}>
                 {item.description}
-              </div> 
-              */}
+              </div>
               <div className={styles.ingredients}>
                 {item?.ingredients?.map((ingredient, index) => (
                   <span key={index} style={{paddingLeft:"8px"}}>{ingredient.name} <span> {ingredient?.included ? "✓" : "✗"}</span></span>
@@ -79,11 +78,6 @@ export default function OrderCard({ order, onSelected }) {
             </div>
           </div>
         ))}
-        {order?.totalPrice && (
-          <div className={styles.totalPrice}>
-            Total: {order.totalPrice} {order?.currency}
-          </div>
-        )}
       </div>
       {/* extras */}
 
