@@ -38,6 +38,7 @@ export default function Template({
     if (!pressable) return;
     onPress?.(data);
   };
+  
 
 
 
@@ -69,7 +70,7 @@ export default function Template({
                       ) : null}
                     </span>
 
-                    <div className={styles.price}>{row?.price}</div>
+                    <div className={styles.price}>{row?.price}{data?.currency}</div>
                   </div>
 
                   {row?.description ? (

@@ -10,6 +10,7 @@ export default function ModelShowcase({
   onOrder,
   orderFeatureEnabled,
   extras = [],
+  data,
 }) {
   const [mounted, setMounted] = useState(open);
   const [currentStep, setCurrentStep] = useState("model"); // 'model' | 'priceandsize' | 'ingredients' | 'extras'
@@ -280,7 +281,7 @@ export default function ModelShowcase({
                   <h3 className={styles.sectionTitle}>Choose Size & Price</h3>
                   <span className={styles.metaPill}>
                     {priceandsize?.[selectedPriceIndex]?.price
-                      ? `Selected • ${priceandsize[selectedPriceIndex].price}`
+                      ? `Selected • ${priceandsize[selectedPriceIndex].price}${data?.currency || ""}`
                       : "Select one"}
                   </span>
                 </div>
@@ -317,7 +318,7 @@ export default function ModelShowcase({
                       </div>
 
                       <div className={styles.optionRight}>
-                        <div className={styles.optionPrice}>{price}</div>
+                        <div className={styles.optionPrice}>{price}{data?.currency || ""}</div>
                         <div
                           className={`${styles.radioDot} ${
                             active ? styles.radioDotOn : ""
@@ -453,7 +454,7 @@ export default function ModelShowcase({
                             </span>
 
                             <span className={styles.pricePill}>
-                              {extraItem.price}
+                              {extraItem.price}{data?.currency || ""}
                             </span>
                           </label>
                         );

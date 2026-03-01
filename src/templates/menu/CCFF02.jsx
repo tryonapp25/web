@@ -53,7 +53,7 @@ export default function Template({data, pressable, onPress, onClickModel }) {
                         <p className={styles.cardDesc}>{item.description}</p>
 
                         {item.data.map((d, ix) => {
-                            return <div key={ix} className={styles.cardPrice}>{d.price}</div>;
+                            return <div key={ix} className={styles.cardPrice}>{d.price}{data?.currency}</div>;
                         })}
 
                         <div className={styles.cardImageWrap}>

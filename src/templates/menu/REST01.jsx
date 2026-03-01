@@ -15,7 +15,7 @@ function splitTitleForLayout(title) {
 
 function money(v) {
   const s = v == null ? "" : String(v).trim();
-  return s ? `$${s}` : "";
+  return s ? `${s}` : "";
 }
 
 export default function Template({ data = [], pressable, onPress, onClickModel }) {
@@ -57,7 +57,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
           {rows.map((r, idx) => (
             <li className={styles.priceRow} key={`${r?.name || "row"}-${idx}`}>
               <span className={styles.priceName}>{r?.name || ""}</span>
-              <span className={styles.priceVal}>{money(r?.price)}</span>
+              <span className={styles.priceVal}>{money(r?.price)}{data?.currency}</span>
             </li>
           ))}
         </ul>
@@ -108,7 +108,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
                     ))}
                   </div>
 
-                  {price ? <div className={styles.dishPrice}>{price}</div> : null}
+                  {price ? <div className={styles.dishPrice}>{price}{data?.currency}</div> : null}
 
                   {item?.description ? (
                     <p className={styles.dishDesc}>{item.description}</p>
