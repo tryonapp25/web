@@ -1,7 +1,10 @@
 import styles from "../styles/OrdersGrid.module.css";
+import OrderDetailsModal from "./orderDetailsModal";
 import OrderCard from "./orderCard";
+import { useState } from "react";
 
 export default function OrdersGrid({ orders = [] }) {
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   // sort by newest first
   const sortedOrders = [...orders].sort(
@@ -23,9 +26,13 @@ export default function OrdersGrid({ orders = [] }) {
             <OrderCard
               key={`${order.id}-${index}`}
               order={order}
+              onSelected={(order) => {
+                setSelectedOrder(order);
+              }}
             />
-
           ))}
+
+          <OrderDetailsModal open={selectedOrder === null ? false : true} order={selectedOrder} onClose={() => setSelectedOrder(null)} />
         </div>
       )}
 

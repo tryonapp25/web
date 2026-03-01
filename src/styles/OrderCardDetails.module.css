@@ -3,13 +3,6 @@
     padding:15px;
     border-radius:12px;
     border:1px solid #eee;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease, opacity 0.3s ease;
-}
-
-.card:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    opacity: 0.9;
 }
 
 .header {
