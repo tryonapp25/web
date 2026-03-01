@@ -4,7 +4,7 @@ import Model3D from "../../components/3dModel";
 
 const config = { camera_orbit: "auto 55deg" };
 
-function Item({ item, variant = "normal", onClick }) {
+function Item({ data, item, variant = "normal", onClick }) {
   if (!item) return null;
   
   const name = item.title;
@@ -33,7 +33,7 @@ function Item({ item, variant = "normal", onClick }) {
         <div className={styles.priceRow}>
           <div className={styles.dots} />
           <div className={styles.price}>
-            {price} <span className={styles.thb}>THB.</span>
+            {price}{data?.currency} <span className={styles.thb}>THB.</span>
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function Template({ data = {}, pressable, onPress, onClickModel }
             const isHero = index === contents.length - 1;
             return (
               <div key={index} className={areaClass}>
-                <Item item={item} variant={isHero ? "hero" : "normal"} onClick={() => onClickModel({data: item, config: config})} />
+                <Item data={data} item={item} variant={isHero ? "hero" : "normal"} onClick={() => onClickModel({data: item, config: config})} />
               </div>
             );
           })}
@@ -86,6 +86,7 @@ export default function Template({ data = {}, pressable, onPress, onClickModel }
             <Item 
               key={index} 
               item={item} 
+              data={data}
               variant={index === contents.length - 1 ? "hero" : "normal"} 
               onClick={() => onClickModel({data: item, config: config})} />
           ))}
@@ -107,7 +108,7 @@ export default function Template({ data = {}, pressable, onPress, onClickModel }
                         <span className={styles.extraBullet}>◆</span>
                         <span className={styles.extraName}>{item.name}</span>
                         <span className={styles.extraDots} />
-                        <span className={styles.extraPrice}>{item.price}</span>
+                        <span className={styles.extraPrice}>{item.price}{data?.currency}</span>
                       </div>
                       {item.description && (
                         <p className={styles.extraItemDesc}>{item.description}</p>

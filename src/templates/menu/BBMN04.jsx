@@ -88,7 +88,7 @@ export default function BBMN04({data, pressable, onPress, onClickModel }) {
                     <div className={styles.menuItemRow}>
                     <div className={styles.menuTitle}>{item.title}</div>
                     <div className={styles.dots} />
-                    <div className={styles.menuPrice}>{priceText}</div>
+                    <div className={styles.menuPrice}>{priceText}{data?.currency}</div>
                     </div>
 
                     <div className={styles.menuDesc}>{item.description}</div>
@@ -98,7 +98,7 @@ export default function BBMN04({data, pressable, onPress, onClickModel }) {
                     {item?.data?.map((size, index) => (
                         <div key={index} className={styles.sizeItem}>
                         <span className={styles.sizeName}>{size.name}</span>
-                        <span className={styles.sizePrice}>{size.price}</span>
+                        <span className={styles.sizePrice}>{size.price}{data?.currency}</span>
                         </div>
                     ))}
                     </div>

@@ -181,6 +181,7 @@ export default function RenderProductionMenu() {
         orderFeatureEnabled={orderFeatureEnabled}
         onOrder={handleSelectOrder}
         extras={template?.extras || []}
+        data={template}
       />
 
       <OrderViewModal

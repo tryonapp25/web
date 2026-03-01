@@ -48,7 +48,7 @@ export default function Template({ data = {}, pressable, onPress,  onClickModel 
                         <span className={styles.bullet}>•</span>
                         <span className={styles.size}>{row.name}</span>
                       </div>
-                      <div className={styles.price}>{row.price}</div>
+                      <div className={styles.price}>{row.price}{data?.currency}</div>
                     </div>
                   ))}
                 </div>

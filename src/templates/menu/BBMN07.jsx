@@ -106,7 +106,7 @@ export default function Template({data = {}, pressable, onPress, onClickModel })
               </div>
               <div className={styles.sizeCard}>
                   {it?.data.map((d, index) =>(
-                    <p className={styles.size} key={index}>{d.name} <span className={styles.price}>{d.price}</span></p>
+                    <p className={styles.size} key={index}>{d.name} <span className={styles.price}>{d.price}{data?.currency}</span></p>
                   ))}
               </div>
               <div className={styles.description}>

@@ -85,7 +85,7 @@ export default function TestTemplate({data, pressable, onPress, onClickModel }) 
                   {(section?.data || []).map((data, index) => {
                     return (
                         <span key={index}  className={styles.priceSection}>
-                          {data?.name?.slice(0, 1)}{data?.price}
+                          {data?.name?.slice(0, 1)}.{data?.price}{draft?.currency}
                         </span>
                     )
                   })}

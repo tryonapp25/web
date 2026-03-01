@@ -47,7 +47,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel }
                 <div key={`${i}-${idx}`} className={styles.row}>
                   <span className={styles.item}>{item.name}</span>
                   <span className={styles.leader} />
-                  <span className={styles.price}>{item.price}</span>
+                  <span className={styles.price}>{item.price}{data?.currency}</span>
                 </div>
               ))}
             </div>

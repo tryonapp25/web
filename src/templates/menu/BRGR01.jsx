@@ -40,7 +40,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel, 
 
             return (
               <article className={styles.card} key={`${item.title}-${idx}`} onClick={() => onClickModel({data: item, config: config})}>
-                <div className={styles.priceBadge}>{String(displayPrice).replace("$", "$")}</div>
+                <div className={styles.priceBadge}>{String(displayPrice).replace("$", "$")}{data?.currency}</div>
 
                 <div className={styles.imageWrap}>
                   <div className={styles.image}>
@@ -81,7 +81,7 @@ export default function Template({ data = [], pressable, onPress, onClickModel, 
                     <li className={styles.listRow} key={`addon-${gIdx}-${i}`}>
                       <span className={styles.listName}>{row.name}</span>
                       <span className={styles.dots} aria-hidden="true" />
-                      <span className={styles.listPrice}>{row.price}</span>
+                      <span className={styles.listPrice}>{row.price}{data?.currency}</span>
                     </li>
                   ))}
                 </ul>

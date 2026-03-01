@@ -46,6 +46,8 @@ export default function RenderProductionMenuBook() {
   const [orders, setOrders] = useState([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
 
+  const [currentContent, setCurrentContent] = useState(data?.contents?.[0] || null);
+
   useEffect(() => {
     if(fetchedRef.current) return;
     fetchedRef.current = true;
@@ -144,6 +146,7 @@ export default function RenderProductionMenuBook() {
             setSelectedModel(item);
             setModelOpen(true);
           }}
+          curentContent={(content) => setCurrentContent(content)}
         >
           <LazyTemplate />
         </LazyMenuBook>
@@ -164,6 +167,7 @@ export default function RenderProductionMenuBook() {
         orderFeatureEnabled={orderFeatureEnabled}
         onOrder={handleSelectOrder}
         extras={data?.extras || []}
+        data={currentContent}
       />
 
       <OrderViewModal

@@ -28,7 +28,7 @@ function ContentItem({ content, currentIndex, onClickModel }) {
   );
 }
 
-export default function Template({ data = {}, pressable, onPress, onClickModel }) {
+export default function Template({ data = {}, pressable, onPress, onClickModel, curentContent }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const contents = Array.isArray(data?.contents) ? data.contents : [];
@@ -36,10 +36,12 @@ export default function Template({ data = {}, pressable, onPress, onClickModel }
 
   const next = () => {
     setCurrentIndex((prev) => (prev < contents.length - 1 ? prev + 1 : prev));
+    curentContent(contents[currentIndex + 1])
   };
 
   const prev = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    curentContent(contents[currentIndex - 1])
   };
 
   const onSelectedTemplate = () => {
