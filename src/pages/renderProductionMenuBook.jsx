@@ -21,6 +21,7 @@ import { SocketContext } from "../ApiContext/socketContext";
 // load templates from templates folder (including subfolders) and menuBook wrappers
 const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
+const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_PUBLIC_RECEIPT_URL;
 
 export default function RenderProductionMenuBook() {
   const isMobile = useIsMobile();
@@ -101,16 +102,24 @@ export default function RenderProductionMenuBook() {
     const ordersWithTemplate = { receiverId: template.uid, orders: orders };
     const send = await sendOrder(ordersWithTemplate);
 
-    if(send?.success) {
-      setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
-      setOrders([]);
-      setOrderModalOpen(false);
-      setShowPaymentMethod(false);
-      return;
+    if(!send?.success) {
+      setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
     }
     
-    setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
+    setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
+    window.open(
+      `${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
+
+  const Clear = () => {
+    setOrders([]);
+    setOrderModalOpen(false);
+    setShowPaymentMethod(false);
+    setMessage(defaultMessage);
+  }
 
   const templateMap = useMemo(() => {
     const out = {};
@@ -177,6 +186,7 @@ export default function RenderProductionMenuBook() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onCheckout={() => setShowPaymentMethod(true)}
+        data={data}
       />
 
       <PaymentMethodModal

@@ -8,12 +8,38 @@ export default function OrderViewModal({
   onUpdateQuantity,
   onRemoveItem,
   onCheckout,
+  data,
 }) {
   const [mounted, setMounted] = useState(open);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const calculateTotalPrice = () => {
+    console.log("Calculating total price for orders:", orders);
+    let total = 0;
+    orders.forEach((item) => {
+      const quantity = item.quantity || 1;
+      // Price is in item.data[0].price
+      const basePrice = parseFloat(item.data?.[0]?.price) || 0;
+      let extrasPrice = 0;
+      if (item.extras && Array.isArray(item.extras)) {
+        item.extras.forEach((extra) => {
+          extrasPrice += parseFloat(extra.price) || 0;
+        });
+      }
+      total += (basePrice + extrasPrice) * quantity;
+    });
+    console.log("Total price calculated:", total);
+    return total;
+  };
 
   useEffect(() => {
-    if (open) setMounted(true);
-  }, [open]);
+    if (open) {
+      const totalPrice = calculateTotalPrice();
+      setTotalPrice(totalPrice);
+      setMounted(true);
+    }
+  }, [open, orders]);
+
 
   useEffect(() => {
     if (!mounted) return;
@@ -60,6 +86,7 @@ export default function OrderViewModal({
     });
     return groups;
   };
+  
 
   return (
     <div
@@ -87,6 +114,7 @@ export default function OrderViewModal({
               {orders.map((item, index) => {
                 const extras = getExtrasForItem(item);
                 const grouped = groupExtrasByCategory(extras);
+                console.log("Rendering item:", item);
 
                 return (
                   <div key={index} className={styles.orderItem}>
@@ -172,6 +200,7 @@ export default function OrderViewModal({
               <span className={styles.summaryLabel}>Total Items:</span>
               <span className={styles.summaryValue}>{totalItems}</span>
             </div>
+            <p className={styles.totalPriceLabel}>Total Price: {totalPrice} {data?.currency}</p>
             <button className={styles.checkoutBtn} onClick={onCheckout}>
               Pay
             </button>

@@ -1,32 +1,43 @@
 import styles from "../styles/OrderCard.module.css";
 import Model3D from "../components/3dModel";
+import { getStatusColor } from "./index";
+import { useState, useEffect } from "react";
 
 const config = {
   camera_orbit: "auto 70deg",
 }
 
-export default function OrderCard({ order, onSelected }) {
+function formatWaitingTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  if (mins > 0) {
+    return `${mins}m ${secs}s`;
+  }
+  return `${secs}s`;
+}
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "#FFA500"; // Orange for pending
-      case "CONFIRMED":
-        return "#008000"; // Green for completed
-      case "REJECTED":
-        return "#FF0000";
-      case "PREPARING":
-        return "#0000FF";
-      case "READY":
-        return "#FFFF00";
-      case "COMPLETED":
-        return "#008000";
-      case "CANCELLED":
-        return "#FF0000";
-      default:
-        return "#808080"; // Gray for other statuses
+export default function OrderCard({ order, onSelected }) {
+  const [waitingTime, setWaitingTime] = useState(0);
+
+  useEffect(() => {
+    if (order.status !== "READY") {
+      setWaitingTime(0);
+      return;
     }
-  };
+
+    // Calculate initial waiting time from updatedAt
+    const startTime = order.updatedAt ? new Date(order.updatedAt).getTime() : Date.now();
+    
+    const updateTime = () => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      setWaitingTime(elapsed);
+    };
+
+    updateTime(); // Initial update
+    const interval = setInterval(updateTime, 1000);
+
+    return () => clearInterval(interval);
+  }, [order.status, order.updatedAt]);
 
 
   return (
@@ -40,6 +51,15 @@ export default function OrderCard({ order, onSelected }) {
           {order.status}
         </div>
       </div>
+
+      {/* Waiting Timer for READY orders */}
+      {order.status === "READY" && (
+        <div className={styles.waitingTimer}>
+          <span className={styles.waitingIcon}>⏱️</span>
+          <span className={styles.waitingText}>Waiting for pickup:</span>
+          <span className={styles.waitingTime}>{formatWaitingTime(waitingTime)}</span>
+        </div>
+      )}
       {/* Items */}
 
       <div className={styles.items}>
@@ -68,11 +88,13 @@ export default function OrderCard({ order, onSelected }) {
                 {item.description}
               </div> 
               */}
-              <div className={styles.ingredients}>
-                {item?.ingredients?.map((ingredient, index) => (
-                  <span key={index} style={{paddingLeft:"8px"}}>{ingredient.name} <span> {ingredient?.included ? "✓" : "✗"}</span></span>
-                ))}
-              </div>
+              {item?.ingredients && item?.ingredients?.length > 0 && 
+                <div className={styles.ingredients}>
+                  {item?.ingredients?.map((ingredient, index) => (
+                    <span key={index} style={{paddingLeft:"8px"}}>{ingredient.name} <span> {ingredient?.included ? "✓" : "✗"}</span></span>
+                  ))}
+                </div>
+              }
             </div>
             <div className={styles.qty}>
               x{item.quantity}

@@ -21,6 +21,7 @@ import TemplateWraper from "./pages/templateWraper";
 import MenuBookWraper from "./pages/menuBookWrapper";
 import PosterTemplateWraper from "./pages/posterTemplateWrapper";
 import MyCollection from "./pages/collection";
+import Receipt from "./pages/receipt";
 
 import TestPage from "./test/testPage";
 
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="/test" element={<TestPage />} />
 
             <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
+            <Route path="/receipt/:type" element={<Receipt />} />
             <Route element={<ProductionProtection />}>
               <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
               <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 

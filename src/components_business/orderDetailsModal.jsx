@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import styles from "../styles/OrderDetailsModal.module.css";
 import OrderCardDetails from "./orderCardDetails"; // adjust path if needed
 
-export default function OrderDetailsModal({ open, order, onClose }) {
+export default function OrderDetailsModal({ open, order, onClose, onReady, onComplete }) {
   // Close on ESC
   useEffect(() => {
     if (!open) return;
@@ -45,6 +45,27 @@ export default function OrderDetailsModal({ open, order, onClose }) {
             <div className={styles.empty}>No order selected</div>
           )}
         </div>
+
+        {/* Ready Button - Always visible */}
+        {order?.status !== "READY" ?
+          <div className={styles.actions}>
+            <button 
+              className={styles.readyBtn} 
+              onClick={() => onReady?.(order?.id)}
+            >
+              Ready
+            </button>
+          </div>
+          :
+          <div className={styles.actions}>
+            <button 
+              className={styles.confirmedBtn} 
+              onClick={() => onComplete?.(order?.id)}
+            >
+              ✓ COMPLETED
+            </button>
+          </div>
+        }
       </div>
     </div>
   );
