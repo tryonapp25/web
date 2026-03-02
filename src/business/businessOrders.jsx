@@ -129,7 +129,13 @@ export default function BusinessOrders() {
               }
               setOrders((prev) =>
                 prev.map((order) =>
-                  order.id === orderId ? { ...order, status: status } : order
+                  order.id === orderId
+                    ? {
+                        ...order,
+                        status: status,
+                        updatedAt: new Date().toISOString(), // current time
+                      }
+                    : order
               )
           );
           }
