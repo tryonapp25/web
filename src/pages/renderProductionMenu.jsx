@@ -126,11 +126,7 @@ export default function RenderProductionMenu() {
         return;
       }
       setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
-      window.open(
-        `${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`,
-        "_blank",
-        "noopener,noreferrer"
-      );
+      navigate(`${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`)
       Clear();
     }
     finally {
