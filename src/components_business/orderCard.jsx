@@ -18,7 +18,6 @@ function formatWaitingTime(seconds) {
 
 export default function OrderCard({ order, onSelected }) {
   const [waitingTime, setWaitingTime] = useState(0);
-
   useEffect(() => {
     if (order.status !== "READY") {
       setWaitingTime(0);
@@ -65,14 +64,13 @@ export default function OrderCard({ order, onSelected }) {
       <div className={styles.items}>
 
         {order.data.map((item, index) => (
-
           <div key={index} className={styles.item}>
             <div style={{flex:1}}>
               <div className={styles.name}>
                 {item?.data[0]?.name} - {item.title}
               </div>
               <p className={styles.description}>
-                {item?.data[0]?.description}
+                {item?.data[0]?.price}{order?.currency ? ` ${order.currency}` : ''}
               </p>
               {/* <div className={styles.model3d} style={{width:"100%",height:"80px", display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <div style={{width:"50%", height:"100%"}}>
@@ -95,6 +93,27 @@ export default function OrderCard({ order, onSelected }) {
                   ))}
                 </div>
               }
+              {item?.extras && item?.extras?.length > 0 && (
+                <div className={styles.extras}>
+                  <h4>Extras:</h4>
+                  {item?.extras.map((extra, index) => (
+                    <div key={index} className={styles.extra}>
+                      <p>{extra?.category}</p>
+                      <div>
+                        <div className={styles.name}>{extra.name}</div>
+                        <div className={styles.meta}>
+                          {extra.category && <span className={styles.category}>{extra.category}</span>}
+                          {typeof extra.price !== "undefined" && (
+                            <span className={styles.price}>{extra.price}{order?.currency ? ` ${order.currency}` : ''}</span>
+                          )}
+                          {extra.description && <span className={styles.description}>{extra.description}</span>}
+                        </div>
+                      </div>
+                      <div className={styles.qty}>x{extra.quantity}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className={styles.qty}>
               x{item.quantity}
@@ -107,7 +126,7 @@ export default function OrderCard({ order, onSelected }) {
           </div>
         )}
       </div>
-      {/* extras */}
+
 
     </div>
   );
