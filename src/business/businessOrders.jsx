@@ -1,10 +1,13 @@
 import styles from "../styles/BusinessOrder.module.css";
 import { useContext, useEffect, useState, useRef } from "react";
+import { UserContext } from "../ApiContext/userContext.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import httpMessage from "../http/httpMessage";
 import { SocketContext } from "../ApiContext/socketContext";
-import { UserContext } from "../ApiContext/userContext";
 import { getFeatureFlags } from "../featureFlags/featureFlags.js";
 import Socket from "../model/socket";
+import http_order from "../http/http_order";
 
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
@@ -12,141 +15,10 @@ import FlashMessage from "../components/flashMessage";
 import OrdersGrid from "../components_business/ordersGrid";
 
 
-const ORDERS = [
-  {
-    id: 6,
-    businessId: 21,
-    data: [
-      {
-        data: [
-          {
-            "name": "Large",
-            "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
-            "price": "13.99",
-            "quantity": "1"
-          }
-        ],
-        model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
-        title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
-        extras: {
-          title: "Vegetable Pad Thai",
-          description: "",
-          data: null
-        },
-        images: [
-          "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
-        ],
-        quantity: 1,
-        description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
-        ingredients: []
-      }
-    ],
-    status: 'PENDING',
-    createdAt: "2026-02-28T01:02:29.000Z",
-    updatedAt: "2026-02-28T01:02:29.000Z"
-  },
-  {
-    id: 6,
-    businessId: 21,
-    data: [
-      {
-        data: [
-          {
-            "name": "Small",
-            "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
-            "price": "13.99",
-            "quantity": "1"
-          }
-        ],
-        model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
-        title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
-        extras: {
-          title: "",
-          description: "",
-          data: null
-        },
-        images: [
-          "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
-        ],
-        quantity: 1,
-        description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
-        ingredients: []
-      }
-    ],
-    status: 'PENDING',
-    createdAt: "2026-02-28T01:02:29.000Z",
-    updatedAt: "2026-02-28T01:02:29.000Z"
-  },
-  {
-    id: 6,
-    businessId: 21,
-    data: [
-      {
-        data: [
-          {
-            "name": "Medium",
-            "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
-            "price": "13.99",
-            "quantity": "1"
-          }
-        ],
-        model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
-        title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
-        extras: {
-          title: "",
-          description: "",
-          data: null
-        },
-        images: [
-          "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
-        ],
-        quantity: 1,
-        description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
-        ingredients: []
-      }
-    ],
-    status: 'PENDING',
-    createdAt: "2026-02-28T01:02:29.000Z",
-    updatedAt: "2026-02-28T01:02:29.000Z"
-  }
-]
-
-const newOrder = {
-  id: 6,
-  businessId: 21,
-  data: [
-    {
-      data: [
-        {
-          "name": "Vegetable Pad Thai",
-          "description": "Stir-fried rice noodles with a medley of fresh vegetables and tofu in a tangy tamarind sauce, topped with crushed peanuts and lime wedges.",
-          "price": "13.99",
-          "quantity": "1"
-        }
-      ],
-      model: 'https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMEATLOAF_WITH_FRIED.glb_032d7ef8-a116-4ecf-8f34-c32b4b870dcb.glb?alt=media&token=0b5a73c0-ba11-4ee3-a42d-59da1a72a0c5',
-      title: 'MEATLOAF WITH FRIED EGG &\nFRIED POTATOES',
-      extras: {
-        title: "",
-        description: "",
-        data: null
-      },
-      images: [
-        "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"
-      ],
-      quantity: 1,
-      description: 'Fleischkäse mit Spiegelei & Bratkartoffeln',
-      ingredients: []
-    }
-  ],
-  status: 'PENDING',
-  createdAt: "2026-02-28T01:02:29.000Z",
-  updatedAt: "2026-02-28T01:02:29.000Z"
-}
-
 export default function BusinessOrders() {
   const navigation = useNavigate();
   const { socketRef, connected, orderFeatureEnabled } = useContext(SocketContext);
+  const { publicUser } = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const connectingRef = useRef(false);
   const flagRef = useRef(false);
@@ -160,6 +32,7 @@ export default function BusinessOrders() {
   useEffect(() => {
     if(flagRef.current) return;
     flagRef.current = true;
+    fetchTodayOrders();
     getFlag(); 
   }, []); 
 
@@ -187,14 +60,24 @@ export default function BusinessOrders() {
     };
   }, [connected, orderFeatureEnabled]); // <- key change
   
-
-  
-  const handleEnableOrderOnline = () => {
-    // TODO: Implement socket enable logic
-    console.log("Enable order online feature clicked");
-    navigation("/business/setting");
-  }; 
-
+  async function fetchTodayOrders() {
+    try {
+      console.log(publicUser);
+      setLoading(true);
+      const res = await http_order.get(`/business/${publicUser?.business?.id}/orders/status/PENDING/today`);
+      if(res.data.success){
+        console.log("Fetched today's orders successfully:", res.data.data);
+        setOrders(res.data.data);
+      }
+    }
+    catch (err) {
+      setMessage({ visible: true, type: "error", msg: "Failed to fetch today's orders. Please try again." });
+      console.error("Error fetching today's orders:", err);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
   const getFlag = async() => {
     const flag = await getFeatureFlags("ORDER_FEATURE").catch((err) => {
@@ -203,6 +86,12 @@ export default function BusinessOrders() {
     setOrderFlag(flag);
     return flag;
   }
+
+  const handleEnableOrderOnline = () => {
+    // TODO: Implement socket enable logic
+    console.log("Enable order online feature clicked");
+    navigation("/business/setting");
+  }; 
 
   const handleReconnect = async() => {
     try {
@@ -221,6 +110,37 @@ export default function BusinessOrders() {
     }
   };
 
+  const handleUpdateStatus = async (orderId, status) => {
+      try {
+          const token = sessionStorage.getItem("token");
+          if(!token) {
+              console.error("No token available for updating order status");
+              return false;
+          }
+          setLoading(true);
+          const res = await http_order.put(`/order/${orderId}/status`,{status: status});
+          if(res.data.success){
+              console.log("update order status successfully:", res.data.data);
+              if(status === "COMPLETED"){
+                setOrders((prev) =>
+                  prev.filter((order) => order.id !== orderId)
+                );
+                return true;
+              }
+              setOrders((prev) =>
+                prev.map((order) =>
+                  order.id === orderId ? { ...order, status: status } : order
+              )
+          );
+          }
+      } catch (err) {
+          setMessage({visible: true, msg: httpMessage(err), type: "error"});
+          console.error("Error fetching order details:", err);
+      }
+      finally {
+          setLoading(false);
+      }
+  }
 
   return (
     <div className={styles.shell}>
@@ -260,7 +180,8 @@ export default function BusinessOrders() {
           </div>
         )}
         <p>Socket Status: {connected ? "Connected" : "Disconnected"}</p>
-        <OrdersGrid orders={orders} />
+        <h3>Total Orders: {orders.length}</h3>
+        <OrdersGrid orders={orders} onUpdateStatus={handleUpdateStatus} />
       </main>
 
       <LoadingModal open={loading} title="Reconnecting…" subtitle="Attempting to reconnect to the server." />

@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import axios from "axios";
 import httpMessage from "../http/httpMessage";
+import { data } from "react-router-dom";
 const SOCKET_SERVER = import.meta.env.VITE_SOCKET_SERVER;
 const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 const publicCode = new URLSearchParams(window.location.search).get("public");
@@ -72,13 +73,13 @@ function generateRandomString(length = 6) {
   return result;
 }
 
-async function genGuestToken() {
+export async function genGuestToken() {
     try {
         const res = await axios.get(
           `${ORDER_SERVER}/gen-guest-token/${publicCode ?? generateRandomString()}`
         );
         if(res.data?.success){
-            sessionStorage.setItem("socket_token", res.data.token);
+            localStorage.setItem("token", res.data.token); // Store in localStorage for persistence
             return res.data.token;
         }
     } catch (err) {
@@ -105,7 +106,7 @@ export const sendOrder = async (order) => {
     });
     if(res.data.success){
       console.log("Order sent successfully:");
-      return {success: true, message: res.data.message || "Order placed successfully"};
+      return {success: true, message: res.data.message || "Order placed successfully", data: res.data.data || null};
     }
   } catch (err) {
     console.error("Error sending order:", err);

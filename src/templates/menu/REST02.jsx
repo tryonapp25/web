@@ -33,7 +33,7 @@ function Item({ data, item, variant = "normal", onClick }) {
         <div className={styles.priceRow}>
           <div className={styles.dots} />
           <div className={styles.price}>
-            {price}{data?.currency} <span className={styles.thb}>THB.</span>
+            {price}<span className={styles.thb}>{data?.currency}</span>
           </div>
         </div>
       </div>

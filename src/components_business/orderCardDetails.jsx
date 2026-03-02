@@ -1,32 +1,12 @@
 import styles from "../styles/OrderCardDetails.module.css";
 import Model3D from "../components/3dModel";
+import { getStatusColor } from "./index";
 
 const config = {
   camera_orbit: "auto 70deg",
 }
 
 export default function OrderCardDetails({ order }) {
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "#FFA500"; // Orange for pending
-      case "CONFIRMED":
-        return "#008000"; // Green for completed
-      case "REJECTED":
-        return "#FF0000";
-      case "PREPARING":
-        return "#0000FF";
-      case "READY":
-        return "#FFFF00";
-      case "COMPLETED":
-        return "#008000";
-      case "CANCELLED":
-        return "#FF0000";
-      default:
-        return "#808080"; // Gray for other statuses
-    }
-  };
 
 
   return (

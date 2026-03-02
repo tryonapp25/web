@@ -10,6 +10,7 @@
 }
 
 .modal {
+  position: relative;
   width: min(920px, 100%);
   max-height: 85vh;
   background: #fff;
@@ -17,6 +18,7 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   animation: pop 140ms ease-out;
+  padding-bottom: 70px;
 }
 
 @keyframes pop {
@@ -70,4 +72,53 @@
 .empty {
   padding: 24px;
   color: #666;
+}
+
+.actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 14px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  border-radius: 0 0 14px 14px;
+}
+
+.readyBtn {
+  flex: 1;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.readyBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.confirmedBtn {
+  flex: 1;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  letter-spacing: 0.5px;
+}
+
+.confirmedBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
