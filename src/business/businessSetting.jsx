@@ -4,7 +4,7 @@ import styles from "../styles/BusinessSetting.module.css";
 import { UserContext } from "../ApiContext/userContext";
 import { SocketContext } from "../ApiContext/socketContext";
 import Sidebar from "../components_business/businessSidebar";
-import FlashMessage from "../components/FlashMessage";
+import FlashMessage from "../components/flashMessage"
 
 // ---------- helpers ----------
 function normalizeFeatures(input) {
