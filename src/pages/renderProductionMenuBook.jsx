@@ -10,6 +10,7 @@ import { sendOrder } from "../utils/socketio";
 
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
+import CloseBubble from "../components/closeBubble";
 import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
 import LoadingModal from "../components/loading";
@@ -217,6 +218,7 @@ export default function RenderProductionMenuBook() {
       />
 
       {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && !isBusinessOpen && <CloseBubble/>}
     </div>
   );
 }
