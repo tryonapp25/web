@@ -2,18 +2,13 @@ import axios from "axios";
 
 const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 
-const http_order = axios.create({
+const http_receipt = axios.create({
   baseURL: ORDER_SERVER,
 });
 
-http_order.interceptors.request.use(
+http_receipt.interceptors.request.use(
   (config) => {
-    let token;
-    // First check sessionStorage
-    token = sessionStorage.getItem("token");
-    if(token){
-      localStorage.setItem("token", token); // Sync token to localStorage
-    }
+    const token  = sessionStorage.getItem("receiptToken");
     if(!token){
       token = localStorage.getItem("token"); // Check localStorage if not in sessionStorage
     }
@@ -28,4 +23,4 @@ http_order.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default http_order;
+export default http_receipt;
