@@ -9,7 +9,7 @@ import {
   StickyNote,
   Tag,
   Receipt,
-  Smile,
+  Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -102,7 +102,7 @@ export default function BusinessSidebar() {
           }
           aria-label="Profil"
         >
-          <Smile
+          <Settings
             className={styles.icon}
             size={22}
             strokeWidth={2}
