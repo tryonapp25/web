@@ -105,9 +105,9 @@ export default function RenderProductionMenuBook() {
     if(!send?.success) {
       setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
     }
-    
     setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
     navigate(`${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`);
+    Clear();
   };
 
   const Clear = () => {

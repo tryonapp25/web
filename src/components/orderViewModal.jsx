@@ -200,7 +200,7 @@ export default function OrderViewModal({
               <span className={styles.summaryLabel}>Total Items:</span>
               <span className={styles.summaryValue}>{totalItems}</span>
             </div>
-            <p className={styles.totalPriceLabel}>Total Price: {totalPrice} {data?.currency}</p>
+            <p className={styles.totalPriceLabel}>Total Price: {totalPrice.toFixed(2)} {data?.currency}</p>
             <button className={styles.checkoutBtn} onClick={onCheckout}>
               Pay
             </button>

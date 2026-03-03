@@ -11,9 +11,6 @@ export default function BusinessPage() {
   const { publicUser } = useContext(UserContext);
 
   useEffect(() => {
-    /* setTimeout(() => {
-      navigate("/business/orders");
-    }, 700) */;
     if(publicUser?.business || publicUser?.isCustomer === true) {
       const isCompleted = isCompletedSetup(publicUser?.business);
       if(isCompleted) {

@@ -4,7 +4,7 @@ import axios from "axios";
 import httpMessage from "../http/httpMessage";
 import { useEffect, useState } from "react";
 import styles from "../styles/Receipt.module.css";
-import http_order from "../http/http_order";
+import http_receipt from "../http/http_receipt";
 
 import FlashMessage from "../components/flashMessage";
 
@@ -31,7 +31,7 @@ export default function Receipt() {
     const getOrderDetails = async (orderId) => {
         try {
             setLoading(true);
-            const res = await http_order.get(`/order/${orderId}`);
+            const res = await http_receipt.get(`/order`);
             if(res.data.success){
                 console.log("get order details successfully:");
                 setOrder(res.data.data);

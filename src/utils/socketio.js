@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import axios from "axios";
 import httpMessage from "../http/httpMessage";
-import { data } from "react-router-dom";
+
 const SOCKET_SERVER = import.meta.env.VITE_SOCKET_SERVER;
 const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 const publicCode = new URLSearchParams(window.location.search).get("public");
@@ -106,7 +106,8 @@ export const sendOrder = async (order) => {
     });
     if(res.data.success){
       console.log("Order sent successfully:");
-      return {success: true, message: res.data.message || "Order placed successfully", data: res.data.data || null};
+      sessionStorage.setItem("receiptToken", res.data.receiptToken);
+      return {success: true, message: res.data.message || "Order placed successfully", data: res.data.data || null, receiptToken: res.data.receiptToken || null};
     }
   } catch (err) {
     console.error("Error sending order:", err);
