@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import styles from '../styles/FeatureFlags.module.css';
 import http from '../http/http';
 import httpMessage from '../http/httpMessage';
+import FlashMessage from "../components/flashMessage";
 
 function Features() {
   const [flags, setFlags] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState({visible: false, msg:"", type: ''})
 
   useEffect(() => {
     const fetchFlags = async () => {
@@ -48,7 +50,7 @@ function Features() {
         throw new Error('create-failed')
       }
     } catch (err) {
-      alert(httpMessage(err))
+      setMessage({visible: true, msg: httpMessage(err), type: 'error'})
     } finally {
       setCreating(false)
     }
@@ -64,10 +66,10 @@ function Features() {
     try {
       const res = await http.put(`/admin/featureFlags`, flag);
       if(res.data.success) {
-        alert('Feature flag updated successfully');
+        setMessage({visible: true, msg: 'Feature flag updated successfully', type: 'success'})
       }
     } catch (e) {
-      alert(httpMessage(e))
+      setMessage({visible: true, msg: httpMessage(e), type: 'error'})
       // Revert back
       setFlags(prev =>
         prev.map(f =>
@@ -171,6 +173,14 @@ function Features() {
           </table>
         </div>
       </div>
+
+
+      <FlashMessage
+        show={message.visible}
+        type={message.type}
+        message={message.msg}
+        onClose={() => setMessage({visible: false, msg: '', type: ''})}
+      />
     </div>
   )
 }

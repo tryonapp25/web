@@ -18,36 +18,23 @@ export default function ProductionProtection() {
     if (startupRef.current) return;
     startupRef.current = true;
 
-    orderFeatureEnabledChecker().then((isEnabled) => {
-      setOrderFeatureEnabled(isEnabled);
-      console.log("Order feature enabled:", isEnabled);
-    }).catch((error) => {
-      console.error("Error checking order feature status:", error);
-    });
-
-    checkFeatureFlag().then((isEnabled) => {
-      console.log("Feature flag check completed. ORDER_FEATURE enabled:", isEnabled);
-    }).catch((error) => {
-      console.error("Error checking feature flag:", error);
-    });
+    orderFeatureEnabledChecker();
   }, [location.pathname]);
 
   const orderFeatureEnabledChecker = async () => {
       try {
           const response = await http.get(`/business/feature/ORDER_ONLINE/publicCode/${publicCode}`);
-          return response.data.data || false;
+          const flag = await checkFeatureFlag();
+          if(response?.data?.data && flag){
+            setOrderFeatureEnabled(true);
+          } 
       } catch (error) {        console.error("Error fetching business order online feature status:", error);
           return false; // Default to false if there's an error
       }
   }
 
   const checkFeatureFlag = async () => {
-    const isEnabled = await getFeatureFlags("ORDER_FEATURE").catch((error) => {      
-      console.error("Error fetching feature flags:", error);
-      setOrderFeatureEnabled(false); // Default to false on error
-      return false;
-    });
-    setOrderFeatureEnabled(isEnabled);
+    const isEnabled = await getFeatureFlags("ORDER_FEATURE")
     return isEnabled;
   }
 
