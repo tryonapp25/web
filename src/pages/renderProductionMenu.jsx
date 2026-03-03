@@ -197,7 +197,8 @@ export default function RenderProductionMenu() {
   return (
     <div>
       {wrappedContent}
-      {orderFeatureEnabled && isBusinessOpen ? <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} /> : <CloseBubble />}
+      {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && !isBusinessOpen && <CloseBubble/>}
 
       {/* Render modal ONCE */}
       <ModelShowcase
