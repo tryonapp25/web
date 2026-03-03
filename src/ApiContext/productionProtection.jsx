@@ -15,7 +15,6 @@ export default function ProductionProtection() {
   const { setOrderFeatureEnabled } = useContext(SocketContext);
 
   useEffect(() => {
-    // If already connected, or we already started once, do nothing.
     if (startupRef.current) return;
     startupRef.current = true;
 

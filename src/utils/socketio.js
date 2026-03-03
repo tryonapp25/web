@@ -106,7 +106,6 @@ export const sendOrder = async (order) => {
     });
     if(res.data.success){
       console.log("Order sent successfully:");
-      sessionStorage.removeItem("receiptToken");
       sessionStorage.setItem("receiptToken", res.data.receiptToken);
       return {success: true, message: res.data.message || "Order placed successfully", data: res.data.data || null, receiptToken: res.data.receiptToken || null};
     }
