@@ -1,0 +1,52 @@
+/* =========================
+   Close Bubble Button
+========================= */
+.closeBubble {
+  position: fixed;
+  bottom: 14px;
+  right: 0;
+
+  width: 100px;
+  height: 100px;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  z-index: 9990;
+
+  /* Bounce animation */
+  animation: bounce 2s ease-in-out infinite;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cartBubble:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 12px 32px rgba(59, 130, 246, 0.45),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+  animation-play-state: paused;
+}
+
+.cartBubble:active {
+  transform: scale(0.95);
+}
+
+/* =========================
+   Bounce Animation
+========================= */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+

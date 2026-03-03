@@ -12,6 +12,7 @@ import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import ModelShowcase from "../components/modelShowcase";
 import CartBubble from "../components/cartBubble";
+import CloseBubble from "../components/closeBubble";
 import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
@@ -196,7 +197,7 @@ export default function RenderProductionMenu() {
   return (
     <div>
       {wrappedContent}
-      {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && isBusinessOpen ? <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} /> : <CloseBubble />}
 
       {/* Render modal ONCE */}
       <ModelShowcase
