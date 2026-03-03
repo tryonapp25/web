@@ -8,7 +8,7 @@ const http_receipt = axios.create({
 
 http_receipt.interceptors.request.use(
   (config) => {
-    const token  = sessionStorage.getItem("receiptToken");
+    const token  = localStorage.getItem("receiptToken");
     if (token && token !== "null" && token !== "undefined") {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
