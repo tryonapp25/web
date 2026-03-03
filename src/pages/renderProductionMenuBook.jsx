@@ -1,6 +1,7 @@
 import { useMemo, useState, Suspense, lazy, useEffect, useContext, useRef } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import http from "../http/http";
+import http_order from "../http/http_order";
 import httpMessage from "../http/httpMessage";
 import defaultMessage from "../utils/defaultMessage";
 import useIsMobile from "../utils/deviceCheck";
@@ -36,6 +37,8 @@ export default function RenderProductionMenuBook() {
   const menubookCode = searchParams.get("code");
   const publicCode = searchParams.get("public");
 
+  const [isBusinessOpen, setIsBusinessOpen] = useState(true);
+
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -62,10 +65,23 @@ export default function RenderProductionMenuBook() {
         `/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}/public/${publicCode}`
       );
       if (response?.data?.success) setData(response.data.data);
+      const isOpen = await checkOpenHours(response.data.data.uid);
+      setIsBusinessOpen(isOpen);
     } catch (error) {
       setMessage(httpMessage(error));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkOpenHours = async (uid) => {
+    try {
+      const res = await http_order.get(`/business/${uid}/open-hours`);
+      if(res.data?.success) {
+        return res.data.data;
+      }
+    } catch (err) {
+      return false;
     }
   };
 
@@ -200,7 +216,7 @@ export default function RenderProductionMenuBook() {
         duration={3000}
       />
 
-      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
     </div>
   );
 }

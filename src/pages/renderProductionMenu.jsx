@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
+import http_order from "../http/http_order";
 import useIsMobile from "../utils/deviceCheck";
 
 import { SocketContext } from "../ApiContext/socketContext";
@@ -35,6 +36,8 @@ export default function RenderProductionMenu() {
   const code = searchParams.get("code");
   const publicCode = searchParams.get("public");
 
+  const [isBusinessOpen, setIsBusinessOpen] = useState(true);
+
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchFailed, setFetchFailed] = useState(false);
@@ -61,6 +64,9 @@ export default function RenderProductionMenu() {
       const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
       if (res.data?.success && res.data?.data) {
         setTemplate(res.data.data);
+        // chekc business is open //
+        const isOpen = await checkOpenHours(res.data.data.uid);
+        setIsBusinessOpen(isOpen);
       } else {
         setTemplate(null);
         setFetchFailed(true);
@@ -70,6 +76,17 @@ export default function RenderProductionMenu() {
       setFetchFailed(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkOpenHours = async (uid) => {
+    try {
+      const res = await http_order.get(`/business/${uid}/open-hours`);
+      if(res.data?.success) {
+        return res.data.data;
+      }
+    } catch (err) {
+      return false;
     }
   };
 
@@ -179,7 +196,7 @@ export default function RenderProductionMenu() {
   return (
     <div>
       {wrappedContent}
-      {orderFeatureEnabled && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
 
       {/* Render modal ONCE */}
       <ModelShowcase
