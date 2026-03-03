@@ -9,8 +9,6 @@ export default function PagesRows({
   onNext,
   showingItems = 0,
 }) {
-  const startItem = (currentPage - 1) * pageSize + 1;
-  const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
     <div style={styles.wrapper}>
