@@ -19,6 +19,7 @@ import NoFoundTemplate from "../components/noFoundTemplate";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 
 import { SocketContext } from "../ApiContext/socketContext";
+import { BusinessContext } from "../ApiContext/businessContext";
 
 // load templates from templates folder (including subfolders) and menuBook wrappers
 const templateModules = import.meta.glob("../templates/**/*.jsx");
@@ -31,14 +32,13 @@ export default function RenderProductionMenuBook() {
   // guards
   const fetchedRef = useRef(false);
   const { orderFeatureEnabled } = useContext(SocketContext);
+  const { isBusinessOpen } = useContext(BusinessContext);
   
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
   const templatecode = searchParams.get("template");
   const menubookCode = searchParams.get("code");
   const publicCode = searchParams.get("public");
-
-  const [isBusinessOpen, setIsBusinessOpen] = useState(true);
 
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -66,23 +66,10 @@ export default function RenderProductionMenuBook() {
         `/${type}/menu-book/template/${templatecode}/menubook/${menubookCode}/id/${id}/public/${publicCode}`
       );
       if (response?.data?.success) setData(response.data.data);
-      const isOpen = await checkOpenHours(response.data.data.uid);
-      setIsBusinessOpen(isOpen);
     } catch (error) {
       setMessage(httpMessage(error));
     } finally {
       setLoading(false);
-    }
-  };
-
-  const checkOpenHours = async (uid) => {
-    try {
-      const res = await http_order.get(`/business/${uid}/open-hours`);
-      if(res.data?.success) {
-        return res.data.data;
-      }
-    } catch (err) {
-      return false;
     }
   };
 
@@ -123,7 +110,8 @@ export default function RenderProductionMenuBook() {
       setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." });
     }
     setMessage({visible: true, type: "success", msg: "Order placed successfully!" });
-    navigate(`${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`);
+    const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`;
+    window.open(url, "_blank", "noopener,noreferrer");
     Clear();
   };
 
@@ -218,7 +206,7 @@ export default function RenderProductionMenuBook() {
       />
 
       {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
-      {orderFeatureEnabled && !isBusinessOpen && <CloseBubble/>}
+      {!isBusinessOpen && orderFeatureEnabled && <CloseBubble/>}
     </div>
   );
 }
