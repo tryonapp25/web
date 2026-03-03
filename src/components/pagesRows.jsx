@@ -7,9 +7,8 @@ export default function PagesRows({
   totalItems,
   onPrev,
   onNext,
+  showingItems = 0,
 }) {
-  const startItem = (currentPage - 1) * pageSize + 1;
-  const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
     <div style={styles.wrapper}>
@@ -42,7 +41,7 @@ export default function PagesRows({
       </div>
 
       <div style={styles.bottomRow}>
-        Showing {startItem}-{endItem} of {totalItems} products
+        Showing {showingItems} of {totalItems} products
       </div>
     </div>
   );
