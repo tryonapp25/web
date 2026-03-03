@@ -1,7 +1,8 @@
 /* ===== SIDEBAR ROOT ===== */
 .sidebar {
   width: 272px;
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   position: sticky;
   top: 0;
   display: flex;

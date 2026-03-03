@@ -105,6 +105,8 @@ export default function MenuPage() {
     try{
       setLoading(true);
       setTemplates([]);
+      setTotalItems(0);
+      setTotalPages(1);
       const res = await http.get(`/poster/demo/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
@@ -125,6 +127,8 @@ export default function MenuPage() {
     try{
       setLoading(true);
       setTemplates([]);
+      setTotalItems(0);
+      setTotalPages(1);
       const res = await http.get(`/demo/menu-book/templates`);
       if(res.data.success){
         setTemplates(res.data.data);
@@ -210,6 +214,7 @@ export default function MenuPage() {
               totalItems={totalItems}
               onPrev={() => handlePrevPage()}
               onNext={() => handleNextPage()}
+              showingItems={templates.length}
             />
           )}
         </main>
