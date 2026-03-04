@@ -50,12 +50,12 @@ export default function Topbar() {
 
       {/* Right actions */}
       <div className={styles.actions}>
-        <button className={styles.subscribeBtn} onClick={() => navigate("/payment")}>
-          Pricing
+        <button className={styles.subscribeBtn} onClick={() => navigate("/business/payment")}>
+          POS Pricing
         </button>
 
         {/* <button className={styles.link}>Business</button> */}
-        <button className={styles.tokenBtn}>
+        <button className={styles.tokenBtn} onClick={() => navigate("/payment")}>
           <span className={styles.tokenIcon} aria-hidden>🪙</span>
           <span className={styles.tokenLabel}>Tokens</span>
           <span className={styles.tokenValue}>{publicUser?.token?.tokens ?? 0}</span>

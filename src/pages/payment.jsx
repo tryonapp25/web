@@ -133,6 +133,7 @@ export default function Payment() {
   useEffect(() => {
     const fetchPricing = async () => {
       try {
+        setLoading(true);
         const res = await http.get(`/token-pricing`);
         if (res.data?.success) {
           const data = res.data.data || [];
@@ -144,6 +145,9 @@ export default function Payment() {
       } catch (err) {
         console.error(err);
         alert("Failed to load pricing.");
+      }
+      finally {
+        setLoading(false);
       }
     };
 

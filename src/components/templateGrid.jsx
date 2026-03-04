@@ -10,6 +10,8 @@ import { UserContext } from "../ApiContext/userContext";
 import QrCodeModal from "./QrCodeModal";
 import LoadingModal from "../components/loading";
 
+import {FreeBadge, PayBadge} from "./priceBadge";
+
 const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_PUBLIC_TEMPLATE_URL;
 
 const defaultMessage = { visible: false, type: "", msg: "" };
@@ -118,7 +120,9 @@ export default function TemplateGrid({ templates = [] }) {
           return (
             <div key={item?.id ?? index} className={styles.card}>
               <div className={styles.badgeWrap}>
-                {item?.type === "production" && <StatusBadge item={item} />}
+                {item?.type === "production" ? <StatusBadge item={item} /> : (
+                  item?.price === 0 ? <FreeBadge /> : <PayBadge price={item?.price} />
+                )}
               </div>
           
               <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
