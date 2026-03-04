@@ -11,7 +11,7 @@
   --muted: rgba(255, 255, 255, 0.55);
   --faint: rgba(255, 255, 255, 0.40);
   --line: rgba(255, 255, 255, 0.08);
-  --icon: rgba(255, 255, 255, 0.60);
+  --icon: rgba(255, 255, 255, 0.92);
   --input-bg: rgba(255, 255, 255, 0.05);
   --input-border: rgba(255, 255, 255, 0.12);
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
@@ -55,48 +55,48 @@
 }
 
 [data-theme="light"] {
-  --bg: #f8fafc;
-  --bg-gradient: linear-gradient(180deg, #ffffff, #f1f5f9);
+  --bg: #f1f5f9;
+  --bg-gradient: linear-gradient(180deg, #f8fafc, #e2e8f0);
   --card: #ffffff;
-  --card-border: #e2e8f0;
+  --card-border: #cbd5e1;
   --card-solid: #ffffff;
   --text: #0f172a;
-  --text-secondary: #334155;
-  --muted: #64748b;
-  --faint: #94a3b8;
-  --line: #e2e8f0;
-  --icon: #475569;
+  --text-secondary: #1e293b;
+  --muted: #475569;
+  --faint: #64748b;
+  --line: #cbd5e1;
+  --icon: #334155;
   --input-bg: #ffffff;
-  --input-border: #cbd5e1;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --input-border: #94a3b8;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 20px -2px rgba(0, 0, 0, 0.1);
   --primary-btn-bg: #0f172a;
   --primary-btn-text: #ffffff;
-  --accent: #6366f1;
-  --accent-soft: rgba(99, 102, 241, 0.08);
+  --accent: #4f46e5;
+  --accent-soft: rgba(79, 70, 229, 0.12);
   
   /* Additional utility tokens for light mode */
   --panel: #ffffff;
-  --panel2: #f8fafc;
-  --border: #e2e8f0;
-  --border2: #cbd5e1;
-  --accent2: #0ea5e9;
-  --green: #10b981;
-  --red: #ef4444;
-  --orange: #f59e0b;
+  --panel2: #f1f5f9;
+  --border: #cbd5e1;
+  --border2: #94a3b8;
+  --accent2: #0284c7;
+  --green: #059669;
+  --red: #dc2626;
+  --orange: #d97706;
   --inset: inset 0 1px 0 rgba(255, 255, 255, 1);
-  --focus: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  --focus: 0 0 0 3px rgba(79, 70, 229, 0.25);
   
   /* Card variants for light mode */
   --card-hover: #f8fafc;
-  --card-active: #f1f5f9;
+  --card-active: #e2e8f0;
   --sidebar-bg: #ffffff;
-  --sidebar-border: #e2e8f0;
-  --header-bg: rgba(255, 255, 255, 0.85);
-  --badge-bg: #f1f5f9;
-  --badge-text: #334155;
-  --success-bg: #ecfdf5;
-  --success-text: #065f46;
-  --warning-bg: #fffbeb;
+  --sidebar-border: #cbd5e1;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --badge-bg: #e2e8f0;
+  --badge-text: #1e293b;
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+  --warning-bg: #fef3c7;
   --warning-text: #92400e;
   --error-bg: #fef2f2;
   --error-text: #991b1b;

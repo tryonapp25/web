@@ -196,3 +196,42 @@
     border-radius: 18px;
   }
 }
+
+/* ===== LIGHT MODE OVERRIDES ===== */
+[data-theme="light"] .card {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .badge[data-public="true"] {
+  background: rgba(16, 185, 129, 0.15);
+  color: #065f46;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .badge[data-public="false"] {
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+[data-theme="light"] .pdfWrap {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+[data-theme="light"] .notFoundWrap {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+}
+
+[data-theme="light"] .notFoundBtn {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+}
+
+[data-theme="light"] .notFoundBtn:hover {
+  background: var(--card-hover);
+}

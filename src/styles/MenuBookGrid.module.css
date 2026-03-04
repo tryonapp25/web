@@ -363,3 +363,77 @@
 .emptyState:hover .addPageText {
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* ===== LIGHT MODE OVERRIDES ===== */
+[data-theme="light"] .page {
+  background: var(--bg);
+}
+
+[data-theme="light"] .card {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .meta {
+  border-top: 1px solid var(--line);
+  background: linear-gradient(0deg, var(--card-hover), transparent);
+}
+
+[data-theme="light"] .badge[data-public="true"] {
+  background: rgba(16, 185, 129, 0.15);
+  color: #065f46;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .badge[data-public="false"] {
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+[data-theme="light"] .pdfWrap {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+[data-theme="light"] .notFoundWrap {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+}
+
+[data-theme="light"] .notFoundCard {
+  background: var(--card);
+}
+
+[data-theme="light"] .notFoundBtn {
+  border: 1px solid var(--card-border);
+  background: var(--primary-btn-bg);
+  color: var(--primary-btn-text);
+}
+
+[data-theme="light"] .emptyState {
+  background: var(--card-hover);
+}
+
+[data-theme="light"] .emptyState:hover {
+  background: var(--card-active);
+}
+
+[data-theme="light"] .addPageIcon {
+  border-color: var(--border2);
+  color: var(--muted);
+}
+
+[data-theme="light"] .emptyState:hover .addPageIcon {
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .addPageText {
+  color: var(--muted);
+}
+
+[data-theme="light"] .emptyState:hover .addPageText {
+  color: var(--text-secondary);
+}
