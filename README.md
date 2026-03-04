@@ -23,3 +23,23 @@ Command	Loaded env
 GitHub Pages deploy	.env.production
 
 - npm run deploy
+
+Locize (managed translation)
+
+This project supports optionally loading translations from Locize. To enable:
+
+1. Install the Locize backend dependency:
+
+```bash
+npm install i18next-locize-backend
+```
+
+2. Set Vite env vars in `.env` or your hosting environment:
+
+- `VITE_LOCIZE_PROJECTID` — your Locize project id (required to enable backend)
+- `VITE_LOCIZE_APIKEY` — write API key (optional; required to push missing keys)
+- `VITE_LOCIZE_REFERENCE_LNG` — reference language (default: `en`)
+- `VITE_LOCIZE_VERSION` — project version (default: `latest`)
+
+With those set the app will load translations from Locize at runtime and
+fall back to local `src/i18n/locales/*.json` files when keys are missing.
