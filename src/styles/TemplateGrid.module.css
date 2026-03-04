@@ -1,40 +1,13 @@
 /* TemplateGrid.module.css */
 
-:root{
-  /* Dark theme */
-  --bg: #0B0F19;
-  --bg-2: #0F172A;
-
-  --card: rgba(255, 255, 255, 0.06);
-  --card-2: rgba(255, 255, 255, 0.08);
-
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.70);
-  --muted-2: rgba(255, 255, 255, 0.55);
-
-  --line: rgba(255, 255, 255, 0.12);
-
-  --purple: #8B7CFF;
-  --purple-2: #6D5EF6;
-
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
-
-  --radius: 18px;
-  --radius-lg: 26px;
-  --max: 1120px;
-}
-
 /* ===== PAGE ===== */
 .page {
   min-height: 100vh;
   padding: clamp(16px, 2.2vw, 32px) clamp(12px, 2vw, 20px);
   color: var(--text);
-  background:
-    radial-gradient(900px 500px at 15% 20%, rgba(139, 124, 255, 0.18), transparent 55%),
-    radial-gradient(800px 460px at 90% 10%, rgba(0, 209, 178, 0.14), transparent 55%),
-    linear-gradient(180deg, var(--bg), var(--bg-2));
+  background: var(--bg);
   overflow-x: hidden; /* avoid horizontal scroll */
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ===== GRID =====
@@ -76,8 +49,8 @@
   overflow: hidden;            /* ✅ no half + no scroll */
 
   border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
   box-shadow: var(--shadow);
   position: relative;
 }
@@ -222,4 +195,43 @@
   .card{
     border-radius: 18px;
   }
+}
+
+/* ===== LIGHT MODE OVERRIDES ===== */
+[data-theme="light"] .card {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .badge[data-public="true"] {
+  background: rgba(16, 185, 129, 0.15);
+  color: #065f46;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .badge[data-public="false"] {
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+[data-theme="light"] .pdfWrap {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+[data-theme="light"] .notFoundWrap {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+}
+
+[data-theme="light"] .notFoundBtn {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+}
+
+[data-theme="light"] .notFoundBtn:hover {
+  background: var(--card-hover);
 }

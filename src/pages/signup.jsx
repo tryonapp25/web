@@ -3,10 +3,12 @@ import styles from "../styles/Signup.module.css";
 import http from "../http/http";
 import { UserContext } from "../ApiContext/userContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Signup() {
   const navigate = useNavigate();
   const { setPublicUser } = useContext(UserContext);
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
@@ -18,11 +20,11 @@ export default function Signup() {
     e.preventDefault();
 
     if (password !== confirmPass) {
-      alert("Passwords do not match");
+      alert(t('auth.passwordMismatch'));
       return;
     }
     if (!agree) {
-      alert("Please agree to Terms & Privacy Policy");
+      alert(t('auth.agreeRequired'));
       return;
     }
 
@@ -45,13 +47,13 @@ export default function Signup() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h2 className={styles.title}>Create account</h2>
-        <p className={styles.subtitle}>Join us in a few seconds ✨</p>
+        <h2 className={styles.title}>{t('auth.createAccount')}</h2>
+        <p className={styles.subtitle}>{t('auth.joinUs')}</p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             className={styles.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -59,7 +61,7 @@ export default function Signup() {
 
           <input
             type="text"
-            placeholder="Username"
+            placeholder={t('auth.username')}
             className={styles.input}
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
@@ -67,7 +69,7 @@ export default function Signup() {
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             className={styles.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -75,7 +77,7 @@ export default function Signup() {
 
           <input
             type="password"
-            placeholder="Confirm password"
+            placeholder={t('auth.confirmPassword')}
             className={styles.input}
             value={confirmPass}
             onChange={(e) => setConfirmPass(e.target.value)}
@@ -88,14 +90,14 @@ export default function Signup() {
               onChange={(e) => setAgree(e.target.checked)}
             />
             <span>
-              I agree to the{" "}
-              <a href="https://pro.api.tryon.stamply.nu/web/privacy-policy">Terms</a> &{" "}
-              <a href="https://pro.api.tryon.stamply.nu/web/privacy-policy">Privacy Policy</a>
+              {t('auth.agreeTerms')}{" "}
+              <a href="https://pro.api.tryon.stamply.nu/web/privacy-policy">{t('auth.terms')}</a> &{" "}
+              <a href="https://pro.api.tryon.stamply.nu/web/privacy-policy">{t('auth.privacyPolicy')}</a>
             </span>
           </label>
 
           <button className={styles.button} type="submit" disabled={!agree}>
-            Sign Up
+            {t('auth.signup')}
           </button>
         </form>
       </div>

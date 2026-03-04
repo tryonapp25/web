@@ -28,7 +28,7 @@ export default function ProductionProtection() {
 
   const productionTemplateCheck = async () => {
     try {
-      const response = await http.get(`/production/checkout-template/publicCode/${publicCode}/flag/ORDER_FEATURE/businessFeature/ORDER_ONLINE`);
+      const response = await http.get(`/production/checkout-template/publicCode/${publicCode}/flag/ORDER_FEATURE/businessFeature/ONLINE_ORDERING`);
       if(response.data.success){
         const { orderFeatureEnabled, isBusinessOpen, flag } = response.data.data;
         if(flag && orderFeatureEnabled) setOrderFeatureEnabled(true);
@@ -44,7 +44,7 @@ export default function ProductionProtection() {
 
   const productionMenuBookCheck = async () => {
     try {
-      const response = await http.get(`/production/checkout-menubook/publicCode/${publicCode}/flag/ORDER_FEATURE/businessFeature/ORDER_ONLINE`);
+      const response = await http.get(`/production/checkout-menubook/publicCode/${publicCode}/flag/ORDER_FEATURE/businessFeature/ONLINE_ORDERING`);
       if(response.data.success){
         const { orderFeatureEnabled, isBusinessOpen, flag } = response.data.data;
         if(flag && orderFeatureEnabled) setOrderFeatureEnabled(true);

@@ -1,0 +1,172 @@
+{
+  "common": {
+    "search": "Søg",
+    "loading": "Indlæser...",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "create": "Opret",
+    "close": "Luk",
+    "confirm": "Bekræft",
+    "yes": "Ja",
+    "no": "Nej",
+    "back": "Tilbage",
+    "next": "Næste",
+    "submit": "Indsend",
+    "error": "Fejl",
+    "success": "Succes",
+    "warning": "Advarsel",
+    "tokens": "Tokens"
+  },
+  "nav": {
+    "3dMenu": "3D Menu",
+    "myCollection": "Min Samling",
+    "business": "Min Virksomhed",
+    "favorites": "Favoritter",
+    "downloads": "Downloads",
+    "artboards": "Tegnebrætter",
+    "profile": "Profil",
+    "logout": "Log ud",
+    "posPricing": "POS Priser"
+  },
+  "home": {
+    "heroTitle": "AI Filtre Du Kan Oprette, Bruge og Dele.",
+    "explore": "Udforsk",
+    "myImages": "Mine Billeder"
+  },
+  "menu": {
+    "pageTitle": "3D Menu skabeloner.",
+    "explore": "Udforsk",
+    "posters": "Plakater",
+    "menuBooks": "Menukort",
+    "myTemplates": "Mine skabeloner",
+    "myPosters": "Mine plakater"
+  },
+  "collection": {
+    "pageTitle": "Mine Samlinger."
+  },
+  "auth": {
+    "login": "Log ind",
+    "signup": "Opret konto",
+    "signIn": "Log ind",
+    "welcomeBack": "Velkommen tilbage 👋",
+    "createAccount": "Opret konto",
+    "joinUs": "Tilmeld dig på få sekunder ✨",
+    "email": "E-mail",
+    "password": "Adgangskode",
+    "confirmPassword": "Bekræft adgangskode",
+    "username": "Brugernavn",
+    "noAccount": "Har du ikke en konto?",
+    "hasAccount": "Har du allerede en konto?",
+    "agreeTerms": "Jeg accepterer",
+    "terms": "Vilkår",
+    "privacyPolicy": "Privatlivspolitik",
+    "loginFailed": "Login mislykkedes",
+    "passwordMismatch": "Adgangskoderne matcher ikke",
+    "agreeRequired": "Accepter venligst vilkår og privatlivspolitik"
+  },
+  "profile": {
+    "title": "Profil",
+    "username": "Brugernavn",
+    "email": "E-mail",
+    "saveChanges": "Gem ændringer",
+    "myFilters": "Mine Filtre",
+    "missingName": "Manglende navn",
+    "enterName": "Indtast venligst dit fulde navn.",
+    "missingEmail": "Manglende e-mail",
+    "enterEmail": "Indtast venligst din e-mail.",
+    "invalidEmail": "Ugyldig e-mail",
+    "enterValidEmail": "Indtast venligst en gyldig e-mailadresse."
+  },
+  "business": {
+    "title": "Virksomhed",
+    "orders": "Ordrer",
+    "products": "Produkter",
+    "payments": "Betalinger",
+    "settings": "Indstillinger",
+    "connecting": "Forbinder til virksomhedsstyring",
+    "noOrders": "Ingen ordrer endnu",
+    "searchProducts": "Søg produkter...",
+    "allProducts": "Alle produkter",
+    "enableOrders": "Aktivér ordrer",
+    "ordersDisabled": "Ordrefunktionen er i øjeblikket deaktiveret"
+  },
+  "orders": {
+    "orderNumber": "Ordre #{{number}}",
+    "status": "Status",
+    "items": "Varer",
+    "total": "Total",
+    "pending": "Afventer",
+    "completed": "Fuldført",
+    "cancelled": "Annulleret",
+    "waitingTime": "Ventetid",
+    "ingredients": "Ingredienser",
+    "extras": "Ekstra"
+  },
+  "payment": {
+    "title": "Betaling",
+    "buyTokens": "Køb Tokens",
+    "choosePackSubtitle": "Vælg en pakke og lås op for flere prøve-previews når som helst.",
+    "selectPlan": "Vælg en plan",
+    "tokens": "tokens",
+    "perMonth": "pr. måned",
+    "oneTime": "engangsbetaling",
+    "subscribe": "Abonner",
+    "currentPlan": "Nuværende Plan",
+    "features": "Funktioner",
+    "mostPopular": "Mest Populær",
+    "choose": "Vælg",
+    "processing": "Behandler…",
+    "pay": "Betal",
+    "checkout": "Betaling",
+    "secureCheckout": "Sikker betaling drevet af Stripe. Dine kortoplysninger rører aldrig vores server.",
+    "paymentFailed": "Betaling mislykkedes",
+    "failedToUpdate": "Kunne ikke opdatere betaling."
+  },
+  "templates": {
+    "public": "Offentlig",
+    "private": "Privat",
+    "useTemplate": "Brug Skabelon",
+    "preview": "Forhåndsvisning",
+    "notFound": "Skabelon ikke fundet",
+    "noTemplates": "Ingen skabeloner fundet",
+    "createNew": "Opret ny skabelon",
+    "addPage": "Tilføj Side"
+  },
+  "filters": {
+    "explore": "Udforsk",
+    "trending": "Trending",
+    "recent": "Seneste",
+    "popular": "Populær",
+    "likes": "{{count}} likes"
+  },
+  "errors": {
+    "somethingWrong": "Noget gik galt",
+    "tryAgain": "Prøv venligst igen",
+    "networkError": "Netværksfejl",
+    "unauthorized": "Ikke autoriseret",
+    "notFound": "Ikke fundet"
+  },
+  "settings": {
+    "pageTitle": "Indstillinger",
+    "businessInfo": "Virksomhedsoplysninger",
+    "name": "Navn",
+    "address": "Adresse",
+    "phone": "Telefon",
+    "openHours": "Åbningstider",
+    "closed": "Lukket",
+    "features": "Funktioner",
+    "enableFeature": "Aktivér/deaktivér denne funktion for din virksomhed.",
+    "noFeatures": "Ingen funktioner fundet."
+  },
+  "days": {
+    "monday": "Mandag",
+    "tuesday": "Tirsdag",
+    "wednesday": "Onsdag",
+    "thursday": "Torsdag",
+    "friday": "Fredag",
+    "saturday": "Lørdag",
+    "sunday": "Søndag"
+  }
+}

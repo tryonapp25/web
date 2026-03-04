@@ -1,11 +1,12 @@
 .sidebar {
-  background: #ffffff;
-  border-right: 1px solid #e9edf4;
+  background: var(--card-solid);
+  border-right: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 12px 10px;
   gap: 14px;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .brand {
@@ -14,14 +15,14 @@
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: #f3f4f6;
+  background: var(--card);
 }
 
 .brandDot {
   width: 14px;
   height: 14px;
   border-radius: 6px;
-  background: #111827;
+  background: var(--text);
 }
 
 .nav {
@@ -45,7 +46,7 @@
 }
 
 .navItem:hover {
-  background: #f3f4f6;
+  background: var(--card);
 }
 
 .icon {
@@ -58,8 +59,8 @@
   right: 10px;
   top: 8px;
   font-size: 11px;
-  background: #111827;
-  color: white;
+  background: var(--text);
+  color: var(--bg);
   border-radius: 999px;
   padding: 2px 6px;
 }
@@ -75,8 +76,8 @@
   width: 44px;
   height: 44px;
   border-radius: 16px;
-  border: 1px solid #e9edf4;
-  background: #fff;
+  border: 1px solid var(--line);
+  background: var(--card-solid);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -85,7 +86,7 @@
 }
 
 .profile:hover {
-  background: #f3f4f6;
+  background: var(--card);
 }
 
 .srOnly {
@@ -102,26 +103,26 @@
 
 /* RESET LINK COLOR */
 .navItem {
-  color: #6b7280; /* gray */
+  color: var(--muted); /* gray */
   text-decoration: none;
 }
 
 .navItem:visited {
-  color: #6b7280; /* prevent purple visited color */
+  color: var(--muted); /* prevent purple visited color */
 }
 
 .navItem:hover {
-  color: #111827; /* black */
+  color: var(--text); /* black */
 }
 
 /* ACTIVE */
 .navItemActive {
-  background: #f3f4f6;
-  color: #111827; /* black */
+  background: var(--card);
+  color: var(--text); /* black */
 }
 
 .navItemActive .icon {
-  color: #111827;
+  color: var(--text);
   opacity: 1;
 }
 

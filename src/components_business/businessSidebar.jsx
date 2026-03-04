@@ -1,7 +1,8 @@
-"use client";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 import styles from "../styles/BusinessSidebar.module.css";
+import { BusinessContext } from "../ApiContext/businessContext";
+
 import {
   ScanLine,
   ShoppingCart,
@@ -12,6 +13,7 @@ import {
   Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Item({ icon: Icon, label, to, badge }) {
   return (
@@ -44,16 +46,23 @@ function Item({ icon: Icon, label, to, badge }) {
 
 
 export default function BusinessSidebar() {
+  const checkedRef = useRef(false);
   const { socketRef, connected } = useContext(SocketContext);
+  const { isPOSEnabled } = useContext(BusinessContext);
   const [orderBadge, setOrderBadge] = useState(null);
+  const { t } = useTranslation();
 
-  const items = [
-    { id: "orders", label: "Ordrer", icon: ClipboardList, to: "/business/orders", badge: orderBadge },
+  const [items, setItems] = useState([
+    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
+  ]);
+
+  const POS = [
+    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
     { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
-    { id: "cart", label: "Kurv", icon: ShoppingCart, to: "/business/cart", badge: 0 },
-    { id: "notes", label: "Noter", icon: StickyNote, to: "/business/notes" },
-    { id: "discount", label: "Rabat", icon: Tag, to: "/business/discount" },
-    { id: "receipt", label: "Kvittering", icon: Receipt, to: "/business/receipt" },
+    { id: "cart", label: "Cart", icon: ShoppingCart, to: "/business/cart", badge: 0 },
+    { id: "notes", label: "Notes", icon: StickyNote, to: "/business/notes" },
+    { id: "discount", label: "Discount", icon: Tag, to: "/business/discount" },
+    { id: "receipt", label: "Receipt", icon: Receipt, to: "/business/receipt" },
   ];
 
   useEffect(() => {
@@ -72,6 +81,15 @@ export default function BusinessSidebar() {
         socket.off("new_order", handleNewOrder);
       };
   }, [socketRef?.current, connected]);
+
+
+  useEffect(() => {
+    if(checkedRef.current) return;
+    checkedRef.current = true;
+    if(isPOSEnabled) {
+      setItems(POS);
+    };
+  }, [isPOSEnabled]);
 
   return (
     <aside className={styles.sidebar}>
@@ -107,6 +125,7 @@ export default function BusinessSidebar() {
             size={22}
             strokeWidth={2}
             aria-hidden="true"
+            color="#000"
           />
         </NavLink>
       </div>
