@@ -1,6 +1,7 @@
 import {useEffect, useContext, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import {UserContext} from "../ApiContext/userContext";
+import { useTheme } from "../ApiContext/themeContext";
 
 import styles from "../styles/BusinessPage.module.css";
 
@@ -9,6 +10,13 @@ export default function BusinessPage() {
   const navigate = useNavigate();
   const checkerRef = useRef(null);
   const { publicUser } = useContext(UserContext);
+  const { forceTheme, restoreTheme } = useTheme();
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
 
   useEffect(() => {
     if(publicUser?.business || publicUser?.isCustomer === true) {

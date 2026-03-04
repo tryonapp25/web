@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import http from "../http/http";
 import styles from "../styles/BusinessSetting.module.css";
 import { UserContext } from "../ApiContext/userContext";
+import { useTheme } from "../ApiContext/themeContext";
 import { SocketContext } from "../ApiContext/socketContext";
 import Sidebar from "../components_business/businessSidebar";
 import FlashMessage from "../components/flashMessage"
@@ -177,6 +178,7 @@ export default function BusinessSetting() {
   const fetchingRef = useRef(false);
   const { publicUser, setPublicUser } = useContext(UserContext);
   const { setOrderFeatureEnabled } = useContext(SocketContext);
+  const { forceTheme, restoreTheme } = useTheme();
 
   const businessId = publicUser?.business?.id;
 
@@ -187,6 +189,12 @@ export default function BusinessSetting() {
   const [message, setMessage] = useState({visible: false, msg: "", type: "" });
 
   const features = useMemo(() => normalizeFeatures(rawFeatures), [rawFeatures]);
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
 
   useEffect(() => {
     if (!businessId) return;

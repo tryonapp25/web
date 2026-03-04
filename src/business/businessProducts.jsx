@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import styles from "../styles/PosPage.module.css";
-
+import { useTheme } from "../ApiContext/themeContext";
 
 import Sidebar from "../components_business/businessSidebar";
 import CategoryTabs from "../components_business/businessCategoryTabs";
@@ -24,8 +24,15 @@ const PRODUCTS = [
 ];
 
 export default function BusinessProducts() {
+  const { forceTheme, restoreTheme } = useTheme();
   const [activeCategory, setActiveCategory] = useState("Alle produkter");
   const [query, setQuery] = useState("");
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {

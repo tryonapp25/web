@@ -1,6 +1,7 @@
 import styles from "../styles/BusinessOrder.module.css";
 import { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../ApiContext/userContext.jsx";
+import { useTheme } from "../ApiContext/themeContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import httpMessage from "../http/httpMessage";
@@ -19,9 +20,16 @@ export default function BusinessOrders() {
   const navigation = useNavigate();
   const { socketRef, connected, orderFeatureEnabled } = useContext(SocketContext);
   const { publicUser } = useContext(UserContext);
+  const { forceTheme, restoreTheme } = useTheme();
   const socketContext = useContext(SocketContext);
   const connectingRef = useRef(false);
   const flagRef = useRef(false);
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
   
   const [orderFlag, setOrderFlag] = useState(null);
   const [orders, setOrders] = useState([]);

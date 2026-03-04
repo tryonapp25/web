@@ -2,6 +2,7 @@
 import { useEffect, useState, useContext, useMemo } from "react";
 import styles from "../styles/BusinessPayment.module.css";
 import { UserContext } from "../ApiContext/userContext";
+import { useTheme } from "../ApiContext/themeContext";
 import http from "../http/http";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "../components/flashMessage";
@@ -117,6 +118,7 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
 export default function BusinessPayment() {
   const navigate = useNavigate();
   const { publicUser, setPublicUser } = useContext(UserContext);
+  const { forceTheme, restoreTheme } = useTheme();
 
   const [pricing, setPricing] = useState([]);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -129,6 +131,12 @@ export default function BusinessPayment() {
   const [paymentData, setPaymentData] = useState(null);
 
   const [message, setMessage] = useState(defaultMessage);
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
 
   // Fetch token pricing from your backend
   useEffect(() => {
