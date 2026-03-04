@@ -38,7 +38,7 @@ export default function Navbar() {
 
         <div className={styles.actions}>
           <a className={styles.ghost} href="#get-started" onClick={(e) => scrollToSection(e, "get-started")}>Request access</a>
-          <Link to="/login"><a className={styles.cta} href="#get-started">Get started</a></Link>
+          <Link to="/login" className={styles.cta}>Get started</Link>
         </div>
       </nav>
     </div>

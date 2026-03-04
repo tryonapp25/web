@@ -416,26 +416,55 @@ export default function Onboarding() {
         <div className={styles.pricingGrid}>
           {pricingData.length > 0 ? (
             pricingData.map((plan, index) => (
-              <div className={`${styles.pricingCard} ${plan?.highlighted ? styles.featured : ""}`} key={index}>
-                {plan?.popular && <div className={styles.pricingBadge}>Most Popular</div>}
+              <div
+                className={`${styles.pricingCard} ${
+                  plan?.highlighted ? styles.featured : ""
+                }`}
+                key={index}
+              >
+                {plan?.popular && (
+                  <div className={styles.pricingBadge}>Most Popular</div>
+                )}
 
                 <h3 className={styles.pricingName}>{plan.pack}</h3>
+
                 <div className={styles.pricingPrice}>
                   {plan.currency === "usd" ? "$" : plan.currency}
                   {plan.price}
                   <span>/ month</span>
                 </div>
+
                 <ul className={styles.pricingFeatures}>
                   {plan.items && plan.items.length > 0 ? (
                     plan.items.map((item, idx) => {
                       const name = item?.name || item || "";
                       const desc = item?.description || "";
-                      const included = item?.included === undefined ? true : !!item.included;
+                      const included =
+                        item?.included === undefined ? true : !!item.included;
+
                       return (
-                        <li key={idx} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <span style={{ color: included ? "#16a34a" : "#9ca3af", fontWeight: 700, paddingRight:"8px" }}>{included ? "✓" : "✗"}</span>
+                        <li
+                          key={idx}
+                          style={{ display: "flex", alignItems: "center", gap: 8 }}
+                        >
+                          <span
+                            style={{
+                              color: included ? "#16a34a" : "#9ca3af",
+                              fontWeight: 700,
+                              paddingRight: "8px",
+                            }}
+                          >
+                            {included ? "✓" : "✗"}
+                          </span>
+
                           <div>
-                            <div style={{ textDecoration: item?.included ? "none" : "line-through" }}>{desc}</div>
+                            <div
+                              style={{
+                                textDecoration: included ? "none" : "line-through",
+                              }}
+                            >
+                              {desc}
+                            </div>
                           </div>
                         </li>
                       );
@@ -444,6 +473,7 @@ export default function Onboarding() {
                     <li>No features listed</li>
                   )}
                 </ul>
+
                 <Link to="/login" className={styles.btnSecondary}>
                   {plan?.pack === "Pro" ? "Talk to us" : plan?.pack}
                 </Link>
