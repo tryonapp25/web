@@ -287,7 +287,7 @@ export default function Payment() {
                   {(p.items || []).map((it) => (
                     <li key={it} className={styles.item}>
                       <span className={styles.check}>✓</span>
-                      <span>{it}</span>
+                      <span style={{ color: "var(--text)" }}>{it}</span>
                     </li>
                   ))}
                 </ul>

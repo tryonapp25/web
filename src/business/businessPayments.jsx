@@ -2,7 +2,6 @@
 import { useEffect, useState, useContext, useMemo } from "react";
 import styles from "../styles/BusinessPayment.module.css";
 import { UserContext } from "../ApiContext/userContext";
-import { useTheme } from "../ApiContext/themeContext";
 import http from "../http/http";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "../components/flashMessage";
@@ -118,7 +117,6 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
 export default function BusinessPayment() {
   const navigate = useNavigate();
   const { publicUser, setPublicUser } = useContext(UserContext);
-  const { forceTheme, restoreTheme } = useTheme();
   const { t } = useTranslation();
 
   const [pricing, setPricing] = useState([]);
@@ -132,12 +130,6 @@ export default function BusinessPayment() {
   const [paymentData, setPaymentData] = useState(null);
 
   const [message, setMessage] = useState(defaultMessage);
-
-  // Force light mode for business pages
-  useEffect(() => {
-    forceTheme("light");
-    return () => restoreTheme();
-  }, []);
 
   // Fetch token pricing from your backend
   useEffect(() => {
@@ -293,13 +285,13 @@ export default function BusinessPayment() {
                   <div className={styles.per}>one-time</div>
                 </div>
 
-                <p className={styles.description}>{p.description}</p>
+                <p className={styles.description} >{p.description}</p>
 
                 <ul className={styles.list}>
                   {(p.items || []).map((it) => (
                     <li key={it} className={styles.item}>
                       <span className={styles.check}>✓</span>
-                      <span>{it}</span>
+                      <span style={{ color: "var(--text)" }}>{it}</span>
                     </li>
                   ))}
                 </ul>

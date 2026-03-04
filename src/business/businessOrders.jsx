@@ -3,7 +3,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../ApiContext/userContext.jsx";
 import { useTheme } from "../ApiContext/themeContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import httpMessage from "../http/httpMessage";
 import { SocketContext } from "../ApiContext/socketContext";
 import { getFeatureFlags } from "../featureFlags/featureFlags.js";
