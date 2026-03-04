@@ -19,6 +19,7 @@
     "axios": "^1.13.2",
     "i18next": "^25.8.14",
     "i18next-browser-languagedetector": "^8.2.1",
+    "i18next-locize-backend": "^1.1.0",
     "json5": "^2.2.3",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.562.0",
