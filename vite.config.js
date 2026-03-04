@@ -17,7 +17,8 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // keep a single vendor chunk to avoid inter-chunk initialization order issues
+            if (id.includes('react') || id.includes('react-dom')) return 'react-vendor';
+            if (id.includes('three') || id.includes('@react-three')) return 'three-vendor';
             return 'vendor';
           }
         }
