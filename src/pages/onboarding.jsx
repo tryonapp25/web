@@ -101,7 +101,7 @@ export default function Onboarding() {
     try {
       const response = await http.get("/business/pricing");
       if(response?.data.success) {
-        setPricingData(response.data.pricing);
+        setPricingData(response.data.data || []);
       }
     } catch (error) {
       console.error("Error fetching pricing:", error);
