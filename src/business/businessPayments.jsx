@@ -291,7 +291,7 @@ export default function BusinessPayment() {
                   {(p.items || []).map((it) => (
                     <li key={it} className={styles.item}>
                       <span className={styles.check}>✓</span>
-                      <span style={{ color: "var(--text)" }}>{it}</span>
+                      <span style={{ color: "var(--text)" }}>{it.description}</span>
                     </li>
                   ))}
                 </ul>

@@ -430,7 +430,7 @@ export default function Onboarding() {
                   {plan.items.length > 0 ? (
                     plan.items.map((item, idx) => (
                       <li key={idx}>
-                        {item}
+                        {item?.description}
                       </li>
                     ))  
                   ) : (
