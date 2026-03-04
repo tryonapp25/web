@@ -33,7 +33,6 @@ function Item({ icon: Icon, label, active, onPress }) {
 
 export default function Sidebar({items}) {
   const navigate = useNavigate();
-  const {publicUser} = useContext(UserContext);
   const { pathname } = useLocation(); // ✅ current route
   const { t } = useTranslation();
   

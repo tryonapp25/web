@@ -1,7 +1,8 @@
-"use client";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 import styles from "../styles/BusinessSidebar.module.css";
+import { BusinessContext } from "../ApiContext/businessContext";
+
 import {
   ScanLine,
   ShoppingCart,
@@ -45,11 +46,17 @@ function Item({ icon: Icon, label, to, badge }) {
 
 
 export default function BusinessSidebar() {
+  const checkedRef = useRef(false);
   const { socketRef, connected } = useContext(SocketContext);
+  const { isPOSEnabled } = useContext(BusinessContext);
   const [orderBadge, setOrderBadge] = useState(null);
   const { t } = useTranslation();
 
-  const items = [
+  const [items, setItems] = useState([
+    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
+  ]);
+
+  const POS = [
     { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
     { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
     { id: "cart", label: "Cart", icon: ShoppingCart, to: "/business/cart", badge: 0 },
@@ -74,6 +81,15 @@ export default function BusinessSidebar() {
         socket.off("new_order", handleNewOrder);
       };
   }, [socketRef?.current, connected]);
+
+
+  useEffect(() => {
+    if(checkedRef.current) return;
+    checkedRef.current = true;
+    if(isPOSEnabled) {
+      setItems(POS);
+    };
+  }, [isPOSEnabled]);
 
   return (
     <aside className={styles.sidebar}>
@@ -109,6 +125,7 @@ export default function BusinessSidebar() {
             size={22}
             strokeWidth={2}
             aria-hidden="true"
+            color="#000"
           />
         </NavLink>
       </div>

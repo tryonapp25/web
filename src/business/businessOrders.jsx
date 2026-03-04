@@ -58,6 +58,7 @@ export default function BusinessOrders() {
     const handleNewOrder = (order, ack) => {
       console.log("✅ Received new order:", order);
       setOrders(prev => [order, ...prev]);  // if you want to add it
+      setMessage({ visible: true, type: "success", msg: "New order received!" });
       if (ack) ack({ success: true }); // Acknowledge receipt to server
     };
 
@@ -195,7 +196,10 @@ export default function BusinessOrders() {
             </div>
           </div>
         )}
-        <p>Socket Status: {connected ? "Connected" : "Disconnected"}</p>
+        <div className={styles.socketStatus}>
+          <span className={`${styles.statusDot} ${connected ? styles.online : styles.offline}`} />
+          <span className={styles.statusText}>{connected ? "Live — Connected" : "Disconnected"}</span>
+        </div>
         <h3>{t('business.orders')}: {orders.length}</h3>
         <OrdersGrid orders={orders} onUpdateStatus={handleUpdateStatus} />
       </main>

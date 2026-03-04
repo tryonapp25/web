@@ -62,3 +62,35 @@
 .enableButton:hover {
   opacity: 0.9;
 }
+
+/* Socket status */
+.socketStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.06);
+}
+
+.online {
+  background: #34d399; /* green */
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+}
+
+.offline {
+  background: #ef4444; /* red */
+  opacity: 0.95;
+}
+
+.statusText {
+  font-weight: 500;
+  color: var(--text);
+}

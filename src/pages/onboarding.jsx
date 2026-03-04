@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import { Link } from "react-router-dom";
+import http from "../http/http";
 import Navbar from "../components/Navbar";
 import styles from "../styles/Onboarding.module.css";
 import Model3D from "../components/3dModel";
@@ -11,19 +12,19 @@ const config = {
 const modelUrls = [
   {
     model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FGrilled%20Salmon.glb_5cdc2302-3b49-441b-9e22-614359b3eb3a.glb?alt=media&token=d98e06c1-8b4f-4879-9828-bc8348c86aac",
-    url: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438",
+    url: ["https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"],
     name: "Grilled Salmon",
     price: "$18.99"
   },
   {
     model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FVegetable_Pad_Thai.glb_f33431a6-19d8-49c9-b558-94741e95d455.glb?alt=media&token=4356bb7f-1166-4e76-89c2-5e49d14393fc",
-    url: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FVegetable_Pad_Thai_image.png?alt=media&token=cee53760-4709-430a-882c-fff96758ddcc",
+    url: ["https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FVegetable_Pad_Thai_image.png?alt=media&token=cee53760-4709-430a-882c-fff96758ddcc"],
     name: "Vegetable Pad Thai",
     price: "$11.99"
   },
   {
     model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMushroom_Risotto.glb_c6e17090-f1df-42bf-8328-20102bccf529.glb?alt=media&token=0967964e-bcb8-4b50-aa57-8d831d18209b",
-    url: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2Fmushroom_risotto.png?alt=media&token=ec54a883-663b-4040-8491-fb4fa1e5f2f6",
+    url: ["https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2Fmushroom_risotto.png?alt=media&token=ec54a883-663b-4040-8491-fb4fa1e5f2f6"],
     name: "Mushroom Risotto",
     price: "$14.99"
   },
@@ -63,8 +64,17 @@ const benefits = [
 ];
 
 export default function Onboarding() {
+  const startRef = useRef(false);
   const [currentModelIndex, setCurrentModelIndex] = useState(0);
   const [currentBenefitIndex, setCurrentBenefitIndex] = useState(0);
+  const [pricingData, setPricingData] = useState([]);
+
+
+  useEffect(() => {
+    if(startRef.current) return;
+    startRef.current = true;
+    getBusinessPricing();
+  },[])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,6 +95,18 @@ export default function Onboarding() {
     const element = document.getElementById(targetId);
     if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+
+  const getBusinessPricing = async () => {
+    try {
+      const response = await http.get("/business/pricing");
+      console.log("Pricing data:", response.data);
+      setPricingData(response?.data?.data || []);
+    } catch (error) {
+      console.error("Error fetching pricing:", error);
+    }
+  };
+  
 
   return (
     <div className={styles.page}>
@@ -393,54 +415,36 @@ export default function Onboarding() {
         </div>
 
         <div className={styles.pricingGrid}>
-          <div className={styles.pricingCard}>
-            <h3 className={styles.pricingName}>Starter</h3>
-            <div className={styles.pricingPrice}>
-              $29 <span>/ month</span>
-            </div>
-            <ul className={styles.pricingFeatures}>
-              <li>3D digital menu</li>
-              <li>QR code ordering</li>
-              <li>Basic reporting</li>
-              <li>Email support</li>
-            </ul>
-            <Link to="/login" className={styles.btnSecondary}>
-              Start
-            </Link>
-          </div>
+          {pricingData.length > 0 ? (
+            pricingData.map((plan, index) => (
+              <div className={`${styles.pricingCard} ${plan?.highlighted ? styles.featured : ""}`} key={index}>
+                {plan?.popular && <div className={styles.pricingBadge}>Most Popular</div>}
 
-          <div className={`${styles.pricingCard} ${styles.featured}`}>
-            <div className={styles.pricingBadge}>Most Popular</div>
-            <h3 className={styles.pricingName}>Growth</h3>
-            <div className={styles.pricingPrice}>
-              $79 <span>/ month</span>
-            </div>
-            <ul className={styles.pricingFeatures}>
-              <li>Everything in Starter</li>
-              <li>Online ordering (pickup/delivery)</li>
-              <li>POS + kitchen routing</li>
-              <li>Priority support</li>
-            </ul>
-            <Link to="/login" className={styles.btnPrimary}>
-              Get Started <span>→</span>
-            </Link>
-          </div>
-
-          <div className={styles.pricingCard}>
-            <h3 className={styles.pricingName}>Pro</h3>
-            <div className={styles.pricingPrice}>
-              $149 <span>/ month</span>
-            </div>
-            <ul className={styles.pricingFeatures}>
-              <li>Multi-station routing</li>
-              <li>Advanced roles & permissions</li>
-              <li>Advanced reporting</li>
-              <li>Onboarding help</li>
-            </ul>
-            <Link to="/login" className={styles.btnSecondary}>
-              Talk to us
-            </Link>
-          </div>
+                <h3 className={styles.pricingName}>{plan.pack}</h3>
+                <div className={styles.pricingPrice}>
+                  {plan.currency === "usd" ? "$" : plan.currency}
+                  {plan.price}
+                  <span>/ month</span>
+                </div>
+                <ul className={styles.pricingFeatures}>
+                  {plan.items.length > 0 ? (
+                    plan.items.map((item, idx) => (
+                      <li key={idx}>
+                        {item}
+                      </li>
+                    ))  
+                  ) : (
+                    <li>No features listed</li>
+                  )}
+                </ul>
+                <Link to="/login" className={styles.btnSecondary}>
+                  {plan?.pack === "Pro" ? "Talk to us" : plan?.pack}
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p className={styles.noPricing}>Loading pricing...</p>
+          )}
         </div>
       </section>
 
