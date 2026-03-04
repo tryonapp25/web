@@ -981,11 +981,6 @@
   gap: 12px;
 }
 
-.pricingFeatures li::before {
-  content: "✓";
-  color: var(--green);
-  font-weight: 950;
-}
 
 /* -----------------------------
    CTA SECTION

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import http from "../http/http";
 import Navbar from "../components/Navbar";
@@ -427,12 +427,20 @@ export default function Onboarding() {
                   <span>/ month</span>
                 </div>
                 <ul className={styles.pricingFeatures}>
-                  {plan.items.length > 0 ? (
-                    plan.items.map((item, idx) => (
-                      <li key={idx}>
-                        {item?.description}
-                      </li>
-                    ))  
+                  {plan.items && plan.items.length > 0 ? (
+                    plan.items.map((item, idx) => {
+                      const name = item?.name || item || "";
+                      const desc = item?.description || "";
+                      const included = item?.included === undefined ? true : !!item.included;
+                      return (
+                        <li key={idx} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span style={{ color: included ? "#16a34a" : "#9ca3af", fontWeight: 700, paddingRight:"8px" }}>{included ? "✓" : "✗"}</span>
+                          <div>
+                            <div style={{ textDecoration: item?.included ? "none" : "line-through" }}>{desc}</div>
+                          </div>
+                        </li>
+                      );
+                    })
                   ) : (
                     <li>No features listed</li>
                   )}
