@@ -7,11 +7,13 @@ import FlashMessage from "../components/flashMessage";
 import FilterGrid from "../components/filterGrid";
 import LoadingModal from "../components/loading";
 import Topbar from "../components_home/topbar";
+import { useTranslation } from "react-i18next";
 
 
 
 export default function Profile() {
     const { publicUser, setPublicUser } = useContext(UserContext);
+    const { t } = useTranslation();
     const [username, setUsername] = useState(publicUser?.userName);
     const [email, setEmail] = useState(publicUser?.email);
     const [loading, setLoading] = useState(false);
@@ -48,18 +50,18 @@ export default function Profile() {
 
     const validate = () => {
       if (!(username ?? "").trim()) {
-        Alert.alert("Missing name", "Please enter your full name.");
+        Alert.alert(t('profile.missingName'), t('profile.enterName'));
         return false;
       }
   
       const e = (email ?? "").trim();
       if (!e) {
-        Alert.alert("Missing email", "Please enter your email.");
+        Alert.alert(t('profile.missingEmail'), t('profile.enterEmail'));
         return false;
       }
   
       if (!/^\S+@\S+\.\S+$/.test(e)) {
-        Alert.alert("Invalid email", "Please enter a valid email address.");
+        Alert.alert(t('profile.invalidEmail'), t('profile.enterValidEmail'));
         return false;
       }
   
@@ -95,7 +97,7 @@ return (
       <form className={styles.card} onSubmit={handleSubmit}>
         <div className={styles.cardTop}>
           <div>
-            <h1 className={styles.title}>Profile</h1>
+            <h1 className={styles.title}>{t('profile.title')}</h1>
             <p className={styles.sub}>Update your public details.</p>
           </div>
 
@@ -104,14 +106,14 @@ return (
             className={styles.primaryBtn}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? t('common.loading') : t('common.save')}
           </button>
         </div>
 
         <div className={styles.formGrid}>
           <div className={styles.field}>
             <label className={styles.label} htmlFor="username">
-              Username
+              {t('profile.username')}
             </label>
             <input
               id="username"
@@ -125,7 +127,7 @@ return (
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="email">
-              Email
+              {t('profile.email')}
             </label>
             <input
               id="email"

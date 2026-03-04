@@ -10,6 +10,7 @@ export function BusinessProvider({ children }) {
 
   const [businessInfo, setBusinessInfo] = useState(null);
   const [isBusinessOpen, setIsBusinessOpen] = useState(false);
+  const [isPOSEnabled, setIsPOSEnabled] = useState(false);
  
   // keep sessionStorage in sync
   useEffect(() => {
@@ -21,7 +22,7 @@ export function BusinessProvider({ children }) {
   }, [publicUser]);
 
   return (
-    <BusinessContext.Provider value={{ businessInfo, setBusinessInfo, publicUser, setPublicUser, isBusinessOpen, setIsBusinessOpen }}>
+    <BusinessContext.Provider value={{ businessInfo, setBusinessInfo, publicUser, setPublicUser, isBusinessOpen, setIsBusinessOpen, isPOSEnabled, setIsPOSEnabled }}>
       {children}
     </BusinessContext.Provider>
   );

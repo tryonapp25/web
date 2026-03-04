@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/CreateTemplate.module.css";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
@@ -34,7 +34,7 @@ export default function EditPricing() {
   useEffect(() => {
     if (!selectedId) return setForm(emptyPackage);
     const p = packages.find((x) => x.id === selectedId) || null;
-    setForm(p ? { ...p, items: p.items || [] } : emptyPackage);
+    setForm(p ? { ...p, items: parseItems(p.items) } : emptyPackage);
   }, [selectedId, packages]);
 
   const fetchPackages = async () => {
@@ -56,14 +56,45 @@ export default function EditPricing() {
 
   const onChange = (key, value) => setForm((s) => ({ ...s, [key]: value }));
 
-  const itemsText = useMemo(() => (form.items || []).join("\n"), [form.items]);
+  const parseItems = (items) => {
+    if (!items) return [];
+    if (Array.isArray(items)) return items.map((it) => (typeof it === "string" ? { name: it, description: "", included: true } : it));
+    if (typeof items === "string") {
+      const s = items.trim();
+      try {
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed)) return parsed.map((it) => (typeof it === "string" ? { name: it, description: "", included: true } : it));
+      } catch (e) {
+        // fallback: try to extract lines that look like JSON objects
+        try {
+          // compact and parse
+          const compact = s.replace(/\r?\n/g, "");
+          const parsed2 = JSON.parse(compact);
+          if (Array.isArray(parsed2)) return parsed2.map((it) => (typeof it === "string" ? { name: it, description: "", included: true } : it));
+        } catch (e2) {
+          // final fallback: split lines and treat each as name
+          return s
+            .split(/\r?\n/)
+            .map((x) => x.trim())
+            .filter(Boolean)
+            .map((x) => ({ name: x, description: "", included: true }));
+        }
+      }
+    }
+    return [];
+  };
+
+  
 
   const handleUpdate = async () => {
+    
     // basic validation
     if (!form.pack || form.pack.trim() === "") return setMessage({ visible: true, type: "warn", msg: "Pack name is required" });
     try {
       setLoading(true);
-      const payload = { ...form, items: (form.items || []) };
+      const payload = { ...form, items: parseItems(form.items) };
+
+      console.log("Updating package with payload:", payload);
       // backend admin update endpoint - adjust if different
       const res = await http.put(`/admin/business/pricing`, payload);
       if (res.data?.success) {
@@ -84,7 +115,7 @@ export default function EditPricing() {
     if (!form.pack || form.pack.trim() === "") return setMessage({ visible: true, type: "warn", msg: "Pack name is required" });
     try {
       setLoading(true);
-      const payload = { ...form, items: (form.items || []) };
+      const payload = { ...form, items: parseItems(form.items) };
       const res = await http.post(`/admin/business/pricing`, payload);
       if (res.data?.success) {
         setMessage({ visible: true, type: "success", msg: res.data.message || "Created" });
@@ -99,13 +130,7 @@ export default function EditPricing() {
     }
   };
 
-  const handleItemsChange = (text) => {
-    const arr = text
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    onChange("items", arr);
-  };
+  
 
   const handleDelete = async () => {
     if (!form.id) return setMessage({ visible: true, type: "warn", msg: "Select a package to delete" });
@@ -165,8 +190,63 @@ export default function EditPricing() {
         <label className={styles.label}>Description</label>
         <textarea className={styles.textarea} value={form.description} onChange={(e) => onChange("description", e.target.value)} />
 
-        <label className={styles.label}>Items (one per line)</label>
-        <textarea className={styles.textarea} value={itemsText} onChange={(e) => handleItemsChange(e.target.value)} />
+        <label className={styles.label}>Items</label>
+        {(form.items || []).map((it, idx) => (
+          <div key={idx} style={{ marginBottom: 8, display: "grid", gap: 8 }}>
+            <input
+              className={styles.input}
+              placeholder="Name"
+              value={it.name || ""}
+              onChange={(e) => {
+                const arr = (form.items || []).slice();
+                arr[idx] = { ...arr[idx], name: e.target.value };
+                onChange("items", arr);
+              }}
+            />
+            <input
+              className={styles.input}
+              placeholder="Description"
+              value={it.description || ""}
+              onChange={(e) => {
+                const arr = (form.items || []).slice();
+                arr[idx] = { ...arr[idx], description: e.target.value };
+                onChange("items", arr);
+              }}
+            />
+            <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input
+                type="checkbox"
+                checked={!!it.included}
+                onChange={(e) => {
+                  const arr = (form.items || []).slice();
+                  arr[idx] = { ...arr[idx], included: e.target.checked };
+                  onChange("items", arr);
+                }}
+              />
+              Included
+            </label>
+            <div>
+              <button
+                className={styles.secondary}
+                onClick={() => {
+                  const arr = (form.items || []).slice();
+                  arr.splice(idx, 1);
+                  onChange("items", arr);
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
+        <div style={{ marginTop: 8 }}>
+          <button
+            className={styles.secondary}
+            onClick={() => onChange("items", [...(form.items || []), { name: "", description: "", included: true }])}
+          >
+            Add item
+          </button>
+        </div>
 
         <div style={{ marginTop: 8 }}>
           <label style={{ marginRight: 12 }}>
@@ -214,11 +294,14 @@ export default function EditPricing() {
 
                 <p style={{ color: "#9aa3b2", marginTop: 8 }}>{p.description}</p>
 
-                <ul style={{ margin: 0, padding: 0, listStyle: "none", marginTop: 8 }}>
-                  {(p.items || []).slice(0, 4).map((it) => (
-                    <li key={it} style={{ color: "#9aa3b2", fontSize: 13 }}>{it}</li>
+                <pre style={{ background: "#f6f8fa", padding: 8, borderRadius: 6, color: "#24303a", fontSize: 12, overflow: "auto", maxWidth: 480 }}>
+                  {p.items.length > 0 && p.items.map((it) => (
+                    <li key={it} className={styles.item}>
+                      <span className={styles.check}>✓</span>
+                      <span style={{ color: "var(--text)" }}>{it.description}</span>
+                    </li>
                   ))}
-                </ul>
+                </pre>
 
                 <div style={{ marginTop: 8 }}>
                   {p.highlighted && <span className={styles.ribbon}>Highlighted</span>}

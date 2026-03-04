@@ -369,7 +369,13 @@ export default function ModelShowcase({
                         ing.included ? styles.fakeBoxOn : ""
                       }`}
                       aria-hidden="true"
-                    />
+                    >
+                      {ing.included && (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={styles.checkIcon}>
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                    </span>
 
                     <span className={styles.rowText}>
                       <span
@@ -442,7 +448,13 @@ export default function ModelShowcase({
                                 checked ? styles.fakeBoxGreen : ""
                               }`}
                               aria-hidden="true"
-                            />
+                            >
+                              {checked && (
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={styles.checkIcon}>
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              )}
+                            </span>
 
                             <span className={styles.rowText}>
                               <span className={styles.rowTitle}>

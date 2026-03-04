@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import styles from "../styles/PosPage.module.css";
-
+import { useTheme } from "../ApiContext/themeContext";
+import { useTranslation } from "react-i18next";
 
 import Sidebar from "../components_business/businessSidebar";
 import CategoryTabs from "../components_business/businessCategoryTabs";
@@ -24,8 +25,16 @@ const PRODUCTS = [
 ];
 
 export default function BusinessProducts() {
-  const [activeCategory, setActiveCategory] = useState("Alle produkter");
+  const { forceTheme, restoreTheme } = useTheme();
+  const { t } = useTranslation();
+  const [activeCategory, setActiveCategory] = useState(t('business.allProducts'));
   const [query, setQuery] = useState("");
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
@@ -54,8 +63,8 @@ export default function BusinessProducts() {
               className={styles.search}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Søg produkter…"
-              aria-label="Søg produkter"
+              placeholder={t('business.searchProducts')}
+              aria-label={t('business.searchProducts')}
             />
           </div>
         </div>

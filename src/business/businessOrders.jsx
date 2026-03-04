@@ -1,13 +1,15 @@
 import styles from "../styles/BusinessOrder.module.css";
 import { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../ApiContext/userContext.jsx";
+import { useTheme } from "../ApiContext/themeContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import httpMessage from "../http/httpMessage";
 import { SocketContext } from "../ApiContext/socketContext";
 import { getFeatureFlags } from "../featureFlags/featureFlags.js";
 import Socket from "../model/socket";
 import http_order from "../http/http_order";
+import { useTranslation } from "react-i18next";
 
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
@@ -19,9 +21,17 @@ export default function BusinessOrders() {
   const navigation = useNavigate();
   const { socketRef, connected, orderFeatureEnabled } = useContext(SocketContext);
   const { publicUser } = useContext(UserContext);
+  const { forceTheme, restoreTheme } = useTheme();
   const socketContext = useContext(SocketContext);
   const connectingRef = useRef(false);
   const flagRef = useRef(false);
+  const { t } = useTranslation();
+
+  // Force light mode for business pages
+  useEffect(() => {
+    forceTheme("light");
+    return () => restoreTheme();
+  }, []);
   
   const [orderFlag, setOrderFlag] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -48,6 +58,7 @@ export default function BusinessOrders() {
     const handleNewOrder = (order, ack) => {
       console.log("✅ Received new order:", order);
       setOrders(prev => [order, ...prev]);  // if you want to add it
+      setMessage({ visible: true, type: "success", msg: "New order received!" });
       if (ack) ack({ success: true }); // Acknowledge receipt to server
     };
 
@@ -185,8 +196,11 @@ export default function BusinessOrders() {
             </div>
           </div>
         )}
-        <p>Socket Status: {connected ? "Connected" : "Disconnected"}</p>
-        <h3>Total Orders: {orders.length}</h3>
+        <div className={styles.socketStatus}>
+          <span className={`${styles.statusDot} ${connected ? styles.online : styles.offline}`} />
+          <span className={styles.statusText}>{connected ? "Live — Connected" : "Disconnected"}</span>
+        </div>
+        <h3>{t('business.orders')}: {orders.length}</h3>
         <OrdersGrid orders={orders} onUpdateStatus={handleUpdateStatus} />
       </main>
 

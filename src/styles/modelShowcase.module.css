@@ -1,33 +1,7 @@
 /* modelShowcase.module.css */
 
 /* ============ Tokens ============ */
-:root {
-  --bg: rgba(10, 12, 18, 0.72);
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel2: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.12);
-  --border2: rgba(255, 255, 255, 0.18);
-
-  --text: rgba(255, 255, 255, 0.94);
-  --muted: rgba(255, 255, 255, 0.68);
-  --faint: rgba(255, 255, 255, 0.56);
-
-  --accent: #3b82f6;
-  --accent2: #06b6d4;
-  --green: #10b981;
-
-  --shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
-  --inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-  --r-lg: 20px;
-  --r-md: 14px;
-  --r-sm: 12px;
-
-  --focus: 0 0 0 3px rgba(59, 130, 246, 0.35);
-
-  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
-}
+/* Using global theme variables from index.css */
 
 /* ============ Overlay ============ */
 .overlay {
@@ -483,8 +457,12 @@
   width: 18px;
   height: 18px;
   border-radius: 6px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 11, 11, 0.35);
   background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .fakeBoxOn {
@@ -497,6 +475,12 @@
   background: rgba(16, 185, 129, 0.92);
 }
 
+.checkIcon {
+  width: 12px;
+  height: 12px;
+  color: #ffffff;
+}
+
 .rowText {
   min-width: 0;
   display: flex;
@@ -505,7 +489,7 @@
 }
 
 .rowTitle {
-  color: rgba(255, 255, 255, 0.92);
+  color: --text;
   font-size: 14.5px;
   font-weight: 780;
   white-space: nowrap;
@@ -677,4 +661,169 @@
   .primaryBtn,
   .secondaryBtn,
   .closeBtn { transition: none !important; }
+}
+
+/* ============ Light Mode Overrides ============ */
+[data-theme="light"] .overlay {
+  background: rgba(241, 245, 249, 0.95);
+}
+
+[data-theme="light"] .stage {
+  background:
+    radial-gradient(900px 420px at 50% 12%, rgba(59, 130, 246, 0.08), transparent),
+    radial-gradient(700px 560px at 50% 115%, rgba(16, 185, 129, 0.06), transparent),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .topBar {
+  border-bottom: 1px solid #e2e8f0;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+[data-theme="light"] .stepPill {
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+}
+
+[data-theme="light"] .topTitle {
+  color: #1e293b;
+}
+
+[data-theme="light"] .topSubTitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .closeBtn {
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+[data-theme="light"] .closeBtn:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .panel {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .panelTitle {
+  color: #1e293b;
+}
+
+[data-theme="light"] .panelDesc {
+  color: #64748b;
+}
+
+[data-theme="light"] .sectionHeader {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .sectionHeaderTop {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .sectionTitle {
+  color: #1e293b;
+}
+
+[data-theme="light"] .sectionSubTitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .metaPill {
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+}
+
+[data-theme="light"] .optionRow {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-theme="light"] .optionRow:hover,
+[data-theme="light"] .optionRow.selected {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .optionName {
+  color: #1e293b;
+}
+
+[data-theme="light"] .optionSub {
+  color: #64748b;
+}
+
+[data-theme="light"] .optionPrice {
+  color: #1e293b;
+}
+
+[data-theme="light"] .checkRow {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-theme="light"] .checkRow:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .checkRow.checked {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+[data-theme="light"] .checkName {
+  color: #1e293b;
+}
+
+[data-theme="light"] .checkSub {
+  color: #64748b;
+}
+
+[data-theme="light"] .checkPrice {
+  color: #1e293b;
+}
+
+[data-theme="light"] .scrollArea::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .secondaryBtn {
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .secondaryBtn:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+/* Extras categories - Light Mode */
+[data-theme="light"] .categoryCard {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-theme="light"] .categoryHead {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .categoryTitle {
+  color: #1e293b;
+}
+
+[data-theme="light"] .categoryDesc {
+  color: #64748b;
 }

@@ -13,13 +13,14 @@ import MenuBookGrid from "../components/menuBookGrid";
 import PosterTemplateGrid from "../components/posterTemplateGrid";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
 import PagesRows from "../components/pagesRows";
+import { useTranslation } from "react-i18next";
 
 
-function HeroTitle() {
+function HeroTitle({ t }) {
   return (
     <div className={styles.heroHead}>
       <h1 className={styles.pageTitle}>
-        3D Menu templates.
+        {t('menu.pageTitle')}
       </h1>
     </div>
   );
@@ -31,15 +32,28 @@ export default function MenuPage() {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("templates");
+  const { t, i18n } = useTranslation();
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
   const [quickAction, setQuickAction] = useState([
-    {tabName: "templates", name: "Explore"},
-    {tabName: "posters", name: "Posters"},
+    {tabName: "templates", name: t('menu.explore')},
+    {tabName: "posters", name: t('menu.posters')},
   ])
+
+  // Update quickAction labels when language changes
+  useEffect(() => {
+    setQuickAction(prev => prev.map(item => {
+      switch(item.tabName) {
+        case 'templates': return {...item, name: t('menu.explore')};
+        case 'posters': return {...item, name: t('menu.posters')};
+        case 'menu_book': return {...item, name: t('menu.menuBooks')};
+        default: return item;
+      }
+    }));
+  }, [i18n.language, t]);
 
 
   // Make  it so that if user switch tab too fast, it will not trigger multiple fetches //
@@ -89,7 +103,7 @@ export default function MenuPage() {
         if (exists) return prev;
 
         console.log('Adding menu_book quick action');
-        return [...prev, { tabName: "menu_book", name: "MenuBooks" }];
+        return [...prev, { tabName: "menu_book", name: t('menu.menuBooks') }];
       });
     }
     catch(err){
@@ -191,7 +205,7 @@ export default function MenuPage() {
             <Topbar onGenerateClick={scrollToGenerator} />
           </div>
           <div ref={generatorRef}>
-              <HeroTitle />
+              <HeroTitle t={t} />
           </div>
           {/* <UploadFileCard/> */}
           <div style={{marginLeft:"28px"}}>

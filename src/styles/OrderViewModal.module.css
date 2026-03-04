@@ -229,7 +229,7 @@
 }
 
 .extrasGroupTitle {
-  color: rgba(255, 255, 255, 0.85);
+  color: --text;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -262,6 +262,7 @@
 
 .extraName {
   white-space: nowrap;
+  color: var(--text);
 }
 
 .extraPrice {
@@ -317,7 +318,7 @@
 }
 
 .quantity {
-  color: white;
+  color: var(--text);
   font-size: 14px;
   font-weight: 700;
   min-width: 24px;
@@ -398,4 +399,115 @@
 
 .checkoutBtn:active {
   transform: translateY(0);
+}
+
+/* =========================
+   Light Mode Overrides
+========================= */
+[data-theme="light"] .overlay {
+  background: rgba(100, 116, 139, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .modal {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .header {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .title {
+  color: #1e293b;
+}
+
+[data-theme="light"] .closeBtn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .closeBtn:hover {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .emptyText {
+  color: #1e293b;
+}
+
+[data-theme="light"] .emptySubtext {
+  color: #64748b;
+}
+
+[data-theme="light"] .orderItem {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .orderItem:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .itemTitle {
+  color: #1e293b;
+}
+
+[data-theme="light"] .itemDescription {
+  color: #64748b;
+}
+
+[data-theme="light"] .ingredientTag {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .itemPrice {
+  color: #1e293b;
+}
+
+[data-theme="light"] .quantityBtn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .quantityBtn:hover {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .quantityValue {
+  color: #1e293b;
+}
+
+[data-theme="light"] .removeBtn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+[data-theme="light"] .removeBtn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+[data-theme="light"] .footer {
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-theme="light"] .summaryLabel {
+  color: #64748b;
+}
+
+[data-theme="light"] .summaryValue {
+  color: #1e293b;
+}
+
+[data-theme="light"] .totalPriceLabel {
+  color: #1e293b;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }

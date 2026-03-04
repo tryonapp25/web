@@ -33,7 +33,7 @@
   margin: 8px 0 0;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--muted);
+  color: var(--text);
   max-width: 60ch;
 }
 
@@ -58,10 +58,10 @@
 }
 
 .highlight {
-  border-color: rgba(255, 255, 255, 0.16);
+ border-color: rgba(79, 70, 229, 0.35);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.40);
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(79, 70, 229, 0.06);
 }
 
 /* Ribbon */
@@ -78,9 +78,9 @@
   border-bottom-left-radius: 20px;
   border-top-right-radius: 20px;
 
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(139, 124, 255, 0.85);
-  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--card-border);
+ background: var(--accent);
+  color: #ffffff;
 }
 
 /* Top */
@@ -107,7 +107,7 @@
 
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.06);
-  color: var(--muted);
+  color: var(--text);
 }
 
 /* Price */
@@ -132,7 +132,7 @@
 
 .description {
   margin: 0;
-  color: var(--muted);
+  color: var(--text);
   line-height: 1.6;
 }
 
@@ -260,7 +260,7 @@
 
 .modalSub {
   margin: 6px 0 0;
-  color: var(--muted);
+  color: var(--text);
   font-size: 13px;
 }
 

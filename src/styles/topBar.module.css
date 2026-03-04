@@ -10,15 +10,11 @@
   top: 0;
   z-index: 20;
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(11, 15, 25, 0.92),
-      rgba(11, 15, 25, 0.78)
-    );
+  background: var(--bg-gradient);
   backdrop-filter: blur(10px);
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--line);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* ===== SEARCH ===== */
@@ -32,12 +28,13 @@
 
   padding: 10px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .searchIcon {
-  color: rgba(255, 255, 255, 0.60);
+  color: var(--icon);
 }
 
 .searchInput {
@@ -47,11 +44,11 @@
   background: transparent;
 
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--text);
 }
 
 .searchInput::placeholder {
-  color: rgba(255, 255, 255, 0.40);
+  color: var(--muted);
 }
 
 /* ===== SEARCH RIGHT ICON ===== */
@@ -60,19 +57,19 @@
   height: 40px;
   border-radius: 18px;
 
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
 
   display: grid;
   place-items: center;
   cursor: pointer;
 
-  color: rgba(255, 255, 255, 0.80);
+  color: var(--text-secondary);
   transition: background 120ms ease;
 }
 
 .iconBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--accent-soft);
 }
 
 .scanGlyph {
@@ -80,8 +77,8 @@
   height: 18px;
   border-radius: 6px;
 
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--card-border);
+  background: var(--card);
 }
 
 /* ===== RIGHT ACTIONS ===== */
@@ -124,11 +121,11 @@
 
   font-size: 14px;
   font-weight: 750;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-secondary);
 }
 
 .link:hover {
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text);
 }
 
 .avatar {
@@ -136,15 +133,15 @@
   height: 40px;
   border-radius: 999px;
 
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
 
   display: grid;
   place-items: center;
 
   font-weight: 900;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--text);
 }
 
 
@@ -165,8 +162,8 @@
   padding: 10px 12px;
   border-radius: 999px;
 
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
   backdrop-filter: blur(10px);
 
   cursor: pointer;
@@ -176,8 +173,8 @@
 }
 
 .tokenBtn:hover{
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(139, 124, 255, 0.35);
+  background: var(--accent-soft);
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 
@@ -193,9 +190,9 @@
   display: grid;
   place-items: center;
 
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--card-border);
   background: rgba(255, 215, 90, 0.10);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 
   font-size: 14px;
 }
@@ -203,7 +200,7 @@
 .tokenLabel{
   font-size: 14px;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--text-secondary);
 }
 
 .tokenValue{
@@ -215,9 +212,9 @@
 
   font-weight: 950;
   font-size: 13px;
-  color: rgba(255, 245, 210, 0.95);
+  color: rgba(255, 200, 100, 0.95);
 
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  box-shadow: var(--shadow);
 }
 
 /* optional: tighten on small screens */
@@ -225,4 +222,76 @@
   .tokenLabel{
     display: none; /* shows 🪙 + number only */
   }
+}
+
+/* ===== LANGUAGE TOGGLE ===== */
+.langToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.langToggle:hover {
+  background: var(--card-hover);
+  border-color: var(--text-secondary);
+}
+
+.langCode {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ===== THEME TOGGLE ===== */
+.themeToggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.toggleTrack {
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  position: relative;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.toggleTrack.toggleLight {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--primary-btn-bg);
+  display: grid;
+  place-items: center;
+  color: var(--primary-btn-text);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.toggleLight .toggleThumb {
+  transform: translateX(24px);
+  background: #333333;
+  color: #ffffff;
 }
