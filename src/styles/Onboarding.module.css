@@ -5,7 +5,7 @@
 /* -----------------------------
    THEME TOKENS (LIGHT)
 ------------------------------ */
-:global(:root) {
+.page {
   /* Light mode — Calen style */
   --bg: #f6f7fb;
   --bg-gradient: radial-gradient(1200px 600px at 20% -10%, rgba(79, 70, 229, 0.12), transparent 60%),

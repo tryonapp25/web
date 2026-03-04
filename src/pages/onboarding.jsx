@@ -9,9 +9,24 @@ const config = {
 }
 
 const modelUrls = [
-  "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FClassic_Cheeseburger.glb_e86c3afc-6ef9-494d-ad7a-e045844610a9.glb?alt=media&token=c7d357a2-97b9-4939-a774-def262cb24d8",
-  "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FThai_Bubble.glb_93127e08-098f-48a3-91d1-62bfceddd7f0.glb?alt=media&token=abf5c34b-d17d-4b22-b947-9614c2a664d3",
-  "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FNeapolitan_Pizza.glb_da513427-77b4-4b5a-8bf6-c5df72b479ad.glb?alt=media&token=52945a22-e746-4f9f-ad81-f3cd5345f205",
+  {
+    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FGrilled%20Salmon.glb_5cdc2302-3b49-441b-9e22-614359b3eb3a.glb?alt=media&token=d98e06c1-8b4f-4879-9828-bc8348c86aac",
+    url: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438",
+    name: "Grilled Salmon",
+    price: "$18.99"
+  },
+  {
+    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FVegetable_Pad_Thai.glb_f33431a6-19d8-49c9-b558-94741e95d455.glb?alt=media&token=4356bb7f-1166-4e76-89c2-5e49d14393fc",
+    url: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FVegetable_Pad_Thai_image.png?alt=media&token=cee53760-4709-430a-882c-fff96758ddcc",
+    name: "Vegetable Pad Thai",
+    price: "$11.99"
+  },
+  {
+    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMushroom_Risotto.glb_c6e17090-f1df-42bf-8328-20102bccf529.glb?alt=media&token=0967964e-bcb8-4b50-aa57-8d831d18209b",
+    url: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2Fmushroom_risotto.png?alt=media&token=ec54a883-663b-4040-8491-fb4fa1e5f2f6",
+    name: "Mushroom Risotto",
+    price: "$14.99"
+  },
 ];
 
 const benefits = [
@@ -134,7 +149,7 @@ export default function Onboarding() {
                 <div className={styles.mockupTopText}>Live 3D Menu</div>
               </div>
               <div className={styles.mockupImage}>
-                <Model3D config={config} model={modelUrls[currentModelIndex]} />
+                <Model3D config={config} model={modelUrls[currentModelIndex]?.model} images={modelUrls[currentModelIndex]?.url} />
               </div>
               <div className={styles.mockupOverlay} />
             </div>
@@ -142,8 +157,8 @@ export default function Onboarding() {
             <div className={styles.floatingCard}>
               <div className={styles.floatingTitle}>New Order</div>
               <div className={styles.floatingRow}>
-                <span>Classic Cheeseburger</span>
-                <strong>$12.50</strong>
+                <span>{modelUrls[currentModelIndex]?.name}</span>
+                <strong>{modelUrls[currentModelIndex]?.price}</strong>
               </div>
               <div className={styles.floatingRowMuted}>+ Fries • + Soda</div>
               <div className={styles.floatingFooter}>
