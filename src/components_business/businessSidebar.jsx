@@ -12,6 +12,7 @@ import {
   Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Item({ icon: Icon, label, to, badge }) {
   return (
@@ -46,14 +47,15 @@ function Item({ icon: Icon, label, to, badge }) {
 export default function BusinessSidebar() {
   const { socketRef, connected } = useContext(SocketContext);
   const [orderBadge, setOrderBadge] = useState(null);
+  const { t } = useTranslation();
 
   const items = [
-    { id: "orders", label: "Ordrer", icon: ClipboardList, to: "/business/orders", badge: orderBadge },
+    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
     { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
-    { id: "cart", label: "Kurv", icon: ShoppingCart, to: "/business/cart", badge: 0 },
-    { id: "notes", label: "Noter", icon: StickyNote, to: "/business/notes" },
-    { id: "discount", label: "Rabat", icon: Tag, to: "/business/discount" },
-    { id: "receipt", label: "Kvittering", icon: Receipt, to: "/business/receipt" },
+    { id: "cart", label: "Cart", icon: ShoppingCart, to: "/business/cart", badge: 0 },
+    { id: "notes", label: "Notes", icon: StickyNote, to: "/business/notes" },
+    { id: "discount", label: "Discount", icon: Tag, to: "/business/discount" },
+    { id: "receipt", label: "Receipt", icon: Receipt, to: "/business/receipt" },
   ];
 
   useEffect(() => {

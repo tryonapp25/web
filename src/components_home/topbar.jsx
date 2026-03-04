@@ -1,9 +1,10 @@
 import styles from "../styles/topBar.module.css";
-import { Search, Sun, Moon } from "lucide-react";
+import { Search, Sun, Moon, Globe } from "lucide-react";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ApiContext/userContext";
 import { useTheme } from "../ApiContext/themeContext";
+import { useTranslation } from "react-i18next";
 
 
 function GetLetters(name) {
@@ -36,6 +37,13 @@ export default function Topbar() {
   const navigate = useNavigate();
   const {publicUser} = useContext(UserContext);
   const { theme, toggleTheme } = useTheme();
+  const { t, i18n } = useTranslation();
+  
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'da' : 'en';
+    i18n.changeLanguage(newLang);
+  };
+  
   return (
     <header className={styles.topbar}>
       {/* Search */}
@@ -43,7 +51,7 @@ export default function Topbar() {
         <Search size={16} className={styles.searchIcon} />
         <input
           className={styles.searchInput}
-          placeholder="Search"
+          placeholder={t('common.search')}
         />
         <IconButton label="Scan">
           <div className={styles.scanGlyph} onClick={() => navigate("/menu")} />
@@ -52,6 +60,16 @@ export default function Topbar() {
 
       {/* Right actions */}
       <div className={styles.actions}>
+        {/* Language Toggle */}
+        <button 
+          className={styles.langToggle} 
+          onClick={toggleLanguage}
+          aria-label="Toggle language"
+        >
+          <Globe size={16} />
+          <span className={styles.langCode}>{i18n.language.toUpperCase()}</span>
+        </button>
+
         {/* Theme Toggle */}
         <button 
           className={styles.themeToggle} 
@@ -66,13 +84,13 @@ export default function Topbar() {
         </button>
 
         <button className={styles.subscribeBtn} onClick={() => navigate("/business/payment")}>
-          POS Pricing
+          {t('nav.posPricing')}
         </button>
 
         {/* <button className={styles.link}>Business</button> */}
         <button className={styles.tokenBtn} onClick={() => navigate("/payment")}>
           <span className={styles.tokenIcon} aria-hidden>🪙</span>
-          <span className={styles.tokenLabel}>Tokens</span>
+          <span className={styles.tokenLabel}>{t('common.tokens')}</span>
           <span className={styles.tokenValue}>{publicUser?.token?.tokens ?? 0}</span>
         </button>
         <button onClick={() => navigate("/profile")} className={styles.avatar}>{GetLetters(publicUser?.userName || "")}</button>

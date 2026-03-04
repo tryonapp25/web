@@ -9,6 +9,7 @@ import { SocketContext } from "../ApiContext/socketContext";
 import { getFeatureFlags } from "../featureFlags/featureFlags.js";
 import Socket from "../model/socket";
 import http_order from "../http/http_order";
+import { useTranslation } from "react-i18next";
 
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
@@ -24,6 +25,7 @@ export default function BusinessOrders() {
   const socketContext = useContext(SocketContext);
   const connectingRef = useRef(false);
   const flagRef = useRef(false);
+  const { t } = useTranslation();
 
   // Force light mode for business pages
   useEffect(() => {
@@ -194,7 +196,7 @@ export default function BusinessOrders() {
           </div>
         )}
         <p>Socket Status: {connected ? "Connected" : "Disconnected"}</p>
-        <h3>Total Orders: {orders.length}</h3>
+        <h3>{t('business.orders')}: {orders.length}</h3>
         <OrdersGrid orders={orders} onUpdateStatus={handleUpdateStatus} />
       </main>
 

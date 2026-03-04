@@ -220,3 +220,80 @@
     transition: none !important;
   }
 }
+
+/* =========================
+   Light Mode Overrides
+========================= */
+[data-theme="light"] .overlay {
+  background: rgba(100, 116, 139, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="light"] .modal {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .header {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="light"] .title {
+  color: #1e293b;
+}
+
+[data-theme="light"] .subtitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .closeBtn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .closeBtn:hover {
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .kasseBtn,
+[data-theme="light"] .payNowBtn {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-theme="light"] .kasseBtn:hover,
+[data-theme="light"] .payNowBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .btnTitle {
+  color: #1e293b;
+}
+
+[data-theme="light"] .btnDesc {
+  color: #64748b;
+}
+
+[data-theme="light"] .payNowBtn {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+[data-theme="light"] .footer {
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-theme="light"] .cancelBtn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .cancelBtn:hover {
+  background: #e2e8f0;
+}

@@ -11,15 +11,16 @@ import { UserContext } from "../ApiContext/userContext";
 import MenuBookGrid from "../components/menuBookGrid";
 import PosterTemplateGrid from "../components/posterTemplateGrid";
 import { getFeatureFlags } from "../featureFlags/featureFlags";
+import { useTranslation } from "react-i18next";
 
 
 
 
-function HeroTitle() {
+function HeroTitle({ t }) {
   return (
     <div className={styles.heroHead}>
       <h1 className={styles.pageTitle}>
-        My Collections.
+        {t('collection.pageTitle')}
       </h1>
     </div>
   );
@@ -32,11 +33,24 @@ export default function MyCollection() {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState("mine");
+  const { t, i18n } = useTranslation();
 
   const [quickAction, setQuickAction] = useState([
-    {tabName: "mine", name: "My templates", isActive: true},
-    {tabName: "posters", name: "My posters", isActive: true},
+    {tabName: "mine", name: t('menu.myTemplates'), isActive: true},
+    {tabName: "posters", name: t('menu.myPosters'), isActive: true},
   ])
+
+  // Update quickAction labels when language changes
+  useEffect(() => {
+    setQuickAction(prev => prev.map(item => {
+      switch(item.tabName) {
+        case 'mine': return {...item, name: t('menu.myTemplates')};
+        case 'posters': return {...item, name: t('menu.myPosters')};
+        case 'mine_menu_book': return {...item, name: t('menu.menuBooks')};
+        default: return item;
+      }
+    }));
+  }, [i18n.language, t]);
 
 
   useEffect(() => {
@@ -83,7 +97,7 @@ export default function MyCollection() {
       if (exists) return prev;
 
       console.log('Adding menu_book quick action');
-      return [...prev, { tabName: "mine_menu_book", name: "MenuBooks" }];
+      return [...prev, { tabName: "mine_menu_book", name: t('menu.menuBooks') }];
     });
   };
 
@@ -157,7 +171,7 @@ export default function MyCollection() {
             <Topbar onGenerateClick={scrollToGenerator} />
           </div>
           <div ref={generatorRef}>
-              <HeroTitle />
+              <HeroTitle t={t} />
           </div>
           <div style={{marginLeft:"28px"}}>
             <QuickAction onPress={(t) => setTab(t)} data={quickAction}/>

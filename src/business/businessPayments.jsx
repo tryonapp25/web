@@ -6,6 +6,7 @@ import { useTheme } from "../ApiContext/themeContext";
 import http from "../http/http";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "../components/flashMessage";
+import { useTranslation } from "react-i18next";
 
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -35,7 +36,7 @@ function Spinner({ size = 16 }) {
 }
 
 /** Stripe Checkout Form (Payment Element) */
-function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSuccess }) {
+function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSuccess, t }) {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState("");
@@ -58,7 +59,7 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
     });
 
     if (error) {
-      setMessage(error.message || "Payment failed.");
+      setMessage(error.message || t('payment.paymentFailed'));
       setLoadingOuter(false);
       return;
     }
@@ -87,7 +88,7 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
           onClick={onClose}
           disabled={loadingOuter}
         >
-          Cancel
+          {t('common.cancel')}
         </button>
 
         <button
@@ -98,18 +99,17 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
           {loadingOuter ? (
             <>
               <Spinner />
-              Processing…
+              {t('payment.processing')}
             </>
           ) : (
-            "Pay"
+            t('payment.pay')
           )}
         </button>
       </div>
 
       {message && <p className={styles.errorText}>{message}</p>}
       <p className={styles.finePrint}>
-        Secure checkout powered by Stripe. Your card details never touch our
-        server.
+        {t('payment.secureCheckout')}
       </p>
     </form>
   );
@@ -119,6 +119,7 @@ export default function BusinessPayment() {
   const navigate = useNavigate();
   const { publicUser, setPublicUser } = useContext(UserContext);
   const { forceTheme, restoreTheme } = useTheme();
+  const { t } = useTranslation();
 
   const [pricing, setPricing] = useState([]);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -206,7 +207,7 @@ export default function BusinessPayment() {
       setMessage({
         visible: true,
         type: "warn",
-        msg: "Failed to update payment."
+        msg: t('payment.failedToUpdate')
       });
       return
     };
@@ -256,9 +257,9 @@ export default function BusinessPayment() {
 
         <div className={styles.head}>
           <div>
-            <h1 className={styles.title}>Buy Tokens</h1>
+            <h1 className={styles.title}>{t('payment.buyTokens')}</h1>
             <p className={styles.subtitle}>
-              Choose a pack and unlock more try-on previews anytime.
+              {t('payment.choosePackSubtitle')}
             </p>
           </div>
         </div>
@@ -330,7 +331,7 @@ export default function BusinessPayment() {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHead}>
               <div>
-                <h2 className={styles.modalTitle}>Checkout</h2>
+                <h2 className={styles.modalTitle}>{t('payment.checkout')}</h2>
                 <p className={styles.modalSub}>
                   {selected.pack} · {selected.tokens} tokens ·{" "}
                   {(selected.currency || "usd").toLowerCase() === "usd"
@@ -358,6 +359,7 @@ export default function BusinessPayment() {
                 loadingOuter={loading}
                 setLoadingOuter={setLoading}
                 onSuccess={(p) => HandlePaymentSuccess(p)}
+                t={t}
               />
             </Elements>
           </div>

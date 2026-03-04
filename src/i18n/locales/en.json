@@ -1,0 +1,172 @@
+{
+  "common": {
+    "search": "Search",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "tokens": "Tokens"
+  },
+  "nav": {
+    "3dMenu": "3D Menu",
+    "myCollection": "My Collection",
+    "business": "Business",
+    "favorites": "Favorites",
+    "downloads": "Downloads",
+    "artboards": "Artboards",
+    "profile": "Profile",
+    "logout": "Logout",
+    "posPricing": "POS Pricing"
+  },
+  "home": {
+    "heroTitle": "AI Filters You Can Create, Use, and Share.",
+    "explore": "Explore",
+    "myImages": "My Images"
+  },
+  "menu": {
+    "pageTitle": "3D Menu templates.",
+    "explore": "Explore",
+    "posters": "Posters",
+    "menuBooks": "MenuBooks",
+    "myTemplates": "My templates",
+    "myPosters": "My posters"
+  },
+  "collection": {
+    "pageTitle": "My Collections."
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "signIn": "Sign In",
+    "welcomeBack": "Welcome back 👋",
+    "createAccount": "Create account",
+    "joinUs": "Join us in a few seconds ✨",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "username": "Username",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "agreeTerms": "I agree to the",
+    "terms": "Terms",
+    "privacyPolicy": "Privacy Policy",
+    "loginFailed": "Login failed",
+    "passwordMismatch": "Passwords do not match",
+    "agreeRequired": "Please agree to Terms & Privacy Policy"
+  },
+  "profile": {
+    "title": "Profile",
+    "username": "Username",
+    "email": "Email",
+    "saveChanges": "Save Changes",
+    "myFilters": "My Filters",
+    "missingName": "Missing name",
+    "enterName": "Please enter your full name.",
+    "missingEmail": "Missing email",
+    "enterEmail": "Please enter your email.",
+    "invalidEmail": "Invalid email",
+    "enterValidEmail": "Please enter a valid email address."
+  },
+  "business": {
+    "title": "Business",
+    "orders": "Orders",
+    "products": "Products",
+    "payments": "Payments",
+    "settings": "Settings",
+    "connecting": "Connecting to the business management",
+    "noOrders": "No orders yet",
+    "searchProducts": "Search products...",
+    "allProducts": "All products",
+    "enableOrders": "Enable Orders",
+    "ordersDisabled": "Orders feature is currently disabled"
+  },
+  "orders": {
+    "orderNumber": "Order #{{number}}",
+    "status": "Status",
+    "items": "Items",
+    "total": "Total",
+    "pending": "Pending",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "waitingTime": "Waiting time",
+    "ingredients": "Ingredients",
+    "extras": "Extras"
+  },
+  "payment": {
+    "title": "Payment",
+    "buyTokens": "Buy Tokens",
+    "choosePackSubtitle": "Choose a pack and unlock more try-on previews anytime.",
+    "selectPlan": "Select a plan",
+    "tokens": "tokens",
+    "perMonth": "per month",
+    "oneTime": "one-time",
+    "subscribe": "Subscribe",
+    "currentPlan": "Current Plan",
+    "features": "Features",
+    "mostPopular": "Most Popular",
+    "choose": "Choose",
+    "processing": "Processing…",
+    "pay": "Pay",
+    "checkout": "Checkout",
+    "secureCheckout": "Secure checkout powered by Stripe. Your card details never touch our server.",
+    "paymentFailed": "Payment failed",
+    "failedToUpdate": "Failed to update payment."
+  },
+  "templates": {
+    "public": "Public",
+    "private": "Private",
+    "useTemplate": "Use Template",
+    "preview": "Preview",
+    "notFound": "Template not found",
+    "noTemplates": "No templates found",
+    "createNew": "Create new template",
+    "addPage": "Add Page"
+  },
+  "filters": {
+    "explore": "Explore",
+    "trending": "Trending",
+    "recent": "Recent",
+    "popular": "Popular",
+    "likes": "{{count}} likes"
+  },
+  "errors": {
+    "somethingWrong": "Something went wrong",
+    "tryAgain": "Please try again",
+    "networkError": "Network error",
+    "unauthorized": "Unauthorized",
+    "notFound": "Not found"
+  },
+  "settings": {
+    "pageTitle": "Settings",
+    "businessInfo": "Business Information",
+    "name": "Name",
+    "address": "Address",
+    "phone": "Phone",
+    "openHours": "Open Hours",
+    "closed": "Closed",
+    "features": "Features",
+    "enableFeature": "Enable/disable this feature for your business.",
+    "noFeatures": "No features found."
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  }
+}

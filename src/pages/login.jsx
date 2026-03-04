@@ -7,11 +7,13 @@ import FlashMessage from "../components/flashMessage";
 import httpMessage from "../http/httpMessage";
 import ActivityIndicator from "../components/activityIndicator";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const defaultMessage = { visible: false, type: "", msg: ""};
 
 export default function Login() {
   const navigate  = useNavigate();
+  const { t } = useTranslation();
   const { publicUser, setPublicUser } = useContext(UserContext);
   const [email, setEmail] = useState(publicUser?.email || "");
   const [password, setPassword] = useState("");
@@ -38,7 +40,7 @@ export default function Login() {
       setMessage({
         visible: true,
         type: "error",
-        msg: httpMessage(err) || "Login failed",
+        msg: httpMessage(err) || t('auth.loginFailed'),
       });
     }
     finally{
@@ -50,13 +52,13 @@ export default function Login() {
     <div className={styles.page}>
       <div className={styles.wrap}>
         <div className={styles.loginBox}>
-          <h2 className={styles.title}>Login</h2>
-          <p className={styles.subtitle}>Welcome back 👋</p>
+          <h2 className={styles.title}>{t('auth.login')}</h2>
+          <p className={styles.subtitle}>{t('auth.welcomeBack')}</p>
 
           <form onSubmit={handleSubmit} className={styles.form}>
             <input
               type="email"
-              placeholder="Email"
+              placeholder={t('auth.email')}
               className={styles.input}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -64,7 +66,7 @@ export default function Login() {
 
             <input
               type="password"
-              placeholder="Password"
+              placeholder={t('auth.password')}
               className={styles.input}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -72,12 +74,12 @@ export default function Login() {
 
             <Link to="/">
               <p className={styles.noAccount}>
-                Don’t have an account?
+                {t('auth.noAccount')}
               </p>
             </Link>
 
             <button className={styles.button} disabled={loading}>
-              {loading ? <ActivityIndicator /> : "Sign In"}
+              {loading ? <ActivityIndicator /> : t('auth.signIn')}
             </button>
 
           </form>

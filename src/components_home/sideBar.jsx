@@ -7,9 +7,10 @@ import {
   Plus,
   Building2 
 } from "lucide-react";
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {UserContext} from "../ApiContext/userContext";
+import { useTranslation } from "react-i18next";
 
 
 function Item({ icon: Icon, label, active, onPress }) {
@@ -30,17 +31,16 @@ function Item({ icon: Icon, label, active, onPress }) {
   );
 }
 
-const defaultItems = [
-  /* { icon: Image, label: "AI Image", path: "/home" }, */
-  { icon: LayoutGrid, label: "3D Menu", path: "/menu" },
-  { icon: Library, label: "My Collection", path: "/collection" },
-]
-
 export default function Sidebar({items}) {
   const navigate = useNavigate();
   const {publicUser} = useContext(UserContext);
   const { pathname } = useLocation(); // ✅ current route
-  const [sidebarItems] = useState(items || defaultItems);
+  const { t } = useTranslation();
+  
+  const sidebarItems = useMemo(() => items || [
+    { icon: LayoutGrid, label: t('nav.3dMenu'), path: "/menu" },
+    { icon: Library, label: t('nav.myCollection'), path: "/collection" },
+  ], [t, items]);
 
   const isActive = (path) =>
     pathname === path || pathname.startsWith(path + "/");
@@ -78,20 +78,20 @@ export default function Sidebar({items}) {
       <div className={styles.section}>
         <Item
           icon={Building2}
-          label="Business"
+          label={t('nav.business')}
           active={isActive("/business")}
           onPress={() => navigate("/business")}
         />
         <Item
           icon={Star}
-          label="Favorites"
+          label={t('nav.favorites')}
           active={isActive("/favorites")}
           onPress={() => navigate("/favorites")}
         />
 
         <Item
           icon={Download}
-          label="Downloads"
+          label={t('nav.downloads')}
           active={isActive("/downloads")}
           onPress={() => navigate("/downloads")}
         />
@@ -100,7 +100,7 @@ export default function Sidebar({items}) {
       {/* BOTTOM */}
       <div className={styles.bottom}>
         <div className={styles.artboardsRow}>
-          <span>Artboards</span>
+          <span>{t('nav.artboards')}</span>
           <button className={styles.addBtn}>
             <Plus size={16} />
           </button>

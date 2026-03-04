@@ -5,7 +5,8 @@ import { UserContext } from "../ApiContext/userContext";
 import { useTheme } from "../ApiContext/themeContext";
 import { SocketContext } from "../ApiContext/socketContext";
 import Sidebar from "../components_business/businessSidebar";
-import FlashMessage from "../components/flashMessage"
+import FlashMessage from "../components/flashMessage";
+import { useTranslation } from "react-i18next";
 
 // ---------- helpers ----------
 function normalizeFeatures(input) {
@@ -179,6 +180,7 @@ export default function BusinessSetting() {
   const { publicUser, setPublicUser } = useContext(UserContext);
   const { setOrderFeatureEnabled } = useContext(SocketContext);
   const { forceTheme, restoreTheme } = useTheme();
+  const { t } = useTranslation();
 
   const businessId = publicUser?.business?.id;
 
@@ -342,7 +344,7 @@ export default function BusinessSetting() {
       <div className={styles.main}>
         <div className={styles.pageHeader}>
           <div>
-            <div className={styles.pageTitle}>Business Settings</div>
+            <div className={styles.pageTitle}>{t('settings.pageTitle')}</div>
             <div className={styles.pageSubtitle}>Manage your features and business profile.</div>
           </div>
 
@@ -353,7 +355,7 @@ export default function BusinessSetting() {
               disabled={saving || !businessId || !businessData}
               title={!businessData ? "Business info not loaded" : ""}
             >
-              {saving ? "Saving..." : "Save changes"}
+              {saving ? t('common.loading') : t('profile.saveChanges')}
             </button>
           </div>
         </div>
@@ -362,7 +364,7 @@ export default function BusinessSetting() {
           <section className={styles.panel}>
             <div className={styles.panelHeader}>
               <div>
-                <div className={styles.panelTitle}>Features</div>
+                <div className={styles.panelTitle}>{t('settings.features')}</div>
                 <div className={styles.panelSubtitle}>
                   Enable or disable modules for your business.
                 </div>
@@ -375,7 +377,7 @@ export default function BusinessSetting() {
           <section className={styles.panel}>
             <div className={styles.panelHeader}>
               <div>
-                <div className={styles.panelTitle}>Business Info</div>
+                <div className={styles.panelTitle}>{t('settings.businessInfo')}</div>
                 <div className={styles.panelSubtitle}>Keep your profile up to date.</div>
               </div>
             </div>
