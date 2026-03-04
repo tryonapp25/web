@@ -1,11 +1,77 @@
+/* ===== THEME VARIABLES ===== */
+:root {
+  /* Dark theme (default) */
+  --bg: #0B0F19;
+  --bg-gradient: linear-gradient(180deg, rgba(11, 15, 25, 0.92), rgba(11, 15, 25, 0.78));
+  --card: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.10);
+  --card-solid: #12161f;
+  --text: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.78);
+  --muted: rgba(255, 255, 255, 0.55);
+  --faint: rgba(255, 255, 255, 0.40);
+  --line: rgba(255, 255, 255, 0.08);
+  --icon: rgba(255, 255, 255, 0.60);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.12);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --primary-btn-bg: #333333;
+  --primary-btn-text: #ffffff;
+  --accent: rgba(139, 124, 255, 1);
+  --accent-soft: rgba(139, 124, 255, 0.15);
+  
+  /* Additional utility tokens */
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --border2: rgba(255, 255, 255, 0.18);
+  --accent2: #06b6d4;
+  --green: #10b981;
+  --inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --focus: 0 0 0 3px rgba(59, 130, 246, 0.35);
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 26px;
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-gradient: linear-gradient(180deg, #ffffff, #f8f9fa);
+  --card: #ffffff;
+  --card-border: #e5e7eb;
+  --card-solid: #ffffff;
+  --text: #111827;
+  --text-secondary: #374151;
+  --muted: #6b7280;
+  --faint: #9ca3af;
+  --line: #e5e7eb;
+  --icon: #6b7280;
+  --input-bg: #f9fafb;
+  --input-border: #d1d5db;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --primary-btn-bg: #333333;
+  --primary-btn-text: #ffffff;
+  --accent: #4f46e5;
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  
+  /* Additional utility tokens for light mode */
+  --panel: #f8f9fa;
+  --panel2: #f3f4f6;
+  --border: #e5e7eb;
+  --border2: #d1d5db;
+  --accent2: #0891b2;
+  --green: #059669;
+  --inset: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --focus: 0 0 0 3px rgba(79, 70, 229, 0.25);
+}
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(11, 15, 25, 0.92),
-      rgba(11, 15, 25, 0.78)
-    );
+  background: var(--bg);
+  transition: background 0.3s ease;
 }

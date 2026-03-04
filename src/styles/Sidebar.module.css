@@ -8,7 +8,8 @@
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid var(--line);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* ===== LOGO ===== */
@@ -23,11 +24,11 @@
   width: 34px;
   height: 34px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
   display: grid;
   place-items: center;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text);
   cursor: pointer;
 }
 
@@ -35,7 +36,7 @@
   font-weight: 950;
   font-size: 16px;
   letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text);
 }
 
 /* ===== SECTIONS ===== */
@@ -48,7 +49,7 @@
 .divider {
   margin: 16px 12px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--line);
 }
 
 /* ===== SIDEBAR ITEM ===== */
@@ -70,15 +71,15 @@
 }
 
 .item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.10);
+  background: var(--card);
+  border-color: var(--card-border);
   transform: translateY(-1px);
 }
 
 .itemActive {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: var(--shadow-soft);
+  background: var(--card);
+  border-color: var(--card-border);
+  box-shadow: var(--shadow);
   transform: none;
 }
 
@@ -86,21 +87,21 @@
 .icon {
   width: 20px;
   height: 20px;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--muted);
 }
 
 .iconActive {
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text);
 }
 
 .label {
   font-size: 14px;
   font-weight: 750;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-secondary);
 }
 
 .labelActive {
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text);
 }
 
 /* ===== BOTTOM ===== */
@@ -115,24 +116,24 @@
   justify-content: space-between;
   font-size: 14px;
   font-weight: 750;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--muted);
 }
 
 .addBtn {
   width: 40px;
   height: 40px;
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  background: var(--card);
   display: grid;
   place-items: center;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text);
   cursor: pointer;
   transition: background 120ms ease, transform 120ms ease;
 }
 
 .addBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--accent-soft);
   transform: translateY(-1px);
 }
 

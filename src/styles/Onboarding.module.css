@@ -1,24 +1,5 @@
 /* LandingPage.module.css — Modern Dark Theme */
 
-:root {
-  --bg: #0B0F19;
-  --bg-2: #0F172A;
-  --card: rgba(255, 255, 255, 0.06);
-  --card-hover: rgba(255, 255, 255, 0.10);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.70);
-  --muted-2: rgba(255, 255, 255, 0.55);
-  --line: rgba(255, 255, 255, 0.12);
-  --purple: #8B7CFF;
-  --purple-2: #6D5EF6;
-  --teal: #00D1B2;
-  --gradient: linear-gradient(135deg, #8B7CFF 0%, #00D1B2 100%);
-  --radius: 18px;
-  --radius-lg: 26px;
-  --max: 1120px;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-}
-
 /* Page Container */
 .page {
   min-height: 100vh;

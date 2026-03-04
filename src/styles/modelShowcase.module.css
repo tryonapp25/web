@@ -1,33 +1,7 @@
 /* modelShowcase.module.css */
 
 /* ============ Tokens ============ */
-:root {
-  --bg: rgba(10, 12, 18, 0.72);
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel2: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.12);
-  --border2: rgba(255, 255, 255, 0.18);
-
-  --text: rgba(255, 255, 255, 0.94);
-  --muted: rgba(255, 255, 255, 0.68);
-  --faint: rgba(255, 255, 255, 0.56);
-
-  --accent: #3b82f6;
-  --accent2: #06b6d4;
-  --green: #10b981;
-
-  --shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
-  --inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-  --r-lg: 20px;
-  --r-md: 14px;
-  --r-sm: 12px;
-
-  --focus: 0 0 0 3px rgba(59, 130, 246, 0.35);
-
-  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
-}
+/* Using global theme variables from index.css */
 
 /* ============ Overlay ============ */
 .overlay {

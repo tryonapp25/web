@@ -3,7 +3,8 @@
   width: 100%;
   display: grid;
   grid-template-columns: 84px 1fr;
-  background: #f6f7f9;
+  background: var(--bg);
+  transition: background 0.3s ease;
 }
 
 .main {
@@ -28,27 +29,28 @@
 }
 
 .overlayContent {
-  background: #fff;
+  background: var(--card-solid);
   padding: 32px 48px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--card-border);
 }
 
 .overlayContent h2 {
   margin: 0 0 12px;
-  color: #333;
+  color: var(--text);
   font-size: 1.5rem;
 }
 
 .overlayContent p {
   margin: 0 0 24px;
-  color: #666;
+  color: var(--muted);
 }
 
 .enableButton {
-  background: #4f46e5;
-  color: #fff;
+  background: var(--primary-btn-bg);
+  color: var(--primary-btn-text);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -58,5 +60,5 @@
 }
 
 .enableButton:hover {
-  background: #4338ca;
+  opacity: 0.9;
 }

@@ -1,8 +1,9 @@
 import styles from "../styles/topBar.module.css";
-import { Search } from "lucide-react";
+import { Search, Sun, Moon } from "lucide-react";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ApiContext/userContext";
+import { useTheme } from "../ApiContext/themeContext";
 
 
 function GetLetters(name) {
@@ -34,6 +35,7 @@ function IconButton({ children, label }) {
 export default function Topbar() {
   const navigate = useNavigate();
   const {publicUser} = useContext(UserContext);
+  const { theme, toggleTheme } = useTheme();
   return (
     <header className={styles.topbar}>
       {/* Search */}
@@ -50,6 +52,19 @@ export default function Topbar() {
 
       {/* Right actions */}
       <div className={styles.actions}>
+        {/* Theme Toggle */}
+        <button 
+          className={styles.themeToggle} 
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+        >
+          <div className={`${styles.toggleTrack} ${theme === 'light' ? styles.toggleLight : ''}`}>
+            <div className={styles.toggleThumb}>
+              {theme === 'dark' ? <Moon size={14} /> : <Sun size={14} />}
+            </div>
+          </div>
+        </button>
+
         <button className={styles.subscribeBtn} onClick={() => navigate("/business/payment")}>
           POS Pricing
         </button>

@@ -3,6 +3,7 @@ import "./index.css"
 import { UserProvider } from "./ApiContext/userContext";
 import { SocketProvider } from "./ApiContext/socketContext";
 import { BusinessProvider } from "./ApiContext/businessContext";
+import { ThemeProvider } from "./ApiContext/themeContext";
 import ProtectedRoute from "./ApiContext/protectedRoute";
 import AdminProtection from "./ApiContext/adminProtection";
 import BusinessProtection from "./ApiContext/businessProtection";
@@ -49,11 +50,12 @@ import BusinessSetting from "./business/businessSetting";
 
 export default function App() {
   return (
-    <UserProvider>
-      <BusinessProvider>
-        <SocketProvider>
-          <main>
-            <Routes>
+    <ThemeProvider>
+      <UserProvider>
+        <BusinessProvider>
+          <SocketProvider>
+            <main>
+              <Routes>
               <Route path="/" element={<Onboarding />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -102,6 +104,7 @@ export default function App() {
         </SocketProvider>
       </BusinessProvider>
     </UserProvider>
+  </ThemeProvider>
   );
 }
 

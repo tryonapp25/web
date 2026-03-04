@@ -23,7 +23,7 @@
   aspect-ratio: 1 / 1.25;
   border-radius: 14px;
   overflow: hidden;
-  background: #15161a;
+  background: var(--card-solid);
   position: relative;
 }
 
