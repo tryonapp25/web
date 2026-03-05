@@ -139,7 +139,7 @@ export default function Payment() {
         if (res.data?.success) {
           const data = res.data.data || [];
           setPricing(data);
-
+          console.log("Fetched pricing:", data);
           const hi = data.findIndex((x) => x.highlighted === true);
           setHighlightedIndex(hi >= 0 ? hi : 0);
         }
@@ -285,9 +285,9 @@ export default function Payment() {
 
                 <ul className={styles.list}>
                   {(p.items || []).map((it) => (
-                    <li key={it} className={styles.item}>
+                    <li key={it?.id} className={styles.item}>
                       <span className={styles.check}>✓</span>
-                      <span style={{ color: "var(--text)" }}>{it}</span>
+                      <span style={{ color: "var(--text)" }}>{it?.name}</span>
                     </li>
                   ))}
                 </ul>
