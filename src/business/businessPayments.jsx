@@ -5,6 +5,7 @@ import { UserContext } from "../ApiContext/userContext";
 import http from "../http/http";
 import { useNavigate } from "react-router-dom";
 import FlashMessage from "../components/flashMessage";
+import LoadingModal from "../components/loading";
 import { useTranslation } from "react-i18next";
 
 import { loadStripe } from "@stripe/stripe-js";
@@ -210,6 +211,7 @@ export default function BusinessPayment() {
     }
 
     try{
+      setLoading(true);
       const res = await http.put(endpoint,{
         user: publicUser,
         package: selected
@@ -217,7 +219,6 @@ export default function BusinessPayment() {
       if(res.data.success){
         setPublicUser(res.data.data);
         setMessage({visible: true, type: "success", msg: res.data.message});
-        setPublicUser(res.data.data);
         setTimeout(() => {
           navigate(`/business`);
         }, 700);
@@ -229,6 +230,9 @@ export default function BusinessPayment() {
         type: "error",
         msg: httpMessage(err)
       });
+    }
+    finally{
+      setLoading(false);
     }
   }
 
@@ -314,6 +318,7 @@ export default function BusinessPayment() {
             ))}
         </div>
         
+        <LoadingModal open={loading} title={t('payment.processing')} subtitle={t('payment.pleaseWait')}/>
         <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
       </div>
 

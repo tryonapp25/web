@@ -2,6 +2,8 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../ApiContext/socketContext";
 import styles from "../styles/BusinessSidebar.module.css";
 import { BusinessContext } from "../ApiContext/businessContext";
+import { UserContext } from "../ApiContext/userContext";
+import http from "../http/http";
 
 import {
   ScanLine,
@@ -48,7 +50,8 @@ function Item({ icon: Icon, label, to, badge }) {
 export default function BusinessSidebar() {
   const checkedRef = useRef(false);
   const { socketRef, connected } = useContext(SocketContext);
-  const { isPOSEnabled } = useContext(BusinessContext);
+  const { setIsPOSEnabled } = useContext(BusinessContext);
+  const { publicUser } = useContext(UserContext);
   const [orderBadge, setOrderBadge] = useState(null);
   const { t } = useTranslation();
 
@@ -84,12 +87,23 @@ export default function BusinessSidebar() {
 
 
   useEffect(() => {
-    if(checkedRef.current) return;
+    if(!publicUser?.business?.id) return;
+    if (checkedRef.current) return;
     checkedRef.current = true;
-    if(isPOSEnabled) {
-      setItems(POS);
-    };
-  }, [isPOSEnabled]);
+    checkPOSEnabled(); 
+  }, []);
+
+  const checkPOSEnabled = async () => {
+    try {
+      const response = await http.get(`/business/${publicUser?.business?.id}/feature/POS_SYSTEM`);
+      if(response?.data?.success) {
+        if(response.data.data === true) setItems(POS);
+        setIsPOSEnabled(response.data.data);
+      }
+    } catch (err) {
+      console.error("Error checking POS enabled:", err);
+    } 
+  };
 
   return (
     <aside className={styles.sidebar}>
