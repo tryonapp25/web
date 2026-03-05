@@ -20,8 +20,8 @@ import httpMessage from "../http/httpMessage";
 const defaultMessage = {
   visible: false,
   type: "",
-  msg: ""
-}
+  msg: "",
+};
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -36,10 +36,18 @@ function Spinner({ size = 16 }) {
 }
 
 /** Stripe Checkout Form (Payment Element) */
-function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSuccess, t }) {
+function CheckoutForm({
+  onClose,
+  selected,
+  loadingOuter,
+  setLoadingOuter,
+  onSuccess,
+  t,
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState("");
+
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -48,26 +56,23 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
     setMessage("");
     setLoadingOuter(true);
 
-    // If you want to handle success without redirect, keep redirect: "if_required"
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Change to your success page
         return_url: window.location.origin + "/payment-success",
       },
       redirect: "if_required",
     });
 
     if (error) {
-      setMessage(error.message || t('payment.paymentFailed'));
+      setMessage(error.message || t("payment.paymentFailed"));
       setLoadingOuter(false);
       return;
     }
 
-    // If no redirect required and no error -> success
     setLoadingOuter(false);
     onClose();
-    onSuccess(selected)
+    onSuccess(selected);
   };
 
   return (
@@ -78,8 +83,8 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
         {selected?.price}
       </div>
 
-      {/* This renders the secure card/wallet UI */}
-      <PaymentElement />
+      {/* Scroll will happen inside the form, so PaymentElement can grow safely */}
+      <PaymentElement/>
 
       <div className={styles.actions}>
         <button
@@ -88,7 +93,7 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
           onClick={onClose}
           disabled={loadingOuter}
         >
-          {t('common.cancel')}
+          {t("common.cancel")}
         </button>
 
         <button
@@ -99,18 +104,16 @@ function CheckoutForm({ onClose, selected, loadingOuter, setLoadingOuter, onSucc
           {loadingOuter ? (
             <>
               <Spinner />
-              {t('payment.processing')}
+              {t("payment.processing")}
             </>
           ) : (
-            t('payment.pay')
+            t("payment.pay")
           )}
         </button>
       </div>
 
       {message && <p className={styles.errorText}>{message}</p>}
-      <p className={styles.finePrint}>
-        {t('payment.secureCheckout')}
-      </p>
+      <p className={styles.finePrint}>{t("payment.secureCheckout")}</p>
     </form>
   );
 }
@@ -126,13 +129,12 @@ export default function BusinessPayment() {
   const [selected, setSelected] = useState(null);
   const [openPay, setOpenPay] = useState(false);
 
-  const [loading, setLoading] = useState(false); // used for both create intent + confirm
+  const [loading, setLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentData, setPaymentData] = useState(null);
 
   const [message, setMessage] = useState(defaultMessage);
 
-  // Fetch token pricing from your backend
   useEffect(() => {
     const fetchPricing = async () => {
       try {
@@ -158,7 +160,6 @@ export default function BusinessPayment() {
     setClientSecret("");
   };
 
-  // IMPORTANT: pass plan directly (don’t rely on async setSelected)
   const onChoose = async (plan) => {
     setSelected(plan);
     await createPaymentIntent(plan);
@@ -170,7 +171,6 @@ export default function BusinessPayment() {
     try {
       setLoading(true);
 
-      // Your backend should return: { data: { clientSecret: "pi_..._secret_..." } }
       const res = await http.post(`/payment/create-intent`, {
         user: publicUser,
         package: plan,
@@ -190,61 +190,58 @@ export default function BusinessPayment() {
       setMessage({
         visible: true,
         type: "error",
-        msg: httpMessage(e) || t('payment.paymentFailed')
+        msg: httpMessage(e) || t("payment.paymentFailed"),
       });
     } finally {
       setLoading(false);
     }
   };
 
-
   const HandlePaymentSuccess = async () => {
-    if(!paymentData){
+    if (!paymentData) {
       setMessage({
         visible: true,
         type: "warn",
-        msg: t('payment.failedToUpdate')
+        msg: t("payment.failedToUpdate"),
       });
-      return
-    };
+      return;
+    }
 
     let endpoint = `/payment/business/payment-success/${paymentData?.paymentIntentId}`;
-    if(publicUser?.isCustomer === true){
+    if (publicUser?.isCustomer === true) {
       endpoint = `/payment/business/update-subscription/${paymentData?.paymentIntentId}`;
     }
 
-    try{
+    try {
       setLoading(true);
-      const res = await http.put(endpoint,{
+      const res = await http.put(endpoint, {
         user: publicUser,
-        package: selected
+        package: selected,
       });
-      if(res.data.success){
+
+      if (res.data.success) {
         setPublicUser(res.data.data);
-        setMessage({visible: true, type: "success", msg: res.data.message});
+        setMessage({ visible: true, type: "success", msg: res.data.message });
         setTimeout(() => {
           navigate(`/business`);
         }, 700);
       }
-    }
-    catch(err){
+    } catch (err) {
       setMessage({
         visible: true,
         type: "error",
-        msg: httpMessage(err)
+        msg: httpMessage(err),
       });
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
-  // Elements options must be stable; useMemo helps avoid re-mount loops
   const elementsOptions = useMemo(() => {
     if (!clientSecret) return null;
     return {
       clientSecret,
-      // Optional appearance config:
+      // optional:
       // appearance: { theme: "stripe" },
     };
   }, [clientSecret]);
@@ -252,14 +249,10 @@ export default function BusinessPayment() {
   return (
     <div className={styles.page}>
       <div className={styles.wrap}>
-   
-
         <div className={styles.head}>
           <div>
-            <h1 className={styles.title}>{t('payment.buyTokens')}</h1>
-            <p className={styles.subtitle}>
-              {t('payment.choosePackSubtitle')}
-            </p>
+            <h1 className={styles.title}>{t("payment.buyTokens")}</h1>
+            <p className={styles.subtitle}>{t("payment.choosePackSubtitle")}</p>
           </div>
         </div>
 
@@ -286,25 +279,40 @@ export default function BusinessPayment() {
 
                 <div className={styles.priceRow}>
                   <div className={styles.price}>
-                    {p.currency === "usd" ? "$" : p.currency === "euro" ? "€" : p.currency}
+                    {p.currency === "usd"
+                      ? "$"
+                      : p.currency === "euro"
+                      ? "€"
+                      : p.currency}
                     {p.price}
                   </div>
                   <div className={styles.per}>one-time</div>
                 </div>
 
-                <p className={styles.description} >{p.description}</p>
+                <p className={styles.description}>{p.description}</p>
 
                 <ul className={styles.list}>
                   {(p.items || []).map((it) => (
-                    <li key={it} className={styles.item}>
-                      <span className={styles.check}>{it?.included ? "✓" : "✗"}</span>
-                      <span style={{ color: "var(--text)", textDecoration: it?.included ? "none" : "line-through" }}>{it.description}</span>
+                    <li key={it.description} className={styles.item}>
+                      <span className={styles.check}>
+                        {it?.included ? "✓" : "✗"}
+                      </span>
+                      <span
+                        style={{
+                          color: "var(--text)",
+                          textDecoration: it?.included ? "none" : "line-through",
+                        }}
+                      >
+                        {it.description}
+                      </span>
                     </li>
                   ))}
                 </ul>
 
                 <button
-                  className={p.highlighted ? styles.primaryBtn : styles.secondaryBtn}
+                  className={
+                    p.highlighted ? styles.primaryBtn : styles.secondaryBtn
+                  }
                   onClick={() => onChoose(p)}
                   disabled={loading}
                 >
@@ -320,9 +328,18 @@ export default function BusinessPayment() {
               </div>
             ))}
         </div>
-        
-        <LoadingModal open={loading} title={t('payment.processing')} subtitle={t('payment.pleaseWait')}/>
-        <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
+
+        <LoadingModal
+          open={loading}
+          title={t("payment.processing")}
+          subtitle={t("payment.pleaseWait")}
+        />
+        <FlashMessage
+          show={message.visible}
+          type={message.type}
+          message={message.msg}
+          onClose={() => setMessage(defaultMessage)}
+        />
       </div>
 
       {/* Payment modal */}
@@ -331,7 +348,7 @@ export default function BusinessPayment() {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHead}>
               <div>
-                <h2 className={styles.modalTitle}>{t('payment.checkout')}</h2>
+                <h2 className={styles.modalTitle}>{t("payment.checkout")}</h2>
                 <p className={styles.modalSub}>
                   {selected.pack} · {selected.tokens} tokens ·{" "}
                   {(selected.currency || "usd").toLowerCase() === "usd"
@@ -358,7 +375,7 @@ export default function BusinessPayment() {
                 selected={selected}
                 loadingOuter={loading}
                 setLoadingOuter={setLoading}
-                onSuccess={(p) => HandlePaymentSuccess(p)}
+                onSuccess={() => HandlePaymentSuccess()}
                 t={t}
               />
             </Elements>
