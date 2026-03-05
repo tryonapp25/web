@@ -187,8 +187,11 @@ export default function BusinessPayment() {
       setPaymentData(res.data.data);
       setOpenPay(true);
     } catch (e) {
-      console.error(e);
-      alert(e?.message || "Payment failed.");
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: httpMessage(e) || t('payment.paymentFailed')
+      });
     } finally {
       setLoading(false);
     }
@@ -283,7 +286,7 @@ export default function BusinessPayment() {
 
                 <div className={styles.priceRow}>
                   <div className={styles.price}>
-                    {(p.currency || "usd").toLowerCase() === "usd" ? "$" : "DKK"}
+                    {p.currency === "usd" ? "$" : p.currency === "euro" ? "€" : p.currency}
                     {p.price}
                   </div>
                   <div className={styles.per}>one-time</div>
