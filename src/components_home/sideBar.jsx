@@ -97,14 +97,14 @@ export default function Sidebar({items}) {
       </div>
 
       {/* BOTTOM */}
-      <div className={styles.bottom}>
+      {/* <div className={styles.bottom}>
         <div className={styles.artboardsRow}>
           <span>{t('nav.artboards')}</span>
           <button className={styles.addBtn}>
             <Plus size={16} />
           </button>
         </div>
-      </div>
+      </div> */}
     </aside>
   );
 }
