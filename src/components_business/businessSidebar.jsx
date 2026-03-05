@@ -56,11 +56,10 @@ export default function BusinessSidebar() {
   const { t } = useTranslation();
 
   const [items, setItems] = useState([
-    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
+    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders" }
   ]);
 
   const POS = [
-    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders", badge: orderBadge },
     { id: "scan", label: "Scan", icon: ScanLine, to: "/business/scan" },
     { id: "cart", label: "Cart", icon: ShoppingCart, to: "/business/cart", badge: 0 },
     { id: "notes", label: "Notes", icon: StickyNote, to: "/business/notes" },
@@ -97,7 +96,7 @@ export default function BusinessSidebar() {
     try {
       const response = await http.get(`/business/${publicUser?.business?.id}/feature/POS_SYSTEM`);
       if(response?.data?.success) {
-        if(response.data.data === true) setItems(POS);
+        if(response.data.data === true) setItems(prev => [...prev, ...POS]);
         setIsPOSEnabled(response.data.data);
       }
     } catch (err) {
@@ -120,7 +119,7 @@ export default function BusinessSidebar() {
             icon={it.icon}
             label={it.label}
             to={it.to}
-            badge={it.badge}
+            badge={it.id === "orders" ? orderBadge : it.badge}
           />
         ))}
       </nav>
