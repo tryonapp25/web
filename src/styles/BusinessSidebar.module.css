@@ -16,6 +16,9 @@
   display: grid;
   place-items: center;
   background: var(--card);
+  border-width: 1px;
+  border:2px solid var(--line);
+  cursor: pointer;
 }
 
 .brandDot {
