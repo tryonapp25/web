@@ -53,6 +53,11 @@ function Receipt({ order }) {
   return (
     <div className={styles.receipt} aria-label="Receipt">
       <div className={styles.receiptHeader}>
+        <img
+          src={order?.businessLogo || null}
+          alt={`${order?.businessName || "Business"} logo`}
+          className={styles.logo}
+        />
         <div className={styles.brand}>
           {order?.businessName || "Business"}
         </div>
