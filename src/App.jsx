@@ -13,6 +13,7 @@ import ProductionProtection from "./ApiContext/productionProtection";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Onboarding from "./pages/onboarding";
+import Demo from "./pages/demo";
 import Payment from "./pages/payment";
 import Profile from "./pages/profile";
 import MenuPage from "./pages/menu";
@@ -24,8 +25,6 @@ import MenuBookWraper from "./pages/menuBookWrapper";
 import PosterTemplateWraper from "./pages/posterTemplateWrapper";
 import MyCollection from "./pages/collection";
 import Receipt from "./pages/receipt";
-
-import TestPage from "./test/testPage";
 
 
 // Admin //
@@ -45,6 +44,7 @@ import BusinessSetting from "./business/businessSetting";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
+/*import TestPage from "./test/testPage";*/
 
 
 
@@ -59,7 +59,7 @@ export default function App() {
               <Route path="/" element={<Onboarding />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/test" element={<TestPage />} />
+              <Route path="/demo" element={<Demo />} />
 
               <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
               <Route path="/receipt/:type" element={<Receipt />} />
@@ -68,6 +68,7 @@ export default function App() {
                 <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
               </Route>
               {/* <Route path="/test" element={<TestTemplate />} /> */}
+              {/*<Route path="/test" element={<TestPage />} /> */}
         
               {/*Protect routers */}
               <Route element={<ProtectedRoute />}>

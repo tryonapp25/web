@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.css";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -31,9 +33,10 @@ export default function Navbar() {
         </a>
 
         <div className={styles.links}>
-          <a href="#features" onClick={(e) => scrollToSection(e, "features")}>Features</a>
-          <a href="#how" onClick={(e) => scrollToSection(e, "how")}>How it works</a>
-          <a href="#pricing" onClick={(e) => scrollToSection(e, "pricing")}>Pricing</a>
+          <a href="#features" onClick={(e) => {navigate("/"), scrollToSection(e, "features")}}>Features</a>
+          <a href="#how" onClick={(e) => {navigate("/"), scrollToSection(e, "how")}}>How it works</a>
+          <a style={{cursor:"pointer"}} onClick={() => navigate("/demo")}>Demo</a>
+          <a href="#pricing" onClick={(e) => {navigate("/"), scrollToSection(e, "pricing")}}>Pricing</a>
         </div>
 
         <div className={styles.actions}>

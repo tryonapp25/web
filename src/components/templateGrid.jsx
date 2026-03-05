@@ -18,7 +18,7 @@ const defaultMessage = { visible: false, type: "", msg: "" };
 // include templates in root and subfolders (e.g. templates/menu)
 const modules = import.meta.glob("../templates/**/*.jsx");
 
-export default function TemplateGrid({ templates = [] }) {
+export default function TemplateGrid({ templates = [], action = true }) {
   const navigate = useNavigate();
   const {publicUser, setPublicUser} = useContext(UserContext);
   const [tokens, setTokens] = useState(publicUser?.token?.tokens);
@@ -51,6 +51,8 @@ export default function TemplateGrid({ templates = [] }) {
   }, []);
 
   const handleBuy = async () => {
+    if(!action) return setMessage({visible: true, type:"error", msg: "You can not buy this template, Plaese Login or Signup to buy templates"});
+    
     setOpenModal(false);
     if(selectedTemplate?.price > tokens){
       setMessage({visible: true, type:"error", msg: "You don't have enough tokens"});
@@ -73,6 +75,7 @@ export default function TemplateGrid({ templates = [] }) {
   };
 
   const handlePreview = () => {
+    if(!action) return setMessage({visible: true, type:"error", msg: "You can not preview this template, Plaese Login or Signup to preview templates"});
     setOpenModal(false);
     if (!selectedTemplate?.code || !selectedTemplate?.id) return;
     navigate(
