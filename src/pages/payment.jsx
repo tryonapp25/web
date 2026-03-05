@@ -275,7 +275,7 @@ export default function Payment() {
 
                 <div className={styles.priceRow}>
                   <div className={styles.price}>
-                    {(p.currency || "usd").toLowerCase() === "usd" ? "$" : "DKK"}
+                    {p.currency === "usd" ? "$" : p.currency === "euro" ? "€" : p.currency}
                     {p.price}
                   </div>
                   <div className={styles.per}>one-time</div>
@@ -322,9 +322,7 @@ export default function Payment() {
                 <h2 className={styles.modalTitle}>{t('payment.checkout')}</h2>
                 <p className={styles.modalSub}>
                   {selected.pack} · {selected.tokens} tokens ·{" "}
-                  {(selected.currency || "usd").toLowerCase() === "usd"
-                    ? "$"
-                    : "DKK"}
+                  {selected.currency === "usd" ? "$" : selected.currency === "euro" ? "€" : selected.currency}
                   {selected.price}
                 </p>
               </div>

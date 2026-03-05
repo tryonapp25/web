@@ -136,7 +136,7 @@ export default function Onboarding() {
 
             <div className={styles.heroCta}>
               <Link to="/login" className={styles.btnPrimary}>
-                Start Free Trial <span>→</span>
+                Get started <span>→</span>
               </Link>
               <a
                 className={styles.btnSecondary}
@@ -411,7 +411,7 @@ export default function Onboarding() {
           <span className={styles.sectionLabel}>Pricing</span>
           <h2 className={styles.sectionTitle}>Start small. Scale fast.</h2>
           <p className={styles.sectionSubtitle}>
-            Choose the plan that matches your café today.
+            Choose the plan that matches your business today.
           </p>
         </div>
 
@@ -431,7 +431,7 @@ export default function Onboarding() {
                 <h3 className={styles.pricingName}>{plan.pack}</h3>
 
                 <div className={styles.pricingPrice}>
-                  {plan.currency === "usd" ? "$" : plan.currency}
+                  {plan.currency === "usd" ? "$" : plan.currency === "euro" ? "€" : plan.currency}
                   {plan.price}
                   <span>/ month</span>
                 </div>
