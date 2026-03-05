@@ -30,7 +30,7 @@ function formatDate(ts) {
  * }
  */
 function Receipt({ order }) {
-  const data = order?.data ?? {};
+  const data = order;
   const items = Array.isArray(data.data) ? data.data : [];
 
   const computedTotal = useMemo(() => {
@@ -47,19 +47,20 @@ function Receipt({ order }) {
     return Number.isFinite(sum) ? sum : null;
   }, [order?.totalPrice, items]);
 
+
   const currency = order?.currency ?? data.currency ?? "";
 
   return (
     <div className={styles.receipt} aria-label="Receipt">
       <div className={styles.receiptHeader}>
         <div className={styles.brand}>
-          {order?.name || "Business"}
+          {order?.businessName || "Business"}
         </div>
         <div className={styles.subtle}>
-          {data.address || "—"}
+          Adr:{data.businessAddress || "—"}
         </div>
         <div className={styles.subtle}>
-          {data.businessPhone || data.businessEmail || ""}
+          Tlf: {data.businessPhone ||  ""}
         </div>
       </div>
 
@@ -71,7 +72,7 @@ function Receipt({ order }) {
           <span className={styles.metaVal}>#{order?.id ?? "—"}</span>
         </div>
         <div className={styles.metaRow}>
-          <span className={styles.metaKey}>Business</span>
+          <span className={styles.metaKey}>{order?.businessName}</span>
           <span className={styles.metaVal}>{order?.businessId ?? "—"}</span>
         </div>
         <div className={styles.metaRow}>
@@ -104,15 +105,10 @@ function Receipt({ order }) {
       {items.length ? (
         <div className={styles.items}>
           {items.map((it, idx) => {
-            const name = it?.name ?? `Item ${idx + 1}`;
+            const name = it?.title ?? `Item ${idx + 1}`;
             const qty = it?.qty ?? 1;
-            const price = it?.price ?? null;
-            const lineTotal =
-              it?.total != null
-                ? it.total
-                : price != null
-                  ? Number(qty) * Number(price)
-                  : null;
+            const price = it?.data[0]?.price ?? null;
+            const lineTotal = order?.totalPrice
 
             return (
               <div key={idx} className={styles.itemRow}>
@@ -185,6 +181,7 @@ export default function ReceiptModal({
       setPrinting(false);
       return;
     }
+    console.log("ReceiptModal opened with order:", order);
     if (!autoPrint) return;
 
     setPrinting(true);

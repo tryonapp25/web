@@ -49,9 +49,10 @@ function Item({ icon: Icon, label, to, badge }) {
 
 export default function BusinessSidebar() {
   const checkedRef = useRef(false);
+  const fileInputRef = useRef(null);
   const { socketRef, connected } = useContext(SocketContext);
   const { setIsPOSEnabled } = useContext(BusinessContext);
-  const { publicUser } = useContext(UserContext);
+  const { publicUser, setPublicUser } = useContext(UserContext);
   const [orderBadge, setOrderBadge] = useState(null);
   const { t } = useTranslation();
 
@@ -104,11 +105,57 @@ export default function BusinessSidebar() {
     } 
   };
 
+  const handleUploadBusinessLogo = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("user", JSON.stringify(publicUser));
+
+      const res = await http.put(
+        `/business/${publicUser?.business?.id}/logo`,
+        formData
+      );
+
+      if (res.data?.success) {
+        setPublicUser((prev) => ({
+          ...prev,
+          business: { ...prev.business, logo: res.data.data },
+        }));
+        setPublicUser((prev) => ({
+          ...prev,
+          business: { ...prev.business, logo: res.data.data },
+        }));
+      }
+    } catch (err) {
+      console.error("Error uploading business logo:", err);
+    }
+  };
+
   return (
     <aside className={styles.sidebar}>
+      {/* hidden file input */}
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleUploadBusinessLogo}
+      />
+
       {/* Brand */}
-      <div className={styles.brand} aria-label="Brand">
-        <div className={styles.brandDot} />
+      <div
+        className={styles.brand}
+        aria-label="Brand"
+        onClick={() => fileInputRef.current.click()}
+      >
+        {publicUser?.business?.logo ? (
+          <img src={publicUser.business.logo} alt="Brand Logo" style={{ width: "100%", height: "100%", borderRadius: "14px", objectFit: "cover" }} />
+        ) : (
+          <div className={styles.brandDot} />
+        )}
       </div>
 
       {/* Nav */}
