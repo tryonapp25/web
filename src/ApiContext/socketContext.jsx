@@ -79,7 +79,7 @@ export function SocketProvider({ children }) {
 
   const checkEnableOrderOnlineFeatureForBusiness = async (businessId) => {
       try {
-          const res = await http.get(`/business/feature/ORDER_ONLINE/business/${businessId}`);
+          const res = await http.get(`/business/feature/ONLINE_ORDERING/business/${businessId}`);
           const enabled = res.data?.data ?? false;
           return enabled;
       } catch (err) {

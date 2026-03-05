@@ -15,7 +15,7 @@ import {
   FileEdit,
   Image,
   BookOpen,
-  Puzzle,
+  Flag,
   CreditCard 
 } from "lucide-react";
 
@@ -25,7 +25,7 @@ const defaultItems = [
   { icon: Image, label: "Edit Poster", path: "/admin/edit/poster" },
   { icon: BookOpen, label: "Edit Menu Book", path: "/admin/edit/menubook" },
   { icon: CreditCard, label: "Edit Pricing", path: "/admin/edit/pricing-business" },
-  { icon: Puzzle, label: "Features", path: "/admin/features" },
+  { icon: Flag, label: "Feature Flags", path: "/admin/features" },
 ];
 
 const quickAction = [
