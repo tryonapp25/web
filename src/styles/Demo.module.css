@@ -1,0 +1,31 @@
+/* Demo.module.css */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.heroHead {
+  padding: 40px 24px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@media (max-width: 768px) {
+  .heroHead {
+    padding: 28px 16px 16px;
+  }
+}
