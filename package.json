@@ -17,6 +17,7 @@
     "@stripe/stripe-js": "^8.6.1",
     "aframe": "^1.7.1",
     "axios": "^1.13.2",
+    "firebase": "^12.10.0",
     "i18next": "^25.8.14",
     "i18next-browser-languagedetector": "^8.2.1",
     "i18next-locize-backend": "^1.1.0",

@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./index.css"
+import "./index.css";
+import { notificationMessageListener } from "./firebase";
+import { useEffect, useRef } from "react";
+
 import { UserProvider } from "./ApiContext/userContext";
 import { SocketProvider } from "./ApiContext/socketContext";
 import { BusinessProvider } from "./ApiContext/businessContext";
@@ -49,6 +52,13 @@ import BusinessSetting from "./business/businessSetting";
 
 
 export default function App() {
+  const startRef = useRef(false);
+  useEffect(() => {
+    if(startRef.current) return;
+    startRef.current = true;
+    notificationMessageListener();
+  }, []);
+
   return (
     <ThemeProvider>
       <UserProvider>
