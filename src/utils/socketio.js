@@ -84,13 +84,13 @@ function generateGuestId(length = 12) {
 }
 
 async function getFCMToken() {
-  let token = localStorage.getItem("fcmToken");
+  let token = sessionStorage.getItem("fcmToken");
   if(token) return token;
 
   setupNotifications()
     .then((newToken) => {
-      localStorage.setItem("fcmToken", newToken);
-      console.log("FCM token stored in localStorage:", newToken);
+      sessionStorage.setItem("fcmToken", newToken);
+      console.log("FCM token stored in sessionStorage:", newToken);
       return newToken;
     })
     .catch((err) => {
