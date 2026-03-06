@@ -292,6 +292,7 @@ export default function BusinessSetting() {
         email: businessData.email,
         website: businessData.website,
         openHours: businessData.openHours,
+        theme: businessData.theme,
       };
 
       const res = await http.put(`/business/${businessId}/info`, payload);
@@ -312,6 +313,10 @@ export default function BusinessSetting() {
 
   function handleFieldChange(field, value) {
     setBusinessData((b) => ({ ...(b || {}), [field]: value }));
+    setPublicUser((u) => ({
+      ...u,
+      business: { ...u.business, [field]: value },
+    }));
   }
 
   if (loading) {
@@ -382,17 +387,21 @@ export default function BusinessSetting() {
               </div>
             </div>
 
-            <div className={styles.businessForm}>
-              {/* <div className={styles.row}>
-                <label>Id</label>
-                <div className={styles.readOnlyValue}>{businessData?.id ?? businessId ?? "-"}</div>
+            <div className={styles.themeToggleRow}>
+              <div className={styles.themeToggleInfo}>
+                <div className={styles.themeToggleLabel}>Theme</div>
+                <div className={styles.themeToggleDesc}>
+                  {businessData?.theme === "dark" ? "Dark mode" : "Light mode"}
+                </div>
               </div>
+              <Toggle
+                checked={businessData?.theme === "dark"}
+                label="Toggle theme"
+                onChange={(isDark) => handleFieldChange("theme", isDark ? "dark" : "light")}
+              />
+            </div>
 
-              <div className={styles.row}>
-                <label>UID</label>
-                <div className={styles.readOnlyValue}>{businessData?.uid ?? "-"}</div>
-              </div> */}
-
+            <div className={styles.businessForm}>
               <div className={styles.row}>
                 <label>Name</label>
                 <input

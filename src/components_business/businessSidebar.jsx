@@ -116,7 +116,12 @@ export default function BusinessSidebar() {
 
       const res = await http.put(
         `/business/${publicUser?.business?.id}/logo`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       if (res.data?.success) {

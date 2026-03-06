@@ -30,7 +30,16 @@ export default function OrdersGrid({ orders = [], onUpdateStatus }) {
 
       {sortedOrders.length === 0 ? (
         <div className={styles.empty}>
-          No active orders
+          <div className={styles.emptyIcon}>
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 01-8 0" />
+            </svg>
+          </div>
+          <div className={styles.emptyTitle}>No active orders</div>
+          <div className={styles.emptySubtitle}>New orders will appear here in real-time</div>
+          <div className={styles.emptyPulse} />
         </div>
       ) : (
         <div className={styles.grid}>
