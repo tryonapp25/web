@@ -121,15 +121,10 @@ export default function BusinessOrders() {
     }
   };
 
-  const handleUpdateStatus = async (orderId, status) => {
+  const handleUpdateStatus = async (orderId, status, customerId) => {
       try {
-          const token = sessionStorage.getItem("token");
-          if(!token) {
-              console.error("No token available for updating order status");
-              return false;
-          }
           setLoading(true);
-          const res = await http_order.put(`/order/${orderId}/status`,{status: status});
+          const res = await http_order.put(`/order/${orderId}/status`,{status: status, customerId: customerId});
           if(res.data.success){
               console.log("update order status successfully:", res.data.data);
               if(status === "COMPLETED"){

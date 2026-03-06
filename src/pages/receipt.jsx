@@ -1,10 +1,12 @@
 import {useSearchParams, useNavigate } from "react-router-dom";
 import ReceiptModal from "../components/receiptModal";
-import axios from "axios";
 import httpMessage from "../http/httpMessage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import styles from "../styles/Receipt.module.css";
-import http_receipt from "../http/http_receipt";
+import http_order from "../http/http_order";
+
+import {SocketContext} from "../ApiContext/socketContext";
+import Socket from "../model/socket";
 
 import FlashMessage from "../components/flashMessage";
 
@@ -13,25 +15,52 @@ import FlashMessage from "../components/flashMessage";
 
 export default function Receipt() {
     const navigate = useNavigate();
+    const fetchingRef = useRef(false);
+    const socketContext = useContext(SocketContext);
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get("orderId");
+
+    const { socketRef, connected } = useContext(SocketContext);
 
     const [order, setOrder] = useState(null);
     const [message, setMessage] = useState({visible: false, msg: "", type: ""});
     const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
-        if (!orderId) {
-            navigate("/"); // Redirect to home if no orderId
-            return;
-        }
-        getOrderDetails(orderId);
+        if (!orderId) { navigate("/")
+            return
+        };
+
+        if (fetchingRef.current) return; // Prevent multiple fetches
+        fetchingRef.current = true;
+        getOrderDetails();
     }, [orderId, navigate]);
 
-    const getOrderDetails = async (orderId) => {
+    useEffect(() => {
+        const socket = new Socket(socketContext);
+        socket.connectAsGuest();
+        if (!connected) return;
+
+        console.log("✅ Socket connected, setting up event listeners...");
+
+        const handleStatusUpdate = async (data, ack) => {
+            console.log("orderStatusUpdate received:", data);
+            setOrder(prev => prev ? { ...prev, status: data.status } : prev);
+            // Show notification and vibrate on status update
+            if (ack) ack({ success: true });
+        };
+
+        socketRef.current.on("orderStatusUpdate", handleStatusUpdate);
+
+        return () => {
+            socketRef.current.off("orderStatusUpdate", handleStatusUpdate);
+        };
+    }, [connected, socketRef]);
+
+    const getOrderDetails = async () => {
         try {
             setLoading(true);
-            const res = await http_receipt.get(`/order`);
+            const res = await http_order.get(`/order`);
             if(res.data.success){
                 console.log("get order details successfully:");
                 setOrder(res.data.data);
