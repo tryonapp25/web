@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyCmExZLlpyDs0IBICIcOiAOccjnX0Ololo",
+  authDomain: "tryon-308c9.firebaseapp.com",
+  projectId: "tryon-308c9",
+  storageBucket: "tryon-308c9.firebasestorage.app",
+  messagingSenderId: "998228351886",
+  appId: "1:998228351886:web:27a9c2568077ff2b2522df",
+  measurementId: "G-EDFHNX6DK6"
 };
 
 
