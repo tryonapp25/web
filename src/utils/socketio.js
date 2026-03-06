@@ -83,11 +83,8 @@ function generateGuestId(length = 12) {
   return result;
 }
 
-function getFCMToken() {
-  let token = sessionStorage.getItem("fcmToken");
-  if(token) return token;
-
-  token = localStorage.getItem("fcmToken");
+async function getFCMToken() {
+  let token = localStorage.getItem("fcmToken");
   if(token) return token;
 
   setupNotifications()
@@ -98,6 +95,7 @@ function getFCMToken() {
     })
     .catch((err) => {
       console.error("Failed to get FCM token:", err);
+      return null;
     });
 
 }
@@ -105,9 +103,14 @@ function getFCMToken() {
 export async function genGuestToken() {
     try {
         console.log("Generating guest token...");
+        const fcmToken = await getFCMToken();
+        if(!fcmToken) {
+          console.error("No FCM token available for guest token generation");
+          return null;
+        }
         const res = await axios.get(`${ORDER_SERVER}/gen-guest-token`,{
           params: {
-            guestId: getFCMToken(),
+            guestId: fcmToken,
           }
         });
         if(res.data?.success){
