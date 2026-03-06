@@ -121,24 +121,25 @@ export default function BusinessOrders() {
     }
   };
 
-  const handleUpdateStatus = async (orderId, status, customerId) => {
+  const handleUpdateStatus = async (order) => {
       try {
           setLoading(true);
-          const res = await http_order.put(`/order/${orderId}/status`,{status: status, customerId: customerId});
+          order.business = publicUser.business
+          const res = await http_order.put(`/order/status`, order);
           if(res.data.success){
               console.log("update order status successfully:", res.data.data);
-              if(status === "COMPLETED"){
+              if(order.status === "COMPLETED"){
                 setOrders((prev) =>
-                  prev.filter((order) => order.id !== orderId)
+                  prev.filter((order) => order.id !== order.id)
                 );
                 return true;
               }
               setOrders((prev) =>
                 prev.map((order) =>
-                  order.id === orderId
+                  order.id === order.id
                     ? {
                         ...order,
-                        status: status,
+                        status: order.status,
                         updatedAt: new Date().toISOString(), // current time
                       }
                     : order

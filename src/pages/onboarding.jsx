@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import styles from "../styles/Onboarding.module.css";
 import Model3D from "../components/3dModel";
 
+
+
 const config = {
   camera_orbit: "auto 55deg",
 }
@@ -112,8 +114,7 @@ export default function Onboarding() {
   return (
     <div className={styles.page}>
       <Navbar />
-
-      {/* HERO */}
+        {/* HERO */}
       <header className={styles.hero} id="top">
         <div className={styles.heroGlow} />
         <div className={styles.heroGrid}>

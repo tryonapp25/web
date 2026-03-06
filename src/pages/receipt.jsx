@@ -37,9 +37,9 @@ export default function Receipt() {
     }, [orderId, navigate]);
 
     useEffect(() => {
+        if (!connected) return;
         const socket = new Socket(socketContext);
         socket.connectAsGuest();
-        if (!connected) return;
 
         console.log("✅ Socket connected, setting up event listeners...");
 

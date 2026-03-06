@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import axios from "axios";
 import httpMessage from "../http/httpMessage";
+import { setupNotifications } from "../firebase";
 
 const SOCKET_SERVER = import.meta.env.VITE_SOCKET_SERVER;
 const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
@@ -71,7 +72,7 @@ export async function HandeleSocketConnect() {
 
 
 
-function generateRandomString(length = 6) {
+function generateGuestId(length = 12) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   
@@ -82,12 +83,33 @@ function generateRandomString(length = 6) {
   return result;
 }
 
+function getFCMToken() {
+  let token = sessionStorage.getItem("fcmToken");
+  if(token) return token;
+
+  token = localStorage.getItem("fcmToken");
+  if(token) return token;
+
+  setupNotifications()
+    .then((newToken) => {
+      localStorage.setItem("fcmToken", newToken);
+      console.log("FCM token stored in localStorage:", newToken);
+      return newToken;
+    })
+    .catch((err) => {
+      console.error("Failed to get FCM token:", err);
+    });
+
+}
+
 export async function genGuestToken() {
     try {
         console.log("Generating guest token...");
-        const res = await axios.get(
-          `${ORDER_SERVER}/gen-guest-token/${generateRandomString()}`
-        );
+        const res = await axios.get(`${ORDER_SERVER}/gen-guest-token`,{
+          params: {
+            guestId: getFCMToken(),
+          }
+        });
         if(res.data?.success){
             localStorage.setItem("token", res.data.token); // Store in localStorage for persistence
             return res.data.token;

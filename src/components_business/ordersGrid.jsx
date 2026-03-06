@@ -13,12 +13,14 @@ export default function OrdersGrid({ orders = [], onUpdateStatus }) {
 
   const handleUpdateStatus = (order) => {
     setSelectedOrder(null);
-    onUpdateStatus?.(order.id, "READY", order.customerId);
+    order.status = "READY";
+    onUpdateStatus?.(order);
   }
 
   const handleComplete = (order) => {
     setSelectedOrder(null);
-    onUpdateStatus?.(order.id, "COMPLETED", order.customerId);
+    order.status = "COMPLETED";
+    onUpdateStatus?.(order);
   }
   
   
