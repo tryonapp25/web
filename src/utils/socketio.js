@@ -85,19 +85,17 @@ function generateGuestId(length = 12) {
 
 async function getFCMToken() {
   let token = sessionStorage.getItem("fcmToken");
-  if(token) return token;
+  if (token) return token;
 
-  setupNotifications()
-    .then((newToken) => {
-      sessionStorage.setItem("fcmToken", newToken);
-      console.log("FCM token stored in sessionStorage:", newToken);
-      return newToken;
-    })
-    .catch((err) => {
-      console.error("Failed to get FCM token:", err);
-      return null;
-    });
-
+  try {
+    const newToken = await setupNotifications();
+    sessionStorage.setItem("fcmToken", newToken);
+    console.log("FCM token stored in sessionStorage:", newToken);
+    return newToken;
+  } catch (err) {
+    console.error("Failed to get FCM token:", err);
+    return null;
+  }
 }
 
 export async function genGuestToken() {
