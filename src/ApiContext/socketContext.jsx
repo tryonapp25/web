@@ -1,5 +1,5 @@
 import { createContext, useState, useRef } from "react";
-import { HandeleSocketConnectForBusiness } from "../utils/socketio";
+import { HandeleSocketConnect } from "../utils/socketio";
 import http from "../http/http";
 import { useContext } from "react";
 import { UserContext } from "./userContext";
@@ -26,11 +26,28 @@ export function SocketProvider({ children }) {
       setOrderFeatureEnabled(enabled);
       if(!enabled) return;
       
-      const newSocket = await HandeleSocketConnectForBusiness();
+      const newSocket = await HandeleSocketConnect();
       detachListeners();
       socketRef.current = newSocket;
       attachListeners(socketRef.current);
       console.log("Business socket initialized...");
+      return socketRef.current;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function connectGuest() {
+    try {
+      if(publicUser?.isCustomer === false) {
+        console.log("User is not a business, skipping socket connection.");
+        return null;
+      }
+      const newSocket = await HandeleSocketConnect();
+      detachListeners();
+      socketRef.current = newSocket;
+      attachListeners(socketRef.current);
+      console.log("Guest socket initialized...");
       return socketRef.current;
     } catch (err) {
       throw err;
@@ -94,6 +111,7 @@ export function SocketProvider({ children }) {
         socketRef,
         connected,
         connectBusiness,
+        connectGuest,
         disconnect,
         orderFeatureEnabled,
         setOrderFeatureEnabled,

@@ -51,7 +51,7 @@ export default function OrderDetailsModal({ open, order, onClose, onReady, onCom
           <div className={styles.actions}>
             <button 
               className={styles.readyBtn} 
-              onClick={() => onReady?.(order?.id)}
+              onClick={() => onReady?.(order)}
             >
               Ready
             </button>
@@ -60,7 +60,7 @@ export default function OrderDetailsModal({ open, order, onClose, onReady, onCom
           <div className={styles.actions}>
             <button 
               className={styles.confirmedBtn} 
-              onClick={() => onComplete?.(order?.id)}
+              onClick={() => onComplete?.(order)}
             >
               ✓ COMPLETED
             </button>

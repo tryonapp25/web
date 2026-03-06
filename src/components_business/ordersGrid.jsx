@@ -11,14 +11,14 @@ export default function OrdersGrid({ orders = [], onUpdateStatus }) {
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
-  const handleUpdateStatus = (orderId) => {
+  const handleUpdateStatus = (order) => {
     setSelectedOrder(null);
-    onUpdateStatus?.(orderId, "READY");
+    onUpdateStatus?.(order.id, "READY", order.customerId);
   }
 
-  const handleComplete = (orderId) => {
+  const handleComplete = (order) => {
     setSelectedOrder(null);
-    onUpdateStatus?.(orderId, "COMPLETED");
+    onUpdateStatus?.(order.id, "COMPLETED", order.customerId);
   }
   
   
