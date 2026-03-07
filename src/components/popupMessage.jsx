@@ -6,6 +6,7 @@ export default function PopupMessage({open, onClose}) {
   useEffect(() => {
     if (!open) return;
     playSound();
+    vibrateDevice();
   }, [open]);
 
   const playSound = async () => {
@@ -18,6 +19,20 @@ export default function PopupMessage({open, onClose}) {
       playAlert();
     }
   };
+
+  const vibrateDevice = () => {
+    try {
+      if ("vibrate" in navigator) {
+        // Vibrate, pause, vibrate
+        navigator.vibrate([250, 120, 250]);
+      }
+    } catch (e) {
+      console.error("Vibration failed:", e);
+    }
+  };
+
+
+
   const playAlert = async () => {
     try {
       const AudioContext =
