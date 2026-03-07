@@ -121,7 +121,7 @@ function Receipt({ order }) {
                   {name}
                 </span>
                 <span className={`${styles.right} ${styles.mono}`}>
-                  {qty}
+                  {qty}x
                 </span>
                 <span className={`${styles.right} ${styles.mono}`}>
                   {price == null ? "—" : formatMoney(price, currency)}
@@ -174,12 +174,10 @@ export default function ReceiptModal({
   open,
   onClose,
   order,
-  onSendEmail,
   autoPrint = true,
   printDurationMs = 1600,
 }) {
   const [printing, setPrinting] = useState(false);
-  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (!open) {
@@ -244,20 +242,6 @@ export default function ReceiptModal({
 
             <div className={styles.paperBottom} />
           </div>
-        </div>
-        <div className={styles.actions}>
-          <button
-            className={styles.btn}
-            onClick={async () => {
-              setSending(true);
-              await onSendEmail?.(order);
-              setSending(false);
-            }}
-            type="button"
-            disabled={sending}
-          >
-            {sending ? "Sending..." : "Send to my email"}
-          </button>
         </div>
       </div>
     </div>
