@@ -119,42 +119,22 @@ export default function RenderProductionMenu() {
     setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
   };
 
-  const handleCheckout = async () => {
-    let newTab = null;
-    try {
-      setLoading(true);
-      // Open immediately while still inside the user click
-      newTab = window.open("", "_blank");
-
-      const ordersWithTemplate = {
-        receiverId: template.uid,
-        orders: orders,
-      };
-
-      const send = await sendOrder(ordersWithTemplate);
-
-      if (!send?.success) {
-        if (newTab) newTab.close();
-        setMessage({
-          visible: true,
-          type: "error",
-          msg: send?.error || "Failed to place order. Please try again.",
-        });
-        return;
-      }
-
-      setMessage({visible: true, type: "success", msg: "Order placed successfully!"});
-      const url = `${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`;
-      if (newTab) {
-        newTab.location.href = url;
-      } else {
-        // fallback if popup still blocked
-        window.location.href = url;
-      }
-      Clear();
-    } finally {
-      setLoading(false);
-    }
+  const handleCheckout = async () => { 
+    try{ 
+      setLoading(true); 
+      const ordersWithTemplate = { receiverId: template.uid, orders: orders }; 
+      const send = await sendOrder(ordersWithTemplate); 
+      if(!send?.success) { 
+        setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." }); 
+        return; 
+      } 
+      setMessage({visible: true, type: "success", msg: "Order placed successfully!" }); 
+      const url = `${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`; 
+      window.open(url, "_blank", "noopener,noreferrer"); 
+      Clear(); } 
+      finally { 
+        setLoading(false); 
+      } 
   };
 
   const Clear = () => {
