@@ -102,17 +102,36 @@ export default function RenderProductionMenuBook() {
     setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
   };
 
-  const handleCheckout = async () => { 
-    const ordersWithTemplate = { receiverId: template.uid, orders: orders }; 
-    const send = await sendOrder(ordersWithTemplate); 
-    if(!send?.success) { 
-      setMessage({visible: true, type: "error", msg: send?.error || "Failed to place order. Please try again." }); 
-      return; 
-    } 
-      setMessage({visible: true, type: "success", msg: "Order placed successfully!" }); 
-      const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`; 
-      window.open(url, "_blank", "noopener,noreferrer"); 
-      Clear(); 
+  const handleCheckout = async () => {
+    const newTab = window.open("", "_blank"); // open immediately
+
+    const ordersWithTemplate = { receiverId: template.uid, orders };
+
+    const send = await sendOrder(ordersWithTemplate);
+
+    if (!send?.success) {
+      newTab?.close();
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: send?.error || "Failed to place order. Please try again."
+      });
+      return;
+    }
+
+    setMessage({
+      visible: true,
+      type: "success",
+      msg: "Order placed successfully!"
+    });
+
+    const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`;
+
+    if (newTab) {
+      newTab.location.href = url;
+    }
+
+    Clear();
   };
 
   const Clear = () => {

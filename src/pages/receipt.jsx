@@ -1,7 +1,7 @@
 import {useSearchParams, useNavigate } from "react-router-dom";
 import ReceiptModal from "../components/receiptModal";
 import httpMessage from "../http/httpMessage";
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useRef, use } from "react";
 import styles from "../styles/Receipt.module.css";
 import http_order from "../http/http_order";
 
@@ -9,6 +9,8 @@ import {SocketContext} from "../ApiContext/socketContext";
 import Socket from "../model/socket";
 
 import FlashMessage from "../components/flashMessage";
+import PopupMessage from "../components/popupMessage";
+import RatingModal from "../components/ratingModal";
 
 
 
@@ -19,6 +21,7 @@ export default function Receipt() {
     const socketContext = useContext(SocketContext);
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get("orderId");
+    const [onReady , setOnReady] = useState(false);
 
     const { socketRef, connected } = useContext(SocketContext);
 
@@ -46,6 +49,9 @@ export default function Receipt() {
         const handleStatusUpdate = async (data, ack) => {
             console.log("orderStatusUpdate received:", data);
             setOrder(prev => prev ? { ...prev, status: data.status } : prev);
+            if(data.status === "READY") {
+                setOnReady(true);
+            }
             // Show notification and vibrate on status update
             if (ack) ack({ success: true });
         };
@@ -101,6 +107,8 @@ export default function Receipt() {
                     </div>
                 )}
             </div>
+            <RatingModal />
+            <PopupMessage open={onReady} onClose={() => setOnReady(false)} />
             <FlashMessage message={message.msg} type={message.type} visible={message.visible} onClose={() => setMessage({visible: false, msg: "", type: ""})} />
         </main>
     );
