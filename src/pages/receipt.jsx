@@ -11,6 +11,7 @@ import Socket from "../model/socket";
 import FlashMessage from "../components/flashMessage";
 import PopupMessage from "../components/popupMessage";
 import RatingModal from "../components/ratingModal";
+import SendToMailPopup from "../components/sendToMailPopup";
 
 
 
@@ -28,6 +29,7 @@ export default function Receipt() {
     const [order, setOrder] = useState(null);
     const [message, setMessage] = useState({visible: false, msg: "", type: ""});
     const [ loading, setLoading ] = useState(true);
+    const [ratingOpen, setRatingOpen] = useState(false);
 
     useEffect(() => {
         if (!orderId) { navigate("/")
@@ -107,8 +109,10 @@ export default function Receipt() {
                     </div>
                 )}
             </div>
-            <RatingModal />
-            <PopupMessage open={onReady} onClose={() => setOnReady(false)} />
+            
+            <SendToMailPopup /> {/* user need to interact with the page to create the click event than when popup mesage showing the sound will able to play */ }
+            {ratingOpen && <RatingModal/>}
+            <PopupMessage open={onReady} onClose={() => {setOnReady(false), setRatingOpen(true)}} />
             <FlashMessage message={message.msg} type={message.type} visible={message.visible} onClose={() => setMessage({visible: false, msg: "", type: ""})} />
         </main>
     );

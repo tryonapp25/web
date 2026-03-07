@@ -1,44 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { unlockSound } from "../utils/sound";
 
 export default function PopupMessage({open, onClose}) {
 
   useEffect(() => {
     if (!open) return;
-
-    const playAlert = async () => {
-      try {
-        const AudioContext =
-          window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-
-        const ctx = new AudioContext();
-        const notes = [880, 988, 880];
-
-        notes.forEach((freq, i) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-
-          osc.type = "sine";
-          osc.frequency.value = freq;
-          gain.gain.value = 0.08;
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          const start = ctx.currentTime + i * 0.22;
-          const end = start + 0.16;
-
-          osc.start(start);
-          osc.stop(end);
-        });
-      } catch (e) {
-        console.error("Sound failed:", e);
-      }
-    };
-
-    playAlert();
+    playSound();
   }, [open]);
+
+  const playSound = async () => {
+    try {
+      const audio = new Audio("/sounds/order-ready.mp3");
+      audio.volume = 0.8;
+      await audio.play();
+    } catch (e) {
+      console.error("Sound failed:", e);
+      playAlert();
+    }
+  };
+  const playAlert = async () => {
+    try {
+      const AudioContext =
+        window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      const ctx = new AudioContext();
+      const notes = [880, 988, 880];
+
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.value = 0.08;
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const start = ctx.currentTime + i * 0.22;
+        const end = start + 0.16;
+
+        osc.start(start);
+        osc.stop(end);
+      });
+    } catch (e) {
+      console.error("Sound failed:", e);
+    }
+  };
 
   if (!open) return null;
 

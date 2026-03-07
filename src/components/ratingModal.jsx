@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function RatingModal() {
   const [open, setOpen] = useState(true);
@@ -8,6 +8,8 @@ export default function RatingModal() {
   const [submitted, setSubmitted] = useState(false);
 
   const activeRating = hovered || rating;
+
+  
 
   const getMessage = () => {
     if (rating >= 5) return "Amazing — thank you!";
