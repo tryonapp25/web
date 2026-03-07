@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState} from "react";
 
 export default function RatingModal() {
   const [open, setOpen] = useState(true);

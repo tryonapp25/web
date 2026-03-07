@@ -68,7 +68,7 @@ export default function Receipt() {
     const getOrderDetails = async () => {
         try {
             setLoading(true);
-            const res = await http_order.get(`/order`);
+            const res = await http_order.get(`/order/${orderId}`);
             if(res.data.success){
                 console.log("get order details successfully:");
                 setOrder(res.data.data);
@@ -76,7 +76,7 @@ export default function Receipt() {
             }
         } catch (err) {
             setMessage({visible: true, msg: httpMessage(err), type: "error"});
-            console.error("Error fetching order details:", err);
+            console.log(httpMessage(err));
         }
         finally {
             setLoading(false);
