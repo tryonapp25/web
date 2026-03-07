@@ -101,10 +101,10 @@ async function getFCMToken() {
 export async function genGuestToken() {
     try {
         console.log("Generating guest token...");
-        const fcmToken = await getFCMToken();
+        let fcmToken = await getFCMToken();
         if(!fcmToken) {
           console.error("No FCM token available for guest token generation");
-          return null;
+          fcmToken = generateGuestId(); // Fallback to random guest ID if FCM token is not available
         }
         const res = await axios.get(`${ORDER_SERVER}/gen-guest-token`,{
           params: {
