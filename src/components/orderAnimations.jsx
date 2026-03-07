@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function RunningBorderTransparent({show}) {
+export function RunningBorderTransparent({show}) {
     if(!show) return null;
     return (
         <div className="rb">
