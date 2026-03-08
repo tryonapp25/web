@@ -44,7 +44,7 @@ export default function SendToMailPopup() {
       setOpen(false);
       return;
     }
-    setTimeout(() => setOpen(true), 3000); // Show popup after 2 seconds
+    setTimeout(() => setOpen(true), 2500); // Show popup after 2 seconds
     sessionStorage.setItem("sendToMail", "true");
   }, []);
 

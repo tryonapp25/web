@@ -145,6 +145,8 @@ export default function CheckoutForm({
     };
   }, [clientSecret]);
 
+  console.log("CheckoutForm rendered with clientSecret:", clientSecret);
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>

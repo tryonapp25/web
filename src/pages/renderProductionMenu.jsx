@@ -19,12 +19,11 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import CheckoutForm from "../components/checkOutForm";
 
 
 
 const modules = import.meta.glob("../templates/**/*.jsx");
-const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_APP_PUBLIC_URL;
+const VITE_PUBLIC_CHECKOUT_URL=import.meta.env.VITE_APP_PUBLIC_URL;
 
 
 export default function RenderProductionMenu() {
@@ -53,8 +52,7 @@ export default function RenderProductionMenu() {
   const [orders, setOrders] = useState([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
 
-  const [paymentIntentData, setPaymentIntentData] = useState(null);
-  // ✅ connect socket ONLY ONCE per mount (and guarded for StrictMode double-invoke)
+
 
 
   useEffect(() => {
@@ -154,7 +152,6 @@ export default function RenderProductionMenu() {
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
-        newTab?.close(); // close tab if request failed
         setMessage({
           visible: true,
           type: "error",
@@ -162,17 +159,18 @@ export default function RenderProductionMenu() {
         });
         return;
       }
-      const { clientSecret, paymentIntentId } = create?.payment || {};
-      const orderId = create?.data?.id;
-      setPaymentIntentData({ clientSecret, paymentIntentId, orderId });
+      const payment = create?.payment || {};
+      payment.orderId = create?.data?.id;
+      await handlePaymentSuccess(payment);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePaymentSuccess = async () => { 
+  const handlePaymentSuccess = async (payment) => { 
+    const { clientSecret, paymentIntentId } = payment || {};
     const newTab = window.open("", "_blank"); 
-    const url = `${VITE_PUBLIC_RECEIPT_URL}/receipt/production?orderId=${paymentIntentData.orderId}`;
+    const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${paymentIntentId}&orderId=${payment?.orderId || ""}`;
     if (newTab) {
       newTab.location.href = url;
     }
@@ -184,7 +182,6 @@ export default function RenderProductionMenu() {
     setOrderModalOpen(false);
     setShowPaymentMethod(false);
     setMessage(defaultMessage);
-    setPaymentIntentData(null);
   }
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
@@ -264,13 +261,6 @@ export default function RenderProductionMenu() {
         message={message?.msg || ""}
         onClose={() => setMessage(null)}
         duration={3000}
-      />
-
-      <CheckoutForm
-        open={paymentIntentData !== null ? true : false}
-        clientSecret={paymentIntentData ? paymentIntentData.clientSecret : ""}
-        orderId={paymentIntentData ? paymentIntentData.orderId : ""}
-        onClose={() => handlePaymentSuccess()}
       />
 
     </div>
