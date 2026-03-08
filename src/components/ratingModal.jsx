@@ -1,4 +1,12 @@
-import React, { useState} from "react";
+import React, { useState, Suspense} from "react";
+const Lottie = React.lazy(() => import("lottie-react"));
+
+import readyTage from "../assets/lottiefiles/rating-faces.json";
+import thanksForFeedback from "../assets/lottiefiles/sunrise.json";
+
+const pulse = {
+  animation: "popIn 0.6s ease-in-out infinite alternate",
+};
 
 export default function RatingModal() {
   const [open, setOpen] = useState(true);
@@ -62,7 +70,14 @@ export default function RatingModal() {
             </button>
 
             <div style={styles.iconWrap}>
-              <div style={styles.icon}>⭐</div>
+              <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
+                <Lottie 
+                  animationData={readyTage}
+                  loop={true}
+                  autoplay={true}
+                  style={styles.icon}
+                />
+              </Suspense>
             </div>
 
             <h2 style={styles.title}>What do you think about the order flow?</h2>
@@ -130,7 +145,14 @@ export default function RatingModal() {
         ) : (
           <>
             <div style={styles.iconWrap}>
-              <div style={{ ...styles.icon, background: "#22c55e" }}>✅</div>
+              <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
+                <Lottie 
+                  animationData={thanksForFeedback}
+                  loop={true}
+                  autoplay={true}
+                  style={styles.icon}
+                />
+              </Suspense>
             </div>
 
             <h2 style={styles.title}>Thank you!</h2>
@@ -192,16 +214,10 @@ const styles = {
     marginBottom: "14px",
   },
   icon: {
-    width: "88px",
-    height: "88px",
-    borderRadius: "50%",
-    background: "#f59e0b",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "40px",
-    color: "#fff",
-    boxShadow: "0 10px 30px rgba(245, 158, 11, 0.35)",
   },
   title: {
     margin: "0 0 10px",
@@ -244,6 +260,7 @@ const styles = {
   },
   textarea: {
     width: "100%",
+    boxSizing: "border-box",
     minHeight: "110px",
     resize: "vertical",
     borderRadius: "16px",

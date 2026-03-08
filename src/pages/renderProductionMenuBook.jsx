@@ -24,7 +24,7 @@ import { BusinessContext } from "../ApiContext/businessContext";
 // load templates from templates folder (including subfolders) and menuBook wrappers
 const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
-const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_PUBLIC_RECEIPT_URL;
+const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_APP_PUBLIC_URL;
 
 export default function RenderProductionMenuBook() {
   const isMobile = useIsMobile();
@@ -125,7 +125,7 @@ export default function RenderProductionMenuBook() {
       msg: "Order placed successfully!"
     });
 
-    const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`;
+    const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}receipt/production?orderId=${send?.data?.id}`;
 
     if (newTab) {
       newTab.location.href = url;

@@ -2,180 +2,207 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "../styles/ReceiptModal.module.css";
 
 function formatMoney(amount, currency = "USD") {
-  if (amount == null || Number.isNaN(Number(amount))) return "—";
+  const value = Number(amount);
+  if (!Number.isFinite(value)) return "—";
+
   try {
     return new Intl.NumberFormat(undefined, {
       style: "currency",
       currency,
       maximumFractionDigits: 2,
-    }).format(Number(amount));
+    }).format(value);
   } catch {
-    // fallback if currency code is invalid
-    return `${Number(amount).toFixed(2)} ${currency || ""}`.trim();
+    return `${value.toFixed(2)} ${currency || ""}`.trim();
   }
 }
 
-function formatDate(ts) {
-  if (!ts) return "—";
-  const d = new Date(ts);
-  if (Number.isNaN(d.getTime())) return String(ts);
-  return d.toLocaleString();
+function formatDate(value) {
+  if (!value) return "—";
+
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return String(value);
+
+  return date.toLocaleString();
 }
 
-/**
- * Receipt expects an "order" shaped like:
- * {
- *   id, businessId, status, createdAt, updatedAt, totalPrice, currency,
- *   data: { items?: [{ name, qty, price, total }], customer?, notes?, ... }
- * }
- */
+function normalizeItems(order) {
+  const possibleItems =
+    order?.data?.items ??
+    order?.items ??
+    (Array.isArray(order?.data) ? order.data : []);
+
+  if (!Array.isArray(possibleItems)) return [];
+
+  return possibleItems.map((item, index) => {
+    const qty = Number(item?.qty ?? item?.quantity ?? 1);
+    const price = Number(item?.price ?? item?.data?.[0]?.price ?? 0);
+    const total =
+      item?.total != null
+        ? Number(item.total)
+        : Number.isFinite(qty) && Number.isFinite(price)
+        ? qty * price
+        : null;
+
+    return {
+      id: item?.id ?? `${index}-${item?.name ?? item?.title ?? "item"}`,
+      name: item?.name ?? item?.title ?? `Item ${index + 1}`,
+      qty: Number.isFinite(qty) && qty > 0 ? qty : 1,
+      price: Number.isFinite(price) ? price : null,
+      total: Number.isFinite(total) ? total : null,
+    };
+  });
+}
+
 function Receipt({ order }) {
-  const data = order;
-  const items = Array.isArray(data.data) ? data.data : [];
+  const items = useMemo(() => normalizeItems(order), [order]);
+  const currency = order?.currency ?? order?.data?.currency ?? "USD";
 
   const computedTotal = useMemo(() => {
-    if (order?.totalPrice != null) return Number(order.totalPrice);
-    // Try compute from items if totalPrice missing
+    if (order?.totalPrice != null && Number.isFinite(Number(order.totalPrice))) {
+      return Number(order.totalPrice);
+    }
+
     if (!items.length) return null;
-    const sum = items.reduce((acc, it) => {
-      const line =
-        it?.total != null
-          ? Number(it.total)
-          : Number(it?.qty ?? 1) * Number(it?.price ?? 0);
-      return acc + (Number.isFinite(line) ? line : 0);
-    }, 0);
+
+    const sum = items.reduce((acc, item) => acc + (item.total ?? 0), 0);
     return Number.isFinite(sum) ? sum : null;
   }, [order?.totalPrice, items]);
 
-
-  const currency = order?.currency ?? data.currency ?? "";
+  const businessName = order?.businessName ?? "Business";
+  const businessAddress = order?.businessAddress ?? order?.data?.businessAddress ?? "—";
+  const businessPhone = order?.businessPhone ?? order?.data?.businessPhone ?? "—";
+  const footerText =
+    order?.footerText ??
+    order?.data?.footerText ??
+    "Keep this receipt for your records.";
+  const notes = order?.notes ?? order?.data?.notes ?? "";
+  const status = String(order?.status ?? "—").toUpperCase();
 
   return (
     <div className={styles.receipt} aria-label="Receipt">
-      <div className={styles.receiptHeader}>
+      <header className={styles.receiptHeader}>
         <img
-          src={order?.businessLogo || null}
-          alt={`${order?.businessName || "Business"} logo`}
+          src={order.businessLogo ?? "/logos/logo.png"}
+          alt={`${businessName} logo`}
           className={styles.logo}
         />
-        <div className={styles.brand}>
-          {order?.businessName || "Business"}
-        </div>
-        <div className={styles.subtle}>
-          Adr:{data.businessAddress || "—"}
-        </div>
-        <div className={styles.subtle}>
-          Tlf: {data.businessPhone ||  ""}
-        </div>
-      </div>
+
+        <div className={styles.brand}>{businessName}</div>
+        <div className={styles.subtle}>ADR: {businessAddress}</div>
+        <div className={styles.subtle}>TEL: {businessPhone}</div>
+      </header>
 
       <div className={styles.hr} />
 
-      <div className={styles.metaGrid}>
+      <section className={styles.metaGrid}>
         <div className={styles.metaRow}>
-          <span className={styles.metaKey}>Order ID</span>
-          <span className={styles.metaVal}>#{order?.id ?? "—"}</span>
-        </div>
-        <div className={styles.metaRow}>
-          <span className={styles.metaKey}>{order?.businessName}</span>
-          <span className={styles.metaVal}>{order?.businessId ?? "—"}</span>
-        </div>
-        <div className={styles.metaRow}>
-          <span className={styles.metaKey}>Status</span>
-          <span className={`${styles.metaVal} ${styles.statusBadge} ${styles[`status${order?.status}`] || ''}`}>
-            {order?.status ?? "—"}
+          <span className={styles.metaKey}>ORDER</span>
+          <span className={`${styles.metaVal} ${styles.mono}`}>
+            #{order?.id ?? "—"}
           </span>
         </div>
+
         <div className={styles.metaRow}>
-          <span className={styles.metaKey}>Created</span>
+          <span className={styles.metaKey}>BUSINESS ID</span>
+          <span className={`${styles.metaVal} ${styles.mono}`}>
+            {order?.businessId ?? "—"}
+          </span>
+        </div>
+
+        <div className={styles.metaRow}>
+          <span className={styles.metaKey}>STATUS</span>
+          <span
+            className={`${styles.metaVal} ${styles.statusBadge} ${
+              styles[`status${status}`] || styles.statusDefault
+            }`}
+          >
+            {status}
+          </span>
+        </div>
+
+        <div className={styles.metaRow}>
+          <span className={styles.metaKey}>CREATED</span>
           <span className={styles.metaVal}>{formatDate(order?.createdAt)}</span>
         </div>
+
         <div className={styles.metaRow}>
-          <span className={styles.metaKey}>Updated</span>
+          <span className={styles.metaKey}>UPDATED</span>
           <span className={styles.metaVal}>{formatDate(order?.updatedAt)}</span>
         </div>
-      </div>
+      </section>
 
       <div className={styles.hrDashed} />
 
-      <div className={styles.itemsHeader}>
-        <span>Item</span>
-        <span className={styles.right}>Qty</span>
-        <span className={styles.right}>Price</span>
-        <span className={styles.right}>Total</span>
-      </div>
+      <section>
+        <div className={styles.itemsHeader}>
+          <span>ITEM</span>
+          <span className={styles.right}>QTY</span>
+          <span className={styles.right}>PRICE</span>
+          <span className={styles.right}>TOTAL</span>
+        </div>
 
-      <div className={styles.hr} />
+        <div className={styles.hr} />
 
-      {items.length ? (
-        <div className={styles.items}>
-          {items.map((it, idx) => {
-            const name = it?.title ?? `Item ${idx + 1}`;
-            const qty = it?.qty ?? 1;
-            const price = it?.data[0]?.price ?? null;
-            const lineTotal = order?.totalPrice
+        {items.length ? (
+          <div className={styles.items}>
+            {items.map((item) => (
+              <div key={item.id} className={styles.itemRow}>
+                <span className={styles.itemName} title={item.name}>
+                  {item.name}
+                </span>
 
-            return (
-              <div key={idx} className={styles.itemRow}>
-                <span className={styles.itemName} title={name}>
-                  {name}
-                </span>
                 <span className={`${styles.right} ${styles.mono}`}>
-                  {qty}x
+                  {item.qty}x
                 </span>
+
                 <span className={`${styles.right} ${styles.mono}`}>
-                  {price == null ? "—" : formatMoney(price, currency)}
+                  {item.price == null ? "—" : formatMoney(item.price, currency)}
                 </span>
+
                 <span className={`${styles.right} ${styles.mono}`}>
-                  {lineTotal == null ? "—" : formatMoney(lineTotal, currency)}
+                  {item.total == null ? "—" : formatMoney(item.total, currency)}
                 </span>
               </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className={styles.empty}>
-          No line items in <span className={styles.mono}>data.items</span>
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <div className={styles.empty}>No line items available</div>
+        )}
+      </section>
 
       <div className={styles.hrDashed} />
 
       <div className={styles.totalRow}>
         <span className={styles.totalLabel}>TOTAL</span>
         <span className={`${styles.totalValue} ${styles.mono}`}>
-          {computedTotal == null
-            ? "—"
-            : formatMoney(computedTotal, currency)}
+          {computedTotal == null ? "—" : formatMoney(computedTotal, currency)}
         </span>
       </div>
 
-      {data.notes ? (
+      {notes ? (
         <>
           <div className={styles.hr} />
-          <div className={styles.notes}>
-            <div className={styles.notesTitle}>Notes</div>
-            <div className={styles.subtle}>{String(data.notes)}</div>
-          </div>
+          <section className={styles.notes}>
+            <div className={styles.notesTitle}>NOTES</div>
+            <div className={styles.subtle}>{String(notes)}</div>
+          </section>
         </>
       ) : null}
 
-      <div className={styles.footer}>
-        <div className={styles.center}>Thank you!</div>
-        <div className={styles.centerSmall}>
-          {data.footerText || "Keep this receipt for your records."}
-        </div>
-      </div>
+      <footer className={styles.footer}>
+        <div className={styles.center}>THANK YOU!</div>
+        <div className={styles.centerSmall}>{footerText}</div>
+      </footer>
     </div>
   );
 }
 
 export default function ReceiptModal({
   open,
-  onClose,
   order,
   autoPrint = true,
-  printDurationMs = 1600,
+  printDurationMs = 1400,
+  onSendTomail,
 }) {
   const [printing, setPrinting] = useState(false);
 
@@ -184,23 +211,21 @@ export default function ReceiptModal({
       setPrinting(false);
       return;
     }
-    console.log("ReceiptModal opened with order:", order);
-    if (!autoPrint) return;
+
+    if (!autoPrint) {
+      setPrinting(false);
+      return;
+    }
 
     setPrinting(true);
-    const t = setTimeout(() => setPrinting(false), printDurationMs);
-    return () => clearTimeout(t);
+    const timer = window.setTimeout(() => {
+      setPrinting(false);
+    }, printDurationMs);
+
+    return () => window.clearTimeout(timer);
   }, [open, autoPrint, printDurationMs]);
 
-  // ESC closes
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose?.();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+ 
 
   if (!open) return null;
 
@@ -210,10 +235,6 @@ export default function ReceiptModal({
       role="dialog"
       aria-modal="true"
       aria-label="Receipt Modal"
-      onMouseDown={(e) => {
-        // click outside closes
-        if (e.target === e.currentTarget) onClose?.();
-      }}
     >
       <div className={styles.modal}>
         <div className={styles.topBar}>
@@ -221,13 +242,21 @@ export default function ReceiptModal({
             <div className={styles.modalTitle}>Receipt</div>
             <div className={styles.orderIdBig}>#{order?.id ?? "—"}</div>
             <div className={styles.modalSub}>
-              {printing ? "Printing…" : "Ready"}
+              {printing ? "Printing…" : "Receipt details and summary."}
             </div>
           </div>
+
+          {/* <button
+            type="button"
+            className={styles.btnGhost}
+            onClick={onSendTomail}
+            aria-label="Close receipt modal"
+          >
+            Send to mail
+          </button> */}
         </div>
 
         <div className={styles.viewer}>
-          
           <div
             className={`${styles.paperFrame} ${
               printing ? styles.printing : styles.ready

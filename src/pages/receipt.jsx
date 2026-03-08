@@ -13,7 +13,14 @@ import PopupMessage from "../components/popupMessage";
 import RatingModal from "../components/ratingModal";
 import SendToMailPopup from "../components/sendToMailPopup";
 
-
+const popupMessage = {
+    visible: false,
+    msg: "",
+    type: "",
+    title: "",
+    text: "",
+    subText:"",
+}
 
 
 export default function Receipt() {
@@ -22,7 +29,7 @@ export default function Receipt() {
     const socketContext = useContext(SocketContext);
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get("orderId");
-    const [onReady , setOnReady] = useState(false);
+    const [onReady , setOnReady] = useState({visible: false, title: "Order is Ready!", text: "Your order is ready for pickup.", subText: "Please come to the counter."});
 
     const { socketRef, connected } = useContext(SocketContext);
 
@@ -52,7 +59,7 @@ export default function Receipt() {
             console.log("orderStatusUpdate received:", data);
             setOrder(prev => prev ? { ...prev, status: data.status } : prev);
             if(data.status === "READY") {
-                setOnReady(true);
+                setOnReady({visible: true, title: "Order is Ready!", text: "Your order is ready for pickup.", subText: "Please come to the counter.", type: "success"});
             }
             // Show notification and vibrate on status update
             if (ack) ack({ success: true });
@@ -93,7 +100,7 @@ export default function Receipt() {
                     </div>
                 ) : order ? (
                     <>
-                        <ReceiptModal open={true} onClose={() => navigate("/")} order={order} />
+                        <ReceiptModal open={true} onClose={() => navigate("/")} order={order}/>
                         <button className={styles.backBtn} onClick={() => navigate("/menu")}>
                             ← Back to Home
                         </button>
@@ -112,7 +119,7 @@ export default function Receipt() {
             
             <SendToMailPopup /> {/* user need to interact with the page to create the click event than when popup mesage showing the sound will able to play */ }
             {ratingOpen && <RatingModal/>}
-            <PopupMessage open={onReady} onClose={() => {setOnReady(false), setRatingOpen(true)}} />
+            <PopupMessage open={onReady.visible} onClose={() => {setOnReady({...onReady, visible: false}), setRatingOpen(true)}} title={onReady.title} text={onReady.text} subText={onReady.subText} type={onReady.type} />
             <FlashMessage message={message.msg} type={message.type} visible={message.visible} onClose={() => setMessage({visible: false, msg: "", type: ""})} />
         </main>
     );

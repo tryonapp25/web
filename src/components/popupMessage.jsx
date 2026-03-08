@@ -1,7 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect,Suspense } from "react";
 import { unlockSound } from "../utils/sound";
+const Lottie = React.lazy(() => import("lottie-react"));
 
-export default function PopupMessage({open, onClose}) {
+import readyTage from "../assets/lottiefiles/ready-tag.json";
+
+
+export default function PopupMessage({open, onClose, title, type, text, subText}) {
 
   useEffect(() => {
     if (!open) return;
@@ -70,14 +74,21 @@ export default function PopupMessage({open, onClose}) {
     <div style={styles.overlay}>
       <div style={styles.popup}>
         <div style={styles.iconWrap}>
-          <div style={styles.icon}>✅</div>
+          <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
+            <Lottie 
+              animationData={readyTage}
+              loop={true}
+              autoplay={true}
+              style={styles.icon}
+            />
+          </Suspense>
         </div>
 
-        <h1 style={styles.title}>Order is Ready!</h1>
+        <h1 style={styles.title}>{title}</h1>
         <p style={styles.text}>
-          Your order is ready for pickup.
+          {text}
           <br />
-          Please come to the counter.
+          {subText}
         </p>
 
         <div style={styles.buttonRow}>
@@ -108,7 +119,7 @@ const styles = {
   popup: {
     width: "100%",
     maxWidth: "480px",
-    background: "#ffffff",
+    background: "#efefef",
     borderRadius: "24px",
     padding: "32px 24px",
     textAlign: "center",
@@ -127,7 +138,6 @@ const styles = {
     width: "92px",
     height: "92px",
     borderRadius: "50%",
-    background: "#22c55e",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

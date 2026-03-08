@@ -1,7 +1,5 @@
 import QRCodeCard from "./QRCodeCard";
 
-const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_PUBLIC_TEMPLATE_URL;
-
 export default function QrCodeModal({
   open,
   onClose,
