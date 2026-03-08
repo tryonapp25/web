@@ -19,7 +19,7 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
-import CheckoutForm from "../components/checkoutForm";
+import CheckoutForm from "../components/checkOutForm";
 
 
 
