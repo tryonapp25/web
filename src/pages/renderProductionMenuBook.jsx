@@ -24,7 +24,7 @@ import { BusinessContext } from "../ApiContext/businessContext";
 // load templates from templates folder (including subfolders) and menuBook wrappers
 const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
-const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_APP_PUBLIC_URL;
+const VITE_PUBLIC_CHECKOUT_URL = import.meta.env.VITE_APP_PUBLIC_URL;
 
 export default function RenderProductionMenuBook() {
   const isMobile = useIsMobile();
@@ -104,14 +104,10 @@ export default function RenderProductionMenuBook() {
 
   const handleCheckout = async () => {
     try{
-      set
-      const newTab = window.open("", "_blank"); // open immediately to avoid popup blockers
-      const ordersWithTemplate = { receiverId: template.uid, orders };
-
+      const ordersWithTemplate = { receiverId: data?.uid, orders };
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
-        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
@@ -119,20 +115,10 @@ export default function RenderProductionMenuBook() {
         });
         return;
       }
-
-      /* setMessage({
-        visible: true,
-        type: "success",
-        msg: "Order placed successfully!"
-      });
-
-      const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}receipt/production?orderId=${create?.data?.id}`;
-
-      if (newTab) {
-        newTab.location.href = url;
-      }
-
-      Clear(); */
+      const payment = create?.payment || {};
+      payment.orderId = create?.data?.id;
+      await handlePaymentSuccess(payment);
+      
     }
     catch(error){
       setMessage({
@@ -145,6 +131,16 @@ export default function RenderProductionMenuBook() {
       setLoading(false);
     }
   };
+
+  const handlePaymentSuccess = async (payment) => { 
+    const { clientSecret, paymentIntentId } = payment || {};
+    const newTab = window.open("", "_blank"); 
+    const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${paymentIntentId}&orderId=${payment?.orderId || ""}`;
+    if (newTab) {
+      newTab.location.href = url;
+    }
+    Clear();
+  }
 
   const Clear = () => {
     setOrders([]);

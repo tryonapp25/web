@@ -28,6 +28,7 @@ import MenuBookWraper from "./pages/menuBookWrapper";
 import PosterTemplateWraper from "./pages/posterTemplateWrapper";
 import MyCollection from "./pages/collection";
 import Receipt from "./pages/receipt";
+import CheckoutPage from "./pages/checkoutPage";
 
 
 // Admin //
@@ -73,6 +74,7 @@ export default function App() {
 
               <Route path="/poster/:type/template/:id" element={<RenderProductionPoster />} />
               <Route path="/receipt/:type" element={<Receipt />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route element={<ProductionProtection />}>
                 <Route path="/menu/:type/template/:id" element={<RenderProductionMenu />} />  
                 <Route path="/menubook/:type/template/:id" element={<RenderProductionMenuBook />} /> 
@@ -90,7 +92,6 @@ export default function App() {
                 <Route path="/:type/template/:id" element={<TemplateWraper />} /> 
                 <Route path="/:type/poster/template/:id" element={<PosterTemplateWraper />} />
                 <Route path="/:type/menuBook/:id" element={<MenuBookWraper />} />
-
                 {/* Admin route */}
                 <Route element={<AdminProtection />}>
                   <Route path="/admin" element={<AdminPage />} />
