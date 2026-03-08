@@ -6,7 +6,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import styles from "../styles/checkoutForm.module.css";
+import styles from "../styles/CheckoutForm.module.css";
 import http_order from "../http/http_order";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
