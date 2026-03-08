@@ -103,35 +103,47 @@ export default function RenderProductionMenuBook() {
   };
 
   const handleCheckout = async () => {
-    const newTab = window.open("", "_blank"); // open immediately
+    try{
+      set
+      const newTab = window.open("", "_blank"); // open immediately to avoid popup blockers
+      const ordersWithTemplate = { receiverId: template.uid, orders };
 
-    const ordersWithTemplate = { receiverId: template.uid, orders };
+      const send = await sendOrder(ordersWithTemplate);
 
-    const send = await sendOrder(ordersWithTemplate);
+      if (!send?.success) {
+        newTab?.close();
+        setMessage({
+          visible: true,
+          type: "error",
+          msg: send?.error || "Failed to place order. Please try again."
+        });
+        return;
+      }
 
-    if (!send?.success) {
-      newTab?.close();
+      setMessage({
+        visible: true,
+        type: "success",
+        msg: "Order placed successfully!"
+      });
+
+      const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}receipt/production?orderId=${send?.data?.id}`;
+
+      if (newTab) {
+        newTab.location.href = url;
+      }
+
+      Clear();
+    }
+    catch(error){
       setMessage({
         visible: true,
         type: "error",
-        msg: send?.error || "Failed to place order. Please try again."
+        msg: error?.message || "Failed to place order. Please try again."
       });
-      return;
     }
-
-    setMessage({
-      visible: true,
-      type: "success",
-      msg: "Order placed successfully!"
-    });
-
-    const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}receipt/production?orderId=${send?.data?.id}`;
-
-    if (newTab) {
-      newTab.location.href = url;
+    finally{
+      setLoading(false);
     }
-
-    Clear();
   };
 
   const Clear = () => {
