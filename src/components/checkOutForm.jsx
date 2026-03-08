@@ -36,7 +36,8 @@ function CheckoutInner({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+
+    if (!stripe || !elements || loading) return;
 
     setLoading(true);
     setMessage("");
@@ -54,7 +55,9 @@ function CheckoutInner({
 
     if (paymentIntent?.status === "succeeded") {
       try {
-        await http_order.put(`/order/${orderId}/payment-success/${paymentIntent.id}`);
+        await http_order.put(
+          `/order/${orderId}/payment-success/${paymentIntent.id}`
+        );
       } catch (err) {
         console.error(err);
       }
@@ -81,16 +84,24 @@ function CheckoutInner({
           className={styles.closeBtn}
           onClick={onClose}
           disabled={loading}
+          aria-label="Luk"
         >
           ✕
         </button>
       </div>
 
-      <div className={styles.stripeBox}>
-        <PaymentElement />
-      </div>
+      <div className={styles.content}>
+        <div className={styles.stripeBox}>
+          <PaymentElement />
+        </div>
 
-      {message && <p className={styles.errorText}>{message}</p>}
+        {message && <p className={styles.errorText}>{message}</p>}
+
+        <p className={styles.footerNote}>
+          Sikker betaling drevet af Stripe. Dine kortoplysninger rører aldrig
+          vores server.
+        </p>
+      </div>
 
       <div className={styles.actions}>
         <button
@@ -117,10 +128,6 @@ function CheckoutInner({
           )}
         </button>
       </div>
-
-      <p className={styles.footerNote}>
-        Sikker betaling drevet af Stripe. Dine kortoplysninger rører aldrig vores server.
-      </p>
     </form>
   );
 }
@@ -134,26 +141,20 @@ export default function CheckoutForm({
   title,
   subtitle,
 }) {
-  if (!open || !clientSecret || !orderId) return null;
-
   const elementsOptions = useMemo(() => {
     if (!clientSecret) return null;
+
     return {
       clientSecret,
-      // Optional appearance config:
-      // appearance: { theme: "stripe" },
     };
   }, [clientSecret]);
 
-  console.log("CheckoutForm rendered with clientSecret:", clientSecret);
+  if (!open || !clientSecret || !orderId || !elementsOptions) return null;
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <Elements
-          stripe={stripePromise}
-          options={elementsOptions}
-        >
+        <Elements stripe={stripePromise} options={elementsOptions}>
           <CheckoutInner
             orderId={orderId}
             onClose={onClose}
