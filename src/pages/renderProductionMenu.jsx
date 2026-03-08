@@ -22,7 +22,7 @@ import defaultMessage from "../utils/defaultMessage";
 
 
 const modules = import.meta.glob("../templates/**/*.jsx");
-const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_PUBLIC_RECEIPT_URL;
+const VITE_PUBLIC_RECEIPT_URL=import.meta.env.VITE_APP_PUBLIC_URL;
 
 
 export default function RenderProductionMenu() {
@@ -138,7 +138,7 @@ export default function RenderProductionMenu() {
         return;
       }
 
-      const url = `${VITE_PUBLIC_RECEIPT_URL}production?orderId=${send?.data?.id}`;
+      const url = `${VITE_PUBLIC_RECEIPT_URL}/receipt/production?orderId=${send?.data?.id}`;
 
       if (newTab) {
         newTab.location.href = url; // redirect opened tab

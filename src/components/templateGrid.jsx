@@ -12,7 +12,7 @@ import LoadingModal from "../components/loading";
 
 import {FreeBadge, PayBadge} from "./priceBadge";
 
-const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_PUBLIC_TEMPLATE_URL;
+const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_APP_PUBLIC_URL;
 
 const defaultMessage = { visible: false, type: "", msg: "" };
 // include templates in root and subfolders (e.g. templates/menu)
@@ -153,7 +153,7 @@ export default function TemplateGrid({ templates = [], action = true }) {
         onClose={() => setOpenConfirmModal(false)}
         onEdit={(tem) => handleClickEditTemplate(tem)}
         onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
-        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}menu/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
+        qrValue={`${VITE_PUBLIC_TEMPLATE_URL}/menu/${selectedTemplate?.type}/template/${selectedTemplate?.id}?code=${selectedTemplate?.code}&public=${selectedTemplate?.publicCode?.String}`}
       />
 
       <FlashMessage

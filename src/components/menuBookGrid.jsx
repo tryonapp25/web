@@ -12,7 +12,7 @@ import FlashMessage from "./flashMessage";
 import QrCodeModal from "./QrCodeModal";
 import LoadingModal from "../components/loading";
 
-const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_PUBLIC_TEMPLATE_URL;
+const VITE_PUBLIC_TEMPLATE_URL = import.meta.env.VITE_APP_PUBLIC_URL;
 
 const templateModules = import.meta.glob("../templates/**/*.jsx");
 const menuBookModules = import.meta.glob("../templates/menuBooks/*.jsx");
@@ -174,7 +174,7 @@ export default function MenuBookGrid({ templates = []}) {
                 onClose={() => setShowProductionModal(false)}
                 onEdit={(tem) => handleEditProductionMenuBook(tem)}
                 onPublish={(tem) => handleSetTemplateStatus(tem, tem?.isPublic)}
-                qrValue={`${VITE_PUBLIC_TEMPLATE_URL}menubook/${selectedMenuBook?.type}/template/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}&public=${selectedMenuBook?.publicCode?.String}`}
+                qrValue={`${VITE_PUBLIC_TEMPLATE_URL}/menubook/${selectedMenuBook?.type}/template/${selectedMenuBook?.id}?code=${selectedMenuBook?.menuBookCode}&template=${selectedMenuBook?.templateCode}&public=${selectedMenuBook?.publicCode?.String}`}
             />
 
             <LoadingModal open={loading}/>

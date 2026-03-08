@@ -1,8 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
+const Lottie = React.lazy(() => import("lottie-react"));
+
+import emailIcon from "../assets/lottiefiles/email.json";
+import emailsent from "../assets/lottiefiles/sunrise.json";
+
+const pulse = {
+  animation: "popIn 0.6s ease-in-out infinite alternate",
+};
 
 export default function SendToMailPopup() {
   const startRef = useRef(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,6 +44,7 @@ export default function SendToMailPopup() {
       setOpen(false);
       return;
     }
+    setTimeout(() => setOpen(true), 3000); // Show popup after 2 seconds
     sessionStorage.setItem("sendToMail", "true");
   }, []);
 
@@ -43,13 +52,6 @@ export default function SendToMailPopup() {
 
   return (
     <div style={styles.overlay}>
-      <style>{`
-        @keyframes popIn {
-          from { opacity:0; transform:scale(0.92); }
-          to { opacity:1; transform:scale(1); }
-        }
-      `}</style>
-
       <div style={styles.popup}>
         {!sent ? (
           <>
@@ -57,7 +59,14 @@ export default function SendToMailPopup() {
               ×
             </button>
 
-            <div style={styles.icon}>📧</div>
+            <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
+              <Lottie 
+                animationData={emailIcon}
+                loop={true}
+                autoplay={true}
+                style={styles.icon}
+              />
+            </Suspense>
 
             <h2 style={styles.title}>Send receipt to Email</h2>
             <p style={styles.text}>
@@ -89,7 +98,14 @@ export default function SendToMailPopup() {
           </>
         ) : (
           <>
-            <div style={{ ...styles.icon, background: "#22c55e" }}>✅</div>
+            <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
+              <Lottie 
+                animationData={emailsent}
+                loop={true}
+                autoplay={true}
+                style={styles.icon}
+              />
+            </Suspense>
 
             <h2 style={styles.title}>Email Sent</h2>
             <p style={styles.text}>
@@ -129,6 +145,7 @@ const styles = {
     fontFamily: "system-ui, sans-serif",
     animation: "popIn .25s ease",
     boxShadow: "0 20px 60px rgba(0,0,0,.35)",
+    boxSizing: "border-box",
   },
 
   close: {
@@ -145,13 +162,13 @@ const styles = {
     width: "80px",
     height: "80px",
     borderRadius: "50%",
-    background: "#3b82f6",
     color: "#fff",
     fontSize: "38px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     margin: "0 auto 14px",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
   },
 
   title: {
@@ -168,6 +185,7 @@ const styles = {
 
   input: {
     width: "100%",
+    boxSizing: "border-box",
     padding: "14px",
     fontSize: "16px",
     borderRadius: "12px",
@@ -175,9 +193,9 @@ const styles = {
     marginBottom: "16px",
     outline: "none",
   },
-
   button: {
     width: "100%",
+    boxSizing: "border-box",
     border: "none",
     background: "#111",
     color: "#fff",
