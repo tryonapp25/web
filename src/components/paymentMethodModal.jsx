@@ -5,7 +5,6 @@ import styles from "../styles/PaymentMethodModal.module.css";
 export default function PaymentMethodModal({
   open,
   onClose,
-  onPayInKasse,
   onPayNow,
   title = "Choose payment method",
   subtitle = "Select how you’d like to pay.",
@@ -25,13 +24,6 @@ export default function PaymentMethodModal({
     return () => document.removeEventListener("keydown", handleKey);
   }, [mounted, onClose]);
 
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => (document.body.style.overflow = prev);
-  }, [open]);
-
   if (!mounted) return null;
 
   const handleOverlayClick = (e) => {
@@ -40,11 +32,6 @@ export default function PaymentMethodModal({
 
   const handleAnimationEnd = () => {
     if (!open) setMounted(false);
-  };
-
-  const handlePayAtCounter = () => {
-    onPayAtCounter?.();
-    onClose?.();
   };
 
   const handlePayNow = () => {
@@ -57,9 +44,6 @@ export default function PaymentMethodModal({
       className={`${styles.overlay} ${open ? styles.overlayIn : styles.overlayOut}`}
       onMouseDown={handleOverlayClick}
       onAnimationEnd={handleAnimationEnd}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Payment method modal"
     >
       <div className={styles.modal}>
         <div className={styles.header}>
@@ -68,33 +52,35 @@ export default function PaymentMethodModal({
             <p className={styles.subtitle}>{subtitle}</p>
           </div>
 
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <button className={styles.closeBtn} onClick={onClose}>
             ✕
           </button>
         </div>
 
         <div className={styles.body}>
           <button
-            className={styles.kasseBtn}
-            onClick={handlePayAtCounter}
-            aria-label="Pay at the counter"
-          >
-            <span className={styles.btnTitle}>Pay at the counter</span>
-            <span className={styles.btnDesc}>Pay at the counter when you pick up.</span>
-          </button>
-
-          <button
             className={styles.payNowBtn}
             onClick={handlePayNow}
             aria-label="Pay now"
           >
             <span className={styles.btnTitle}>Pay now</span>
-            <span className={styles.btnDesc}>Pay immediately using online payment.</span>
+            <span className={styles.btnDesc}>
+              Pay immediately using online payment.
+            </span>
           </button>
+
+          {/* PAYMENT ICONS */}
+          <div className={styles.paymentIcons}>
+            <img src="/payment_images/visa_card.png" alt="Visa" />
+            <img src="/payment_images/master_card.png" alt="Mastercard" />
+            <img style={{ borderRadius:"2px" }} src="/payment_images/mobile_pay.png" alt="MobilePay" />
+            <img src="/payment_images/apple_pay.png" alt="Apple Pay" />
+            <img src="/payment_images/google_pay.png" alt="Google Pay" />
+          </div>
         </div>
 
         <div className={styles.footer}>
-          <button className={styles.cancelBtn} onClick={onClose} aria-label="Cancel">
+          <button className={styles.cancelBtn} onClick={onClose}>
             Cancel
           </button>
         </div>

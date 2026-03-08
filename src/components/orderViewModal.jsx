@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/OrderViewModal.module.css";
+import { Trash, Trash2 } from "lucide-react";
 
 export default function OrderViewModal({
   open,
@@ -7,6 +8,8 @@ export default function OrderViewModal({
   orders = [],
   onUpdateQuantity,
   onRemoveItem,
+  onRemoveIngredient,
+  onRemoveExtra,
   onCheckout,
   data,
 }) {
@@ -14,32 +17,29 @@ export default function OrderViewModal({
   const [totalPrice, setTotalPrice] = useState(0);
 
   const calculateTotalPrice = () => {
-    console.log("Calculating total price for orders:", orders);
     let total = 0;
     orders.forEach((item) => {
       const quantity = item.quantity || 1;
-      // Price is in item.data[0].price
       const basePrice = parseFloat(item.data?.[0]?.price) || 0;
+
       let extrasPrice = 0;
       if (item.extras && Array.isArray(item.extras)) {
         item.extras.forEach((extra) => {
           extrasPrice += parseFloat(extra.price) || 0;
         });
       }
+
       total += (basePrice + extrasPrice) * quantity;
     });
-    console.log("Total price calculated:", total);
     return total;
   };
 
   useEffect(() => {
     if (open) {
-      const totalPrice = calculateTotalPrice();
-      setTotalPrice(totalPrice);
+      setTotalPrice(calculateTotalPrice());
       setMounted(true);
     }
   }, [open, orders]);
-
 
   useEffect(() => {
     if (!mounted) return;
@@ -70,9 +70,6 @@ export default function OrderViewModal({
   const totalItems = orders.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   const getExtrasForItem = (item) => {
-    // supports both shapes:
-    // - item.extras (if you store directly at root)
-    // - item.data.extras (matches how you set it in ModelShowcase)
     const extras = item?.extras ?? item?.data?.extras ?? [];
     return Array.isArray(extras) ? extras : [];
   };
@@ -86,7 +83,6 @@ export default function OrderViewModal({
     });
     return groups;
   };
-  
 
   return (
     <div
@@ -114,7 +110,6 @@ export default function OrderViewModal({
               {orders.map((item, index) => {
                 const extras = getExtrasForItem(item);
                 const grouped = groupExtrasByCategory(extras);
-                console.log("Rendering item:", item);
 
                 return (
                   <div key={index} className={styles.orderItem}>
@@ -125,34 +120,60 @@ export default function OrderViewModal({
                         <p className={styles.itemDescription}>{item.description}</p>
                       )}
 
-                      {/* Ingredients (included) */}
+                      {/* Ingredients */}
                       {item.ingredients?.length > 0 && (
                         <div className={styles.itemIngredients}>
                           {item.ingredients
                             .filter((ing) => ing.included)
                             .map((ing, i) => (
                               <span key={i} className={styles.ingredientTag}>
-                                {ing.name}
+                                <span>{ing.name}</span>
+                                <button
+                                  type="button"
+                                  className={styles.inlineRemoveBtn}
+                                  onClick={() => onRemoveIngredient?.(index, i)}
+                                  aria-label={`Remove ${ing.name}`}
+                                >
+                                  <Trash2 size={14} />
+                                </button>
                               </span>
                             ))}
                         </div>
                       )}
 
-                      {/* ✅ Extras */}
+                      {/* Extras */}
                       {extras.length > 0 && (
                         <div className={styles.itemExtras}>
                           {Object.entries(grouped).map(([category, list]) => (
                             <div key={category} className={styles.extrasGroup}>
                               <div className={styles.extrasGroupTitle}>{category}</div>
                               <div className={styles.extrasTags}>
-                                {list.map((ex, i) => (
-                                  <span key={i} className={styles.extraTag}>
-                                    <span className={styles.extraName}>{ex.name}</span>
-                                    {ex.price ? (
-                                      <span className={styles.extraPrice}>{ex.price}</span>
-                                    ) : null}
-                                  </span>
-                                ))}
+                                {list.map((ex, i) => {
+                                  const extraIndex = extras.findIndex(
+                                    (itemEx) =>
+                                      itemEx.name === ex.name &&
+                                      itemEx.price === ex.price &&
+                                      itemEx.category === ex.category
+                                  );
+
+                                  return (
+                                    <span key={i} className={styles.extraTag}>
+                                      <span className={styles.extraName}>{ex.name}</span>
+                                      {ex.price ? (
+                                        <span className={styles.extraPrice}>{ex.price}</span>
+                                      ) : null}
+
+                                      <button
+                                        type="button"
+                                        className={styles.inlineRemoveBtn}
+                                        onClick={() => onRemoveExtra?.(index, extraIndex)}
+                                        aria-label={`Remove ${ex.name}`}
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                    </span>
+                                  );
+                                })}
                               </div>
                             </div>
                           ))}
@@ -184,7 +205,7 @@ export default function OrderViewModal({
                         onClick={() => onRemoveItem?.(index)}
                         aria-label="Remove item"
                       >
-                        🗑️
+                        <Trash size={18} />
                       </button>
                     </div>
                   </div>
@@ -198,9 +219,11 @@ export default function OrderViewModal({
           <div className={styles.footer}>
             <div className={styles.summary}>
               <span className={styles.summaryLabel}>Total Items:</span>
-              <span className={styles.summaryValue}>{totalItems}</span>
+              <span className={styles.summaryValue}>{totalItems}x</span>
             </div>
-            <p className={styles.totalPriceLabel}>Total Price: {totalPrice.toFixed(2)} {data?.currency}</p>
+            <p className={styles.totalPriceLabel}>
+              Total Price: {totalPrice.toFixed(2)} {data?.currency}
+            </p>
             <button className={styles.checkoutBtn} onClick={onCheckout}>
               Pay
             </button>

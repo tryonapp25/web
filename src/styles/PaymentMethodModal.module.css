@@ -221,6 +221,27 @@
   }
 }
 
+.paymentIcons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.paymentIcons img {
+  height: 26px;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.paymentIcons img:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
 /* =========================
    Light Mode Overrides
 ========================= */

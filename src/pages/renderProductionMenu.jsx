@@ -119,12 +119,35 @@ export default function RenderProductionMenu() {
     setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
   };
 
+  const handleRemoveExtra = (itemIndex, extraIndex) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((item, i) => {
+        if (i === itemIndex) {
+          const newExtras = item.extras ? item.extras.filter((_, j) => j !== extraIndex) : [];
+          return { ...item, extras: newExtras };
+        }
+        return item;
+      })
+    );
+  }
+
+  const handleRemoveIngredient = (itemIndex, ingredientIndex) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((item, i) => {
+        if (i === itemIndex) {
+          const newIngredients = item.ingredients ? item.ingredients.filter((_, j) => j !== ingredientIndex) : [];
+          return { ...item, ingredients: newIngredients };
+        }
+        return item;
+      })
+    );
+  };
+
   const handleCheckout = async () => {
     const newTab = window.open("", "_blank"); // open immediately on click
 
     try {
       setLoading(true);
-
       const ordersWithTemplate = { receiverId: template.uid, orders };
       const send = await sendOrder(ordersWithTemplate);
 
@@ -221,6 +244,8 @@ export default function RenderProductionMenu() {
         orders={orders}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
+        onRemoveExtra={handleRemoveExtra}
+        onRemoveIngredient={handleRemoveIngredient}
         onCheckout={() => setShowPaymentMethod(true)}
         data={template}
       />
