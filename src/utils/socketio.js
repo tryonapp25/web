@@ -121,7 +121,7 @@ export async function genGuestToken() {
     }
 }
 
-export const sendOrder = async (order) => {
+export const createOrder = async (order) => {
   try {
     let token = sessionStorage.getItem("token");
     if (!token) {
@@ -140,10 +140,10 @@ export const sendOrder = async (order) => {
     if(res.data.success){
       console.log("Order sent successfully:");
       localStorage.setItem("token", res.data.token);
-      return {success: true, message: res.data.message || "Order placed successfully", data: res.data.data || null, token: res.data.token || null};
+      return res?.data;
     }
   } catch (err) {
     console.error("Error sending order:", err);
-    return {success: false, error: httpMessage(err)};
+    return {success: false, message:httpMessage(err), error: httpMessage(err)};
   }
 }
