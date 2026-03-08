@@ -146,12 +146,17 @@ export default function RenderProductionMenu() {
   };
 
   const handleCheckout = async () => {
+    const newTab = window.open("", "_blank"); // open immediately from user gesture
+
     try {
       setLoading(true);
+
       const ordersWithTemplate = { receiverId: template.uid, orders };
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
+        if (newTab) newTab.close();
+
         setMessage({
           visible: true,
           type: "error",
@@ -159,23 +164,24 @@ export default function RenderProductionMenu() {
         });
         return;
       }
+
       const payment = create?.payment || {};
       payment.orderId = create?.data?.id;
-      await handlePaymentSuccess(payment);
+
+      const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${payment.paymentIntentId}&orderId=${payment.orderId || ""}`;
+
+      if (newTab) {
+        newTab.location.href = url;
+      } else {
+        // fallback if popup still blocked
+        window.location.href = url;
+      }
+
+      Clear();
     } finally {
       setLoading(false);
     }
   };
-
-  const handlePaymentSuccess = async (payment) => { 
-    const { clientSecret, paymentIntentId } = payment || {};
-    const newTab = window.open("", "_blank"); 
-    const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${paymentIntentId}&orderId=${payment?.orderId || ""}`;
-    if (newTab) {
-      newTab.location.href = url;
-    }
-    Clear();
-  }
 
   const Clear = () => {
     setOrders([]);

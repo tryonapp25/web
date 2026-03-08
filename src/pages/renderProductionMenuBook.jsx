@@ -103,44 +103,63 @@ export default function RenderProductionMenuBook() {
   };
 
   const handleCheckout = async () => {
-    try{
-      const ordersWithTemplate = { receiverId: data?.uid, orders };
-      const create = await createOrder(ordersWithTemplate);
+      const newTab = window.open("", "_blank", "noopener,noreferrer");
 
-      if (!create?.success) {
+      try {
+        setLoading(true);
+
+        const ordersWithTemplate = {
+          receiverId: data?.uid,
+          orders,
+        };
+
+        const create = await createOrder(ordersWithTemplate);
+
+        if (!create?.success) {
+          if (newTab) {
+            newTab.close();
+          }
+
+          setMessage({
+            visible: true,
+            type: "error",
+            msg: create?.error || "Failed to place order. Please try again.",
+          });
+          return;
+        }
+
+        const payment = create?.payment || {};
+        payment.orderId = create?.data?.id;
+
+        handlePaymentSuccess(payment, newTab);
+      } catch (error) {
+        if (newTab) {
+          newTab.close();
+        }
+
         setMessage({
           visible: true,
           type: "error",
-          msg: create?.error || "Failed to place order. Please try again."
+          msg: error?.message || "Failed to place order. Please try again.",
         });
-        return;
+      } finally {
+        setLoading(false);
       }
-      const payment = create?.payment || {};
-      payment.orderId = create?.data?.id;
-      await handlePaymentSuccess(payment);
-      
-    }
-    catch(error){
-      setMessage({
-        visible: true,
-        type: "error",
-        msg: error?.message || "Failed to place order. Please try again."
-      });
-    }
-    finally{
-      setLoading(false);
-    }
   };
 
-  const handlePaymentSuccess = async (payment) => { 
-    const { clientSecret, paymentIntentId } = payment || {};
-    const newTab = window.open("", "_blank"); 
-    const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${paymentIntentId}&orderId=${payment?.orderId || ""}`;
-    if (newTab) {
-      newTab.location.href = url;
-    }
-    Clear();
+const handlePaymentSuccess = (payment, newTab) => {
+  const { paymentIntentId } = payment || {};
+
+  const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${paymentIntentId}&orderId=${payment?.orderId || ""}`;
+
+  if (newTab) {
+    newTab.location.href = url;
+  } else {
+    window.location.href = url;
   }
+
+  Clear();
+};
 
   const Clear = () => {
     setOrders([]);
