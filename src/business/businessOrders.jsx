@@ -75,7 +75,7 @@ export default function BusinessOrders() {
     try {
       console.log(publicUser);
       setLoading(true);
-      const res = await http_order.get(`/business/${publicUser?.business?.id}/orders/status/PENDING/today`);
+      const res = await http_order.get(`/business/${publicUser?.business?.id}/orders/status/PREPARING/today`);
       if(res.data.success){
         console.log("Fetched today's orders successfully:", res.data.data);
         setOrders(res.data.data);

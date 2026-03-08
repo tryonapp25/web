@@ -5,7 +5,7 @@ import http_order from "../http/http_order";
 import httpMessage from "../http/httpMessage";
 import defaultMessage from "../utils/defaultMessage";
 import useIsMobile from "../utils/deviceCheck";
-import { sendOrder } from "../utils/socketio";
+import { createOrder } from "../utils/socketio";
 
 
 import ModelShowcase from "../components/modelShowcase";
@@ -108,31 +108,31 @@ export default function RenderProductionMenuBook() {
       const newTab = window.open("", "_blank"); // open immediately to avoid popup blockers
       const ordersWithTemplate = { receiverId: template.uid, orders };
 
-      const send = await sendOrder(ordersWithTemplate);
+      const create = await createOrder(ordersWithTemplate);
 
-      if (!send?.success) {
+      if (!create?.success) {
         newTab?.close();
         setMessage({
           visible: true,
           type: "error",
-          msg: send?.error || "Failed to place order. Please try again."
+          msg: create?.error || "Failed to place order. Please try again."
         });
         return;
       }
 
-      setMessage({
+      /* setMessage({
         visible: true,
         type: "success",
         msg: "Order placed successfully!"
       });
 
-      const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}receipt/production?orderId=${send?.data?.id}`;
+      const url = `${import.meta.env.VITE_PUBLIC_RECEIPT_URL}receipt/production?orderId=${create?.data?.id}`;
 
       if (newTab) {
         newTab.location.href = url;
       }
 
-      Clear();
+      Clear(); */
     }
     catch(error){
       setMessage({

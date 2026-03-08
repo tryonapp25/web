@@ -7,7 +7,7 @@ import useIsMobile from "../utils/deviceCheck";
 
 import { SocketContext } from "../ApiContext/socketContext";
 import { BusinessContext } from "../ApiContext/businessContext";
-import { sendOrder } from "../utils/socketio";
+import { createOrder } from "../utils/socketio";
 
 import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
@@ -18,6 +18,8 @@ import OrderViewModal from "../components/orderViewModal";
 import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
+
+import CheckoutForm from "../components/checkOutForm";
 
 
 
@@ -50,6 +52,8 @@ export default function RenderProductionMenu() {
 
   const [orders, setOrders] = useState([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
+
+  const [paymentIntentData, setPaymentIntentData] = useState(null);
   // ✅ connect socket ONLY ONCE per mount (and guarded for StrictMode double-invoke)
 
 
@@ -144,46 +148,43 @@ export default function RenderProductionMenu() {
   };
 
   const handleCheckout = async () => {
-    const newTab = window.open("", "_blank"); // open immediately on click
-
     try {
       setLoading(true);
       const ordersWithTemplate = { receiverId: template.uid, orders };
-      const send = await sendOrder(ordersWithTemplate);
+      const create = await createOrder(ordersWithTemplate);
 
-      if (!send?.success) {
+      if (!create?.success) {
         newTab?.close(); // close tab if request failed
         setMessage({
           visible: true,
           type: "error",
-          msg: send?.error || "Failed to place order. Please try again."
+          msg: create?.error || "Failed to place order. Please try again."
         });
         return;
       }
-
-      const url = `${VITE_PUBLIC_RECEIPT_URL}/receipt/production?orderId=${send?.data?.id}`;
-
-      if (newTab) {
-        newTab.location.href = url; // redirect opened tab
-      }
-
-      setMessage({
-        visible: true,
-        type: "success",
-        msg: "Order placed successfully!"
-      });
-
-      Clear();
+      const { clientSecret, paymentIntentId } = create?.payment || {};
+      const orderId = create?.data?.id;
+      setPaymentIntentData({ clientSecret, paymentIntentId, orderId });
     } finally {
       setLoading(false);
     }
   };
+
+  const handlePaymentSuccess = async () => { 
+    const newTab = window.open("", "_blank"); 
+    const url = `${VITE_PUBLIC_RECEIPT_URL}/receipt/production?orderId=${paymentIntentData.orderId}`;
+    if (newTab) {
+      newTab.location.href = url;
+    }
+    Clear();
+  }
 
   const Clear = () => {
     setOrders([]);
     setOrderModalOpen(false);
     setShowPaymentMethod(false);
     setMessage(defaultMessage);
+    setPaymentIntentData(null);
   }
 
   const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
@@ -263,6 +264,13 @@ export default function RenderProductionMenu() {
         message={message?.msg || ""}
         onClose={() => setMessage(null)}
         duration={3000}
+      />
+
+      <CheckoutForm
+        open={paymentIntentData !== null ? true : false}
+        clientSecret={paymentIntentData ? paymentIntentData.clientSecret : ""}
+        orderId={paymentIntentData ? paymentIntentData.orderId : ""}
+        onClose={() => handlePaymentSuccess()}
       />
 
     </div>
