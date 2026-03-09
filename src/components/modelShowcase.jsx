@@ -262,6 +262,7 @@ export default function ModelShowcase({
                   model={item?.data?.model}
                   config={item?.config}
                   images={item?.data?.images}
+                  allowShowModel={true}
                 />
               </div>
 

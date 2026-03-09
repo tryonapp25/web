@@ -1,87 +1,139 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../styles/Model3D.module.css";
+import React, { Suspense } from "react";
+const Lottie = React.lazy(() => import("lottie-react"));
+import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
-export default function Model3D({ model, images, config }) {
-  const [loaded, setLoaded] = useState(false);
-  const [posterUrl] = useState(
-    images && images.length > 0 ? images[0] : "/icons/loading.png"
-  );
+export default function Model3D({ model, images, config, allowShowModel = false }) {
+  const [ready, setReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
   const viewerRef = useRef(null);
 
-  // ────────────────────────────────────────────────
-  // 1. Load script only once + only when needed
-  // ────────────────────────────────────────────────
-  useEffect(() => {
+  const posterUrl = useMemo(() => images?.[0] || null, [images]);
+
+  let modelViewerScriptPromise = null;
+
+  function loadModelViewerScript() {
     if (customElements.get("model-viewer")) {
-      setLoaded(true); // already available (e.g. loaded by another component)
-      return;
+      return Promise.resolve();
     }
 
-    const script = document.createElement("script");
-    script.type = "module";
-    script.src = "https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js";
-    // script.src = "https://cdn.jsdelivr.net/npm/@google/model-viewer@latest/dist/model-viewer.min.js"; // alternative CDN
-    script.async = true;
+    if (!modelViewerScriptPromise) {
+      modelViewerScriptPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector(
+          'script[data-model-viewer="true"]'
+        );
 
-    script.onload = () => setLoaded(true);
-    script.onerror = () => console.error("Failed to load model-viewer");
+        if (existing) {
+          existing.addEventListener("load", () => resolve(), { once: true });
+          existing.addEventListener("error", reject, { once: true });
+          return;
+        }
 
-    document.head.appendChild(script);
+        const script = document.createElement("script");
+        script.type = "module";
+        script.src =
+          "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
+        script.setAttribute("data-model-viewer", "true");
 
-    return () => {
-      // optional: don't remove if shared across page
-      // document.head.removeChild(script);
-    };
-  }, []);
+        script.onload = () => resolve();
+        script.onerror = reject;
 
-  // Optional: detect low-end device & reduce quality
-  const [isLowPower, setIsLowPower] = useState(false);
-  useEffect(() => {
-    // Very rough heuristic — feel free to use more precise libraries
-    if (
-      navigator.hardwareConcurrency <= 2 ||
-      navigator.deviceMemory <= 4 ||
-      /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)
-    ) {
-      setIsLowPower(true);
+        document.head.appendChild(script);
+      });
     }
-  }, []);
 
-  if (!loaded) {
+    return modelViewerScriptPromise;
+  }
+
+
+  function loadingModal() {
     return (
-      <div className={styles.wrapper}>
-        <img src={posterUrl} alt="3D model poster" className={styles.popModel} />
-        <div>Loading 3D viewer...</div>
-      </div>
+      <Suspense fallback={<div style={{width:24,height:24}}/>}>
+        <Lottie 
+          animationData={loading}
+          loop={true}
+          autoplay={true}
+          style={{width:"100%", height:"100%"}}
+        />
+      </Suspense>
     );
   }
 
+  useEffect(() => {
+    let mounted = true;
+    if(!allowShowModel) return;
+
+    setIsMobile(window.innerWidth < 768);
+
+    loadModelViewerScript()
+      .then(() => {
+        if (mounted) setReady(true);
+      })
+      .catch((err) => {
+        console.error("Failed to load model-viewer:", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!viewerRef.current) return;
+
+    const handleLoad = () => {
+      setModelLoaded(true);
+    };
+
+    viewerRef.current.addEventListener("load", handleLoad);
+
+    return () => {
+      viewerRef.current?.removeEventListener("load", handleLoad);
+    };
+  }, [ready]);
+
+  if (!model) return null;
+
   return (
     <div className={styles.wrapper}>
-      <model-viewer
-        ref={viewerRef}
-        src={model}
-        alt="3D model"
-        poster={posterUrl}
-        camera-controls
-        camera-orbit={config?.camera_orbit || "auto 10deg"}
-        auto-rotate={isLowPower ? false : true}           // ← important on mobile
-        autoplay={isLowPower ? false : true}
-        touch-action="pan-y"
-        loading="lazy"
-        reveal="auto"               // or "interaction" to save even more resources
-        // reveal="interaction"     // ← often best choice on mobile
-        animation-loop
-        environment-image="neutral"
-        shadow-intensity={isLowPower ? "0.5" : "1"}
-        exposure={isLowPower ? "0.8" : "1"}
-        // ─── Most important mobile perf attributes ───
-        power-preference="low-power"          // or "default"
-        // progressive           // not needed anymore (automatic now)
-        ar ar-modes="webxr scene-viewer quick-look"
-        // ios-src={iosUsdzUrl}   // ← if you have pre-converted .usdz → much better iOS AR
-        className={styles.popModel}
-      />
+      
+      {/* IMAGE FIRST */}
+      {!modelLoaded && posterUrl !== null && (
+        <img
+          src={posterUrl}
+          alt="3D preview"
+          className={styles.poster}
+        />
+      )}
+      {posterUrl === null && !allowShowModel &&
+        loadingModal()
+      }
+
+      {/* MODEL */}
+      {ready && (
+        <model-viewer
+          ref={viewerRef}
+          src={model}
+          alt="3D model"
+          poster={posterUrl || ""}
+          camera-controls
+          touch-action="pan-y"
+          loading="eager"
+          reveal="auto"
+          interaction-prompt="auto"
+          environment-image="neutral"
+          shadow-intensity="0.7"
+          exposure="1"
+          camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
+          disable-pan
+          className={styles.popModel}
+          style={{ opacity: modelLoaded ? 1 : 0 }}
+          {...(!isMobile ? { "auto-rotate": true } : {})}
+        />
+      )}
+
     </div>
   );
 }
