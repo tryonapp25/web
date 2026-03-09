@@ -134,6 +134,12 @@ export default function BusinessOrders() {
                 );
                 return true;
               }
+              if(order?.status === "COMPLETED"){
+                setOrders((prev) =>
+                  prev.filter((o) => o.id !== order.id)
+                );
+                return true;
+              }
               setOrders((prev) =>
                 prev.map((order) =>
                   order.id === order.id
