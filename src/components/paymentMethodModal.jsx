@@ -9,6 +9,7 @@ export default function PaymentMethodModal({
   title = "Choose payment method",
   subtitle = "Select how you’d like to pay.",
 }) {
+  if(!open) return null;
   const [mounted, setMounted] = useState(open);
 
   useEffect(() => {
