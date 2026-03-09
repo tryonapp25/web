@@ -64,7 +64,7 @@ export default function Model3D({ model, images, config }) {
     <div className={styles.wrapper}>
       {ready ? (
         <model-viewer
-          src={model}
+          src="https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fmenu.glb_bed21c1e-8516-4239-989a-e5cfa9f0c041.glb?alt=media&token=a42681cf-45af-4b91-b734-7638a142de5d"
           alt="3D model"
           poster={posterUrl}
           camera-controls
