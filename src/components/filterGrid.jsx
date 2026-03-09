@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { IoHeart, IoHeartOutline, IoChatbubbleOutline, IoSparklesOutline, IoGlobeOutline, IoLockClosedOutline, IoCreateOutline } from "react-icons/io5";
 import styles from "../styles/FilterGrid.module.css";
+import formatDate from "../utils/formatTime";
 
 
 const formatCount = (n) => {
@@ -10,13 +11,6 @@ const formatCount = (n) => {
   return `${v}`;
 };
 
-const formatDate = (d) => {
-  try {
-    return new Date(d).toLocaleDateString();
-  } catch {
-    return "";
-  }
-};
 
 function GridItem({
   item,

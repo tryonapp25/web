@@ -1,13 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import styles from "../styles/ImageGrid.module.css";
-
-const formatDate = (d) => {
-  try {
-    return new Date(d).toLocaleDateString();
-  } catch {
-    return "";
-  }
-};
+import formatDate from "../utils/formatTime";
 
 const formatCount = (n = 0) => {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}m`.replace(".0", "");
