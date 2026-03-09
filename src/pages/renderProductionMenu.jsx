@@ -1,12 +1,4 @@
-import React, {
-  Suspense,
-  lazy,
-  useEffect,
-  useMemo,
-  useState,
-  useContext,
-  useCallback,
-} from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState, useRef, useContext} from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
@@ -27,209 +19,139 @@ import PaymentMethodModal from "../components/paymentMethodModal";
 import FlashMessage from "../components/flashMessage";
 import defaultMessage from "../utils/defaultMessage";
 
+
+
+
 const modules = import.meta.glob("../templates/**/*.jsx");
-const VITE_PUBLIC_CHECKOUT_URL = import.meta.env.VITE_APP_PUBLIC_URL;
+const VITE_PUBLIC_CHECKOUT_URL=import.meta.env.VITE_APP_PUBLIC_URL;
 
-class TemplateErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error("Template render crashed:", error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className={styles.notFoundWrap}>
-          <div className={styles.notFoundCard}>
-            <div className={styles.notFoundIcon}>⚠️</div>
-            <h2 className={styles.notFoundTitle}>Something went wrong</h2>
-            <p className={styles.notFoundText}>
-              The menu template failed to load correctly.
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
 
 export default function RenderProductionMenu() {
+  const fetchedRef = useRef(false);
+
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-
+  const [message, setMessage] = useState(defaultMessage);
   const { orderFeatureEnabled } = useContext(SocketContext);
-  const { isBusinessOpen } = useContext(BusinessContext);
 
   const { type, id } = useParams();
   const [searchParams] = useSearchParams();
-
   const code = searchParams.get("code");
   const publicCode = searchParams.get("public");
 
-  const [message, setMessage] = useState(defaultMessage);
+  const { isBusinessOpen } = useContext(BusinessContext);
+
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchFailed, setFetchFailed] = useState(false);
 
   const [modelOpen, setModelOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState(null);
+  const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
   const [orders, setOrders] = useState([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
-  const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
-  const fetchTemplate = useCallback(async (isMountedRef) => {
+
+
+
+  useEffect(() => {
+    if(fetchedRef.current) return;
+    fetchedRef.current = true;
+    fetchTemplate();
+  }, [type, id, code, publicCode]);
+
+  const fetchTemplate = async () => {
     setLoading(true);
     setFetchFailed(false);
-
     try {
-      const res = await http.get(
-        `/${type}/code/${code}/template/${id}/public/${publicCode}`
-      );
-
-      if (!isMountedRef.current) return;
-
-      if (res?.data?.success && res?.data?.data) {
+      const res = await http.get(`/${type}/code/${code}/template/${id}/public/${publicCode}`);
+      if (res.data?.success && res.data?.data) {
         setTemplate(res.data.data);
       } else {
         setTemplate(null);
         setFetchFailed(true);
       }
     } catch (err) {
-      if (!isMountedRef.current) return;
-
-      console.error("fetchTemplate error:", err);
       setTemplate(null);
       setFetchFailed(true);
-      setMessage({
-        visible: true,
-        type: "error",
-        msg: httpMessage(err) || "Failed to load template. Please try again.",
-      });
+      setMessage({visible: true, type: "error", msg: httpMessage(err) || "Failed to load template. Please try again." });
     } finally {
-      if (isMountedRef.current) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
-  }, [type, code, id, publicCode]);
+  };
 
-  useEffect(() => {
-    const isMountedRef = { current: true };
-
-    fetchTemplate(isMountedRef);
-
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, [fetchTemplate]);
-
-  const handleSelectOrder = useCallback((order) => {
+  const handleSelectOrder = (order) => {
     console.log("Ordering item:", order);
-
     setOrders((prevOrders) => {
       const existingIndex = prevOrders.findIndex(
-        (item) => item.title === order?.data?.title
+        (item) => item.title === order.data.title
       );
-
+      
       if (existingIndex !== -1) {
+        // Item exists, increment quantity
         return prevOrders.map((item, index) =>
           index === existingIndex
             ? { ...item, quantity: (item.quantity || 1) + 1 }
             : item
         );
+      } else {
+        // New item, add with quantity 1
+        return [...prevOrders, { ...order.data, quantity: 1 }];
       }
-
-      return [...prevOrders, { ...order.data, quantity: 1 }];
     });
-
+    
     setModelOpen(false);
     setOrderModalOpen(true);
-  }, []);
+  };
 
-  const handleUpdateQuantity = useCallback((index, newQuantity) => {
+  const handleUpdateQuantity = (index, newQuantity) => {
     if (newQuantity < 1) {
-      setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
+      handleRemoveItem(index);
       return;
     }
-
     setOrders((prevOrders) =>
       prevOrders.map((item, i) =>
         i === index ? { ...item, quantity: newQuantity } : item
       )
     );
-  }, []);
+  };
 
-  const handleRemoveItem = useCallback((index) => {
+  const handleRemoveItem = (index) => {
     setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
-  }, []);
+  };
 
-  const handleRemoveExtra = useCallback((itemIndex, extraIndex) => {
+  const handleRemoveExtra = (itemIndex, extraIndex) => {
     setOrders((prevOrders) =>
       prevOrders.map((item, i) => {
-        if (i !== itemIndex) return item;
-
-        const newExtras = item.extras
-          ? item.extras.filter((_, j) => j !== extraIndex)
-          : [];
-
-        return { ...item, extras: newExtras };
+        if (i === itemIndex) {
+          const newExtras = item.extras ? item.extras.filter((_, j) => j !== extraIndex) : [];
+          return { ...item, extras: newExtras };
+        }
+        return item;
       })
     );
-  }, []);
+  }
 
-  const handleRemoveIngredient = useCallback((itemIndex, ingredientIndex) => {
+  const handleRemoveIngredient = (itemIndex, ingredientIndex) => {
     setOrders((prevOrders) =>
       prevOrders.map((item, i) => {
-        if (i !== itemIndex) return item;
-
-        const newIngredients = item.ingredients
-          ? item.ingredients.filter((_, j) => j !== ingredientIndex)
-          : [];
-
-        return { ...item, ingredients: newIngredients };
+        if (i === itemIndex) {
+          const newIngredients = item.ingredients ? item.ingredients.filter((_, j) => j !== ingredientIndex) : [];
+          return { ...item, ingredients: newIngredients };
+        }
+        return item;
       })
     );
-  }, []);
+  };
 
-  const clearAll = useCallback(() => {
-    setOrders([]);
-    setOrderModalOpen(false);
-    setShowPaymentMethod(false);
-    setMessage(defaultMessage);
-  }, []);
-
-  const handleCheckout = useCallback(async () => {
-    const newTab = window.open("", "_blank");
+  const handleCheckout = async () => {
+    const newTab = window.open("", "_blank"); // open immediately from user gesture
 
     try {
       setLoading(true);
 
-      if (!template?.uid || orders.length === 0) {
-        if (newTab) newTab.close();
-
-        setMessage({
-          visible: true,
-          type: "error",
-          msg: "Missing order information.",
-        });
-        return;
-      }
-
-      const ordersWithTemplate = {
-        receiverId: template.uid,
-        orders,
-      };
-
+      const ordersWithTemplate = { receiverId: template.uid, orders };
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
@@ -238,7 +160,7 @@ export default function RenderProductionMenu() {
         setMessage({
           visible: true,
           type: "error",
-          msg: create?.error || "Failed to place order. Please try again.",
+          msg: create?.error || "Failed to place order. Please try again."
         });
         return;
       }
@@ -246,42 +168,35 @@ export default function RenderProductionMenu() {
       const payment = create?.payment || {};
       payment.orderId = create?.data?.id;
 
-      const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${
-        payment.paymentIntentId || ""
-      }&orderId=${payment.orderId || ""}`;
+      const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${payment.paymentIntentId}&orderId=${payment.orderId || ""}`;
 
       if (newTab) {
         newTab.location.href = url;
       } else {
+        // fallback if popup still blocked
         window.location.href = url;
       }
 
-      clearAll();
-    } catch (err) {
-      console.error("handleCheckout error:", err);
-
-      if (newTab) newTab.close();
-
-      setMessage({
-        visible: true,
-        type: "error",
-        msg: httpMessage(err) || "Checkout failed. Please try again.",
-      });
+      Clear();
     } finally {
       setLoading(false);
     }
-  }, [template, orders, clearAll]);
+  };
 
-  const key = template?.code
-    ? `../templates/menu/${template.code}.jsx`
-    : null;
+  const Clear = () => {
+    setOrders([]);
+    setOrderModalOpen(false);
+    setShowPaymentMethod(false);
+    setMessage(defaultMessage);
+  }
 
-  const hasTemplateModule = !!(key && modules[key]);
+  const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
 
   const Template = useMemo(() => {
-    if (!hasTemplateModule) return null;
-    return lazy(modules[key]);
-  }, [key, hasTemplateModule]);
+    if (!key) return null;
+    const loader = modules[key];
+    return loader ? lazy(loader) : null;
+  }, [key]);
 
   if (loading) {
     return <LoadingModal open={true} title="Menu" subtitle="Loading..." />;
@@ -292,89 +207,68 @@ export default function RenderProductionMenu() {
   }
 
   const content = (
-    <TemplateErrorBoundary>
-      <Suspense
-        fallback={
-          <LoadingModal
-            open={true}
-            title="Menu"
-            subtitle="Loading template..."
-          />
-        }
-      >
-        <Template
-          data={template}
-          onSave={(tem) => console.log("Saved template:", tem)}
-          onClickModel={(item) => {
-            setSelectedModel(item);
-            setModelOpen(true);
-          }}
-        />
-      </Suspense>
-    </TemplateErrorBoundary>
+    <Suspense
+      fallback={
+        <LoadingModal open={true} title="Menu" subtitle="Loading template..." />
+      }
+    >
+      <Template
+        data={template}
+        onSave={(tem) => console.log(tem)}
+        onClickModel={(item) => {
+          setSelectedModel(item);
+          setModelOpen(true);
+        }}
+      />
+    </Suspense>
   );
 
-  const wrappedContent = isMobile ? (
-    content
-  ) : (
-    <PdfPageWrapper>{content}</PdfPageWrapper>
-  );
+  const wrappedContent = isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
 
   return (
     <div>
       {wrappedContent}
+      {orderFeatureEnabled && isBusinessOpen && <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />}
+      {!isBusinessOpen && orderFeatureEnabled && <CloseBubble/>}
 
-      {orderFeatureEnabled && isBusinessOpen && (
-        <CartBubble
-          count={orders.length}
-          onClick={() => setOrderModalOpen(true)}
-        />
-      )}
+      {/* Render modal ONCE */}
+      <ModelShowcase
+        open={modelOpen}
+        item={selectedModel}
+        onClose={() => setModelOpen(false)}
+        orderFeatureEnabled={orderFeatureEnabled}
+        onOrder={handleSelectOrder}
+        extras={template?.extras || []}
+        data={template}
+      />
 
-      {!isBusinessOpen && orderFeatureEnabled && <CloseBubble />}
+      <OrderViewModal
+        open={orderModalOpen}
+        onClose={() => setOrderModalOpen(false)}
+        orders={orders}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+        onRemoveExtra={handleRemoveExtra}
+        onRemoveIngredient={handleRemoveIngredient}
+        onCheckout={() => setShowPaymentMethod(true)}
+        data={template}
+      />
 
-      {modelOpen && (
-        <ModelShowcase
-          open={modelOpen}
-          item={selectedModel}
-          onClose={() => setModelOpen(false)}
-          orderFeatureEnabled={orderFeatureEnabled}
-          onOrder={handleSelectOrder}
-          extras={template?.extras || []}
-          data={template}
-        />
-      )}
-
-      {orderModalOpen && (
-        <OrderViewModal
-          open={orderModalOpen}
-          onClose={() => setOrderModalOpen(false)}
-          orders={orders}
-          onUpdateQuantity={handleUpdateQuantity}
-          onRemoveItem={handleRemoveItem}
-          onRemoveExtra={handleRemoveExtra}
-          onRemoveIngredient={handleRemoveIngredient}
-          onCheckout={() => setShowPaymentMethod(true)}
-          data={template}
-        />
-      )}
-
-      {showPaymentMethod && (
-        <PaymentMethodModal
-          open={showPaymentMethod}
-          onClose={() => setShowPaymentMethod(false)}
-          onPayInKasse={() => console.log("pay in kasse")}
-          onPayNow={handleCheckout}
-        />
-      )}
+      <PaymentMethodModal
+        open={showPaymentMethod}
+        onClose={() => setShowPaymentMethod(false)}
+        onPayInKasse={() => console.log("pay in kasse")}
+        onPayNow={() => handleCheckout()}
+      />
 
       <FlashMessage
         show={message?.visible}
         type={message?.type || ""}
         message={message?.msg || ""}
-        onClose={() => setMessage(defaultMessage)}
+        onClose={() => setMessage(null)}
         duration={3000}
       />
+
     </div>
   );
 }
