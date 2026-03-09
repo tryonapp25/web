@@ -13,6 +13,7 @@ export default function OrderViewModal({
   onCheckout,
   data,
 }) {
+  if(!open) return null;
   const [mounted, setMounted] = useState(open);
   const [totalPrice, setTotalPrice] = useState(0);
 

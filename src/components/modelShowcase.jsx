@@ -12,6 +12,7 @@ export default function ModelShowcase({
   extras = [],
   data,
 }) {
+  if (!open) return null;
   const [mounted, setMounted] = useState(open);
   const [currentStep, setCurrentStep] = useState("model"); // 'model' | 'priceandsize' | 'ingredients' | 'extras'
   const [ingredients, setIngredients] = useState([]);
