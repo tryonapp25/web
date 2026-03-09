@@ -4,8 +4,9 @@ import React, { Suspense } from "react";
 const Lottie = React.lazy(() => import("lottie-react"));
 import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
-export default function Model3D({ model, images, config, allowShowModel = false }) {
+export default function Model3D({ model, images, config, allowShowModel = true, loadDelay = 800 }) {
   const [ready, setReady] = useState(false);
+  const [shouldRenderModel, setShouldRenderModel] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const viewerRef = useRef(null);
@@ -47,7 +48,6 @@ export default function Model3D({ model, images, config, allowShowModel = false 
     return modelViewerScriptPromise;
   }
 
-
   function loadingModal() {
     return (
       <Suspense fallback={<div style={{width:24,height:24}}/>}>
@@ -63,9 +63,9 @@ export default function Model3D({ model, images, config, allowShowModel = false 
 
   useEffect(() => {
     let mounted = true;
-    if(!allowShowModel) return;
+    if (!allowShowModel) return;
 
-    setIsMobile(window.innerWidth < 768);
+    setIsMobile(window.innerWidth < 768); // Adjust breakpoint if needed
 
     loadModelViewerScript()
       .then(() => {
@@ -78,7 +78,22 @@ export default function Model3D({ model, images, config, allowShowModel = false 
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [allowShowModel]);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    if (!isMobile) {
+      setShouldRenderModel(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShouldRenderModel(true);
+    }, loadDelay);
+
+    return () => clearTimeout(timer);
+  }, [ready, isMobile, loadDelay]);
 
   useEffect(() => {
     if (!viewerRef.current) return;
@@ -92,13 +107,12 @@ export default function Model3D({ model, images, config, allowShowModel = false 
     return () => {
       viewerRef.current?.removeEventListener("load", handleLoad);
     };
-  }, [ready]);
+  }, [shouldRenderModel]); // Run when model is rendered
 
   if (!model) return null;
 
   return (
     <div className={styles.wrapper}>
-      
       {/* IMAGE FIRST */}
       {!modelLoaded && posterUrl !== null && (
         <img
@@ -107,12 +121,12 @@ export default function Model3D({ model, images, config, allowShowModel = false 
           className={styles.poster}
         />
       )}
-      {posterUrl === null && !allowShowModel &&
+      {posterUrl === null && !modelLoaded &&
         loadingModal()
       }
 
       {/* MODEL */}
-      {ready && (
+      {ready && shouldRenderModel && (
         <model-viewer
           ref={viewerRef}
           src={model}
@@ -120,20 +134,21 @@ export default function Model3D({ model, images, config, allowShowModel = false 
           poster={posterUrl || ""}
           camera-controls
           touch-action="pan-y"
-          loading="eager"
+          loading="lazy" // Changed to lazy for deferred loading
           reveal="auto"
           interaction-prompt="auto"
           environment-image="neutral"
-          shadow-intensity="0.7"
+          shadow-intensity={isMobile ? "0" : "0.7"} // Disable shadows on mobile
           exposure="1"
           camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
           disable-pan
           className={styles.popModel}
           style={{ opacity: modelLoaded ? 1 : 0 }}
           {...(!isMobile ? { "auto-rotate": true } : {})}
+          minimum-render-scale={isMobile ? "0.5" : "1"} // Lower resolution on mobile
+          power-preference={isMobile ? "low-power" : "high-performance"} // Save battery/GPU on mobile
         />
       )}
-
     </div>
   );
 }
