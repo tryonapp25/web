@@ -13,19 +13,19 @@ const config = {
 
 const modelUrls = [
   {
-    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FGrilled%20Salmon.glb_5cdc2302-3b49-441b-9e22-614359b3eb3a.glb?alt=media&token=d98e06c1-8b4f-4879-9828-bc8348c86aac",
+    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FGrilled%20Salmon.glb_770d5324-96f3-4105-8975-af0edf217c3b.glb?alt=media&token=fb9cb3e2-5bee-43ed-819f-0aa0428c68e9",
     url: ["https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FGrilled_Salmon_image.png?alt=media&token=2d43764e-9fde-417d-9e03-390f731af438"],
     name: "Grilled Salmon",
     price: "$18.99"
   },
   {
-    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FVegetable_Pad_Thai.glb_f33431a6-19d8-49c9-b558-94741e95d455.glb?alt=media&token=4356bb7f-1166-4e76-89c2-5e49d14393fc",
+    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FVegetable_Pad_Thai.glb_dcedc679-de6d-433b-af77-416fdfeaa30d.glb?alt=media&token=932862bb-9ac1-4195-8ea2-abab6c2ba5af",
     url: ["https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2FVegetable_Pad_Thai_image.png?alt=media&token=cee53760-4709-430a-882c-fff96758ddcc"],
     name: "Vegetable Pad Thai",
     price: "$11.99"
   },
   {
-    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2FMushroom_Risotto.glb_c6e17090-f1df-42bf-8328-20102bccf529.glb?alt=media&token=0967964e-bcb8-4b50-aa57-8d831d18209b",
+    model: "https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2FMushroom_Risotto.glb_0d9fb494-ef5b-43dc-82c2-6ec7dad89de4.glb?alt=media&token=e3993ed3-0fa7-4220-a334-f386060317b0",
     url: ["https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2Fmenu-images%2Fmushroom_risotto.png?alt=media&token=ec54a883-663b-4040-8491-fb4fa1e5f2f6"],
     name: "Mushroom Risotto",
     price: "$14.99"
