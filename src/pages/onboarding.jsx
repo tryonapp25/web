@@ -173,7 +173,7 @@ export default function Onboarding() {
                 <div className={styles.mockupTopText}>Live 3D Menu</div>
               </div>
               <div className={styles.mockupImage}>
-                <Model3D config={config} model={modelUrls[currentModelIndex]?.model} images={modelUrls[currentModelIndex]?.url} />
+                <Model3D config={config} model={modelUrls[currentModelIndex]?.model} images={modelUrls[currentModelIndex]?.url} allowShowModel={true} />
               </div>
               <div className={styles.mockupOverlay} />
             </div>
