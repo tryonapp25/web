@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "../styles/ReceiptModal.module.css";
+import formatDate from "../utils/formatTime";
 
 function formatMoney(amount, currency = "USD") {
   const value = Number(amount);
@@ -16,14 +17,7 @@ function formatMoney(amount, currency = "USD") {
   }
 }
 
-function formatDate(value) {
-  if (!value) return "—";
 
-  const date = new Date(value);
-  if (!Number.isFinite(date.getTime())) return String(value);
-
-  return date.toLocaleString();
-}
 
 function normalizeItems(order) {
   const possibleItems =
@@ -168,6 +162,15 @@ function Receipt({ order }) {
         ) : (
           <div className={styles.empty}>No line items available</div>
         )}
+      </section>
+
+      <div className={styles.hrDashed} />
+
+      <section className={styles.metaGrid}>
+        <div className={styles.metaRow}>
+          <span className={styles.metaKey}>PaymentId</span>
+          <span className={styles.metaVal}>{order?.paymentIntentId || "—"}</span>
+        </div>
       </section>
 
       <div className={styles.hrDashed} />
