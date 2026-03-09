@@ -1,44 +1,48 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../styles/Model3D.module.css";
-
-let modelViewerScriptPromise = null;
-
-function loadModelViewerScript() {
-  if (customElements.get("model-viewer")) {
-    return Promise.resolve();
-  }
-
-  if (!modelViewerScriptPromise) {
-    modelViewerScriptPromise = new Promise((resolve, reject) => {
-      const existing = document.querySelector('script[data-model-viewer="true"]');
-
-      if (existing) {
-        existing.addEventListener("load", () => resolve(), { once: true });
-        existing.addEventListener("error", reject, { once: true });
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.type = "module";
-      script.src =
-        "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
-      script.setAttribute("data-model-viewer", "true");
-
-      script.onload = () => resolve();
-      script.onerror = (err) => reject(err);
-
-      document.head.appendChild(script);
-    });
-  }
-
-  return modelViewerScriptPromise;
-}
 
 export default function Model3D({ model, images, config }) {
   const [ready, setReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
+  const viewerRef = useRef(null);
 
   const posterUrl = useMemo(() => images?.[0] || "", [images]);
+
+  let modelViewerScriptPromise = null;
+
+  function loadModelViewerScript() {
+    if (customElements.get("model-viewer")) {
+      return Promise.resolve();
+    }
+
+    if (!modelViewerScriptPromise) {
+      modelViewerScriptPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector(
+          'script[data-model-viewer="true"]'
+        );
+
+        if (existing) {
+          existing.addEventListener("load", () => resolve(), { once: true });
+          existing.addEventListener("error", reject, { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.type = "module";
+        script.src =
+          "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
+        script.setAttribute("data-model-viewer", "true");
+
+        script.onload = () => resolve();
+        script.onerror = reject;
+
+        document.head.appendChild(script);
+      });
+    }
+
+    return modelViewerScriptPromise;
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -58,13 +62,39 @@ export default function Model3D({ model, images, config }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!viewerRef.current) return;
+
+    const handleLoad = () => {
+      setModelLoaded(true);
+    };
+
+    viewerRef.current.addEventListener("load", handleLoad);
+
+    return () => {
+      viewerRef.current?.removeEventListener("load", handleLoad);
+    };
+  }, [ready]);
+
   if (!model) return null;
 
   return (
     <div className={styles.wrapper}>
-      {ready ? (
+      
+      {/* IMAGE FIRST */}
+      {!modelLoaded && posterUrl && (
+        <img
+          src={posterUrl}
+          alt="3D preview"
+          className={styles.poster}
+        />
+      )}
+
+      {/* MODEL */}
+      {ready && (
         <model-viewer
-          src="https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142%40gmail.com%2F3dModels%2Fmenu.glb_bed21c1e-8516-4239-989a-e5cfa9f0c041.glb?alt=media&token=a42681cf-45af-4b91-b734-7638a142de5d"
+          ref={viewerRef}
+          src="https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2Ffinal.glb_0e36412f-4b54-4cf0-a455-51a876dbd6b7.glb?alt=media&token=3494f158-8643-439e-b85f-73d1ab61d432"
           alt="3D model"
           poster={posterUrl}
           camera-controls
@@ -78,22 +108,11 @@ export default function Model3D({ model, images, config }) {
           camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
           disable-pan
           className={styles.popModel}
+          style={{ opacity: modelLoaded ? 1 : 0 }}
           {...(!isMobile ? { "auto-rotate": true } : {})}
         />
-      ) : (
-        <div className={styles.posterWrap}>
-          {posterUrl ? (
-            <img
-              src={posterUrl}
-              alt="3D preview"
-              className={styles.popModel}
-              loading="lazy"
-            />
-          ) : (
-            <div className={styles.loadingBox}>Loading 3D...</div>
-          )}
-        </div>
       )}
+
     </div>
   );
 }
