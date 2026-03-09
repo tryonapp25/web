@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
   max-width: 100%;
+  position: relative;
 }
 
 .popModel {
@@ -10,4 +11,24 @@
   border-radius: 16px;
   overflow: hidden;
   --poster-image-size: cover;
+  display: block;
+}
+
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  z-index: 2;
+}
+
+.modelHidden {
+  opacity: 0;
+}
+
+.modelVisible {
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
