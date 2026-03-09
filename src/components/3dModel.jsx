@@ -84,7 +84,7 @@ export default function Model3D({ model, images, config }) {
       {/* IMAGE FIRST */}
       {!modelLoaded && posterUrl && (
         <img
-          src={posterUrl}
+          src={posterUrl ?? "/icons/loading.png"}
           alt="3D preview"
           className={styles.poster}
         />
@@ -94,9 +94,9 @@ export default function Model3D({ model, images, config }) {
       {ready && (
         <model-viewer
           ref={viewerRef}
-          src="https://firebasestorage.googleapis.com/v0/b/tryon-308c9.firebasestorage.app/o/LOCAL%2Fminhlu142@gmail.com%2F3dModels%2Ffinal.glb_0e36412f-4b54-4cf0-a455-51a876dbd6b7.glb?alt=media&token=3494f158-8643-439e-b85f-73d1ab61d432"
+          src={model}
           alt="3D model"
-          poster={posterUrl}
+          poster={posterUrl ?? "/icons/loading.png"}
           camera-controls
           touch-action="pan-y"
           loading="eager"
