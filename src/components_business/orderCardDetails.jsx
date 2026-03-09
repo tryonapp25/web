@@ -36,7 +36,7 @@ export default function OrderCardDetails({ order }) {
               </p>
               <div className={styles.model3d} style={{width:"100%", height:"200px", display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <div style={{width:"100%", height:"100%"}}>
-                  <Model3D model={item?.model} config={config} images={item?.images} />
+                  <Model3D model={item?.model} config={config} images={item?.images} allowShowModel={true} />
                 </div>
                 <div>
                   <p>
