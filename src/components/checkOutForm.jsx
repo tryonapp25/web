@@ -74,7 +74,7 @@ function CheckoutInner({
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.header}>
-        <div>
+        <div className={styles.headerText}>
           <h2 className={styles.title}>{title}</h2>
           <p className={styles.subtitle}>{subtitle}</p>
         </div>
@@ -97,37 +97,41 @@ function CheckoutInner({
 
         {message && <p className={styles.errorText}>{message}</p>}
 
-        <p className={styles.footerNote}>
-          Sikker betaling drevet af Stripe. Dine kortoplysninger rører aldrig
-          vores server.
-        </p>
+        <div className={styles.noteBox}>
+          <p className={styles.footerNote}>
+            Sikker betaling drevet af Stripe. Dine kortoplysninger rører aldrig
+            vores server.
+          </p>
+        </div>
+
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.cancelBtn}
+            onClick={onClose}
+            disabled={loading}
+          >
+            Annuller
+          </button>
+
+          <button
+            type="submit"
+            className={styles.payBtn}
+            disabled={!stripe || !elements || loading}
+          >
+            {loading ? (
+              <>
+                <Spinner />
+                Behandler...
+              </>
+            ) : (
+              "Betal"
+            )}
+          </button>
+        </div>
+        
       </div>
 
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.cancelBtn}
-          onClick={onClose}
-          disabled={loading}
-        >
-          Annuller
-        </button>
-
-        <button
-          type="submit"
-          className={styles.payBtn}
-          disabled={!stripe || !elements || loading}
-        >
-          {loading ? (
-            <>
-              <Spinner />
-              Behandler...
-            </>
-          ) : (
-            "Betal"
-          )}
-        </button>
-      </div>
     </form>
   );
 }
@@ -146,6 +150,14 @@ export default function CheckoutForm({
 
     return {
       clientSecret,
+      appearance: {
+        theme: "stripe",
+        variables: {
+          borderRadius: "14px",
+          spacingUnit: "4px",
+          fontSizeBase: "16px",
+        },
+      },
     };
   }, [clientSecret]);
 
