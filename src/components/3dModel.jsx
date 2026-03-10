@@ -108,7 +108,11 @@ export default function Model3D({ model, images, config, allowShowModel = false 
         />
       )}
       {posterUrl === null && !modelLoaded  &&
-        loadingModal()
+        <img
+          src="/logos/logo.png"
+          alt="3D preview"
+          className={styles.poster}
+        />
       }
 
       {/* MODEL */}
