@@ -1,64 +1,121 @@
-// src/components/Model3D.jsx
-import { useEffect, useState } from "react";
+// components/Model3D.jsx
+import { useEffect, useState, useRef } from "react";
 import styles from "../styles/Model3D.module.css";
 
-export default function Model3D({ model, images, config = {}, allowShowModel = false }) {
-  const [posterUrl] = useState(
-    images && images.length > 0 ? images[0] : "/fallback-poster.jpg"
+export default function Model3D({
+  model,                    // string: URL to .glb / .gltf file
+  images = [],              // array of poster image URLs
+  config = {},              // optional camera & other settings
+  allowShowModel = false,   // boolean: whether to attempt showing 3D viewer
+}) {
+  const [posterUrl, setPosterUrl] = useState(
+    images?.[0] ?? "/logos/logo.png"
   );
+  const [isViewerReady, setIsViewerReady] = useState(false);
+  const scriptLoadedRef = useRef(false);
 
-  if(!allowShowModel) return;
-
+  // Update poster when images prop changes
   useEffect(() => {
-    // Load model-viewer script only once
-    if (customElements.get("model-viewer")) return;
+    setPosterUrl(images?.[0] ?? "/logos/logo.png");
+  }, [images]);
+
+  // Load <model-viewer> web component script (only once)
+  useEffect(() => {
+    if (scriptLoadedRef.current) return;
+    if (customElements.get("model-viewer")) {
+      setIsViewerReady(true);
+      return;
+    }
+
+    scriptLoadedRef.current = true;
 
     const script = document.createElement("script");
     script.type = "module";
     script.src = "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
-    // Optional: integrity + crossorigin for better security/performance
-    // script.integrity = "..."; // get from unpkg if you want SRI
-    script.crossOrigin = "anonymous";
+    script.async = true;
+
+    script.onload = () => {
+      console.log("model-viewer script loaded");
+      setIsViewerReady(true);
+    };
+
+    script.onerror = (err) => {
+      console.error("Failed to load model-viewer script:", err);
+    };
+
     document.head.appendChild(script);
 
-    return () => {
-      // Optional cleanup (rarely needed)
-      document.head.removeChild(script);
-    };
+    // Optional: also load legacy support (for very old browsers)
+    // const legacy = document.createElement("script");
+    // legacy.src = "https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js";
+    // document.head.appendChild(legacy);
   }, []);
 
-  // Recommended settings for natural-looking product viewer
-  const viewerProps = {
-    src: model,
-    alt: "3D product model",
-    poster: posterUrl,
-    "camera-controls": true,
-    "camera-orbit": config.cameraOrbit || "45deg 75deg 105% 0m", // nice angled start + distance
-    "auto-rotate": true,
-    "auto-rotate-delay": "3000",         // wait 3s before rotating (less annoying)
-    "rotation-per-second": "30deg",      // smooth & not too fast
-    "shadow-intensity": "1.2",           // soft shadows under model
-    "shadow-softness": "0.8",            // 0 = hard, 1 = very soft
-    exposure: "1.1",                     // slightly brighter than default (avoids dullness)
-    "environment-image": "https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.jpg", // warm & soft – very popular for products
-    // Alternative good ones (copy-paste to test):
-    // "https://modelviewer.dev/shared-assets/environments/peppermint_powerplant_1k.hdr"
-    // "https://modelviewer.dev/shared-assets/environments/whipple_creek_regional_park_1k.hdr"
-    // or "neutral" (fallback if you want minimal)
-    "skybox-image": "",                  // leave empty → no visible background (transparent)
-    "background-color": "#f8f9fa00",     // fully transparent if you want page bg to show
-    "touch-action": "pan-y",
-    loading: "lazy",
-    reveal: "auto",
-    "animation-name": config.animation || "", // optional: specific animation
-    "ar": true,                          // enable Quick Look / AR if model supports
-    "ar-modes": "webxr scene-viewer quick-look",
-    className: styles.popModel,
-  };
+  // If we shouldn't show 3D → just show poster image
+  if (!allowShowModel) {
+    return (
+      <div className={styles.wrapper}>
+        <img
+          src={posterUrl}
+          alt="3D model poster"
+          className={styles.popModel}
+        />
+      </div>
+    );
+  }
 
+  // Script not loaded yet → show poster as loading state
+  if (!isViewerReady) {
+    return (
+      <div className={styles.wrapper}>
+        <img
+          src={posterUrl}
+          alt="Loading 3D model..."
+          className={styles.popModel}
+        />
+      </div>
+    );
+  }
+
+  // Script is loaded → render <model-viewer>
   return (
     <div className={styles.wrapper}>
-      <model-viewer {...viewerProps} />
+      <model-viewer
+        // Use src + poster as part of key → helps React re-create when model changes
+        key={`${model}-${posterUrl}`}
+
+        src={model}
+        alt="3D product model"
+        poster={posterUrl}
+
+        camera-controls
+        camera-orbit={config?.camera_orbit || "auto 75deg 80% 0deg"}
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="30deg"
+
+        touch-action="pan-y"
+        // loading="lazy"         // can delay model download — remove if you want eager loading
+        reveal="auto"
+        animation-name={config?.animation_name} // optional
+        animation-crossfade-duration="0"
+        animation-loop
+
+        environment-image="neutral"
+        shadow-intensity="1.5"
+        shadow-softness="0.8"
+        exposure="0.9"
+        style={{ backgroundColor: "transparent" }}
+
+        className={styles.popModel}
+
+        onError={(e) => console.error("model-viewer error:", e.detail)}
+        onLoad={(e) => console.log("model-viewer model loaded:", e)}
+      >
+        {/* Optional: custom progress bar / fallback content */}
+        <div slot="progress-bar" className={styles.progress}></div>
+        <div slot="ar-prompt"></div>
+      </model-viewer>
     </div>
   );
 }
