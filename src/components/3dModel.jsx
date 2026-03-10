@@ -1,85 +1,118 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../styles/Model3D.module.css";
 import React, { Suspense } from "react";
 const Lottie = React.lazy(() => import("lottie-react"));
 import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
-
-// ────────────────────────────────────────────────────────────────
 export default function Model3D({ model, images, config, allowShowModel = false }) {
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [modelLoaded, setModelLoaded] = useState(false);
+  const [ready, setReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
   const viewerRef = useRef(null);
-  const containerRef = useRef(null);
 
-  const posterUrl = images?.[0] ?? null;
+  const posterUrl = useMemo(() => images?.[0] || null, [images]);
 
-  useEffect(() => {
-    if (!allowShowModel) return;
-    setIsMobile(window.matchMedia("(max-width: 768px)").matches || /Mobi|Android/i.test(navigator.userAgent));
-  }, [allowShowModel]);
+  let modelViewerScriptPromise = null;
 
-  // Option A: Load only when in viewport (most recommended for mobile)
-  useEffect(() => {
-    if (!allowShowModel || !containerRef.current || shouldLoad) return;
+  function loadModelViewerScript() {
+    if (customElements.get("model-viewer")) {
+      return Promise.resolve();
+    }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          observer.disconnect();
+    if (!modelViewerScriptPromise) {
+      modelViewerScriptPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector(
+          'script[data-model-viewer="true"]'
+        );
+
+        if (existing) {
+          existing.addEventListener("load", () => resolve(), { once: true });
+          existing.addEventListener("error", reject, { once: true });
+          return;
         }
-      },
-      { rootMargin: "200px 0px" } // start loading ~200px before visible
+
+        const script = document.createElement("script");
+        script.type = "module";
+        script.src =
+          "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
+        script.setAttribute("data-model-viewer", "true");
+
+        script.onload = () => resolve();
+        script.onerror = reject;
+
+        document.head.appendChild(script);
+      });
+    }
+
+    return modelViewerScriptPromise;
+  }
+
+
+  function loadingModal() {
+    return (
+      <Suspense fallback={<div style={{width:24,height:24}}/>}>
+        <Lottie 
+          animationData={loading}
+          loop={true}
+          autoplay={true}
+          className={styles.popModel}
+        />
+      </Suspense>
     );
+  }
 
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [allowShowModel, shouldLoad]);
+  useEffect(() => {
+    let mounted = true;
+    if(!allowShowModel) return;
 
-  // Option B: Load on first user interaction (tap/click)
-  // const handleShowModel = () => !shouldLoad && setShouldLoad(true);
+    setIsMobile(window.innerWidth < 768);
+
+    loadModelViewerScript()
+      .then(() => {
+        if (mounted) setReady(true);
+      })
+      .catch((err) => {
+        console.error("Failed to load model-viewer:", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!viewerRef.current) return;
-    const onLoad = () => setModelLoaded(true);
-    viewerRef.current.addEventListener("load", onLoad);
-    return () => viewerRef.current?.removeEventListener("load", onLoad);
-  }, [shouldLoad]);
 
-  if (!model || !allowShowModel) return null;
+    const handleLoad = () => {
+      setModelLoaded(true);
+    };
+
+    viewerRef.current.addEventListener("load", handleLoad);
+
+    return () => {
+      viewerRef.current?.removeEventListener("load", handleLoad);
+    };
+  }, [ready]);
+
+  if (!model) return null;
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
-      {/* Poster or fallback loading animation */}
-      {!modelLoaded && (
-        <>
-          {posterUrl ? (
-            <img
-              src={posterUrl}
-              alt="3D model preview"
-              className={styles.poster}
-              // Important: use decoding="async" + fetchpriority="low" if poster is large
-              decoding="async"
-              fetchPriority="low"
-            />
-          ) : (
-            // your cat loading lottie
-            <Suspense fallback={null}>
-              <Lottie
-                animationData={loading}
-                loop
-                autoplay
-                style={{ width: "90%", height: "90%" }}
-              />
-            </Suspense>
-          )}
-        </>
+    <div className={styles.wrapper}>
+      
+      {/* IMAGE FIRST */}
+      {!modelLoaded && posterUrl !== null && (
+        <img
+          src={posterUrl}
+          alt="3D preview"
+          className={styles.poster}
+        />
       )}
+      {posterUrl === null && !modelLoaded  &&
+        loadingModal()
+      }
 
-      {/* The model viewer – only mount when we decide to load */}
-      {shouldLoad && (
+      {/* MODEL */}
+      {ready && (
         <model-viewer
           ref={viewerRef}
           src={model}
@@ -87,31 +120,20 @@ export default function Model3D({ model, images, config, allowShowModel = false 
           poster={posterUrl || ""}
           camera-controls
           touch-action="pan-y"
-          loading="lazy"           // ← most important change
-          reveal="auto"            // or "manual" if you want to call .showModel() later
-          // reveal-when-visible    ← experimental in some versions – check docs
-          interaction-prompt="when-focused"
+          loading="eager"
+          reveal="auto"
+          interaction-prompt="auto"
           environment-image="neutral"
-          shadow-intensity="0.6"
-          exposure="0.9"
+          shadow-intensity="0.7"
+          exposure="1"
           camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
           disable-pan
           className={styles.popModel}
-          style={{ opacity: modelLoaded ? 1 : 0.01, transition: "opacity 0.4s" }}
-          {...(!isMobile && { "auto-rotate": true, "auto-rotate-delay": "3000" })}
+          style={{ opacity: modelLoaded ? 1 : 0 }}
+          {...(!isMobile ? { "auto-rotate": true } : {})}
         />
       )}
 
-      {/* Optional: tap-to-load overlay when poster is shown */}
-      {!shouldLoad && posterUrl && (
-        <button
-          className={styles.loadButton}
-          onClick={() => setShouldLoad(true)}
-          aria-label="Load 3D model"
-        >
-          View in 3D
-        </button>
-      )}
     </div>
   );
 }
