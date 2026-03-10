@@ -181,12 +181,12 @@ export default function Model3D({
   }, [model, allowShowModel]);
 
   if (!allowShowModel || !model) {
-    return <img src={posterUrl} alt="Preview" className={styles.poster} />;
+    return <img src={posterUrl} alt="Preview" className={styles.popModel} />;
   }
 
   return (
     <div ref={containerRef} className={styles.wrapper}>
-      {!loaded && !error && <LoadingFallback images={[posterUrl]} />}
+      {!loaded && !error && <LoadingFallback images={posterUrl} />}
       {error && (
         <div className={styles.errorOverlay}>
           <p>{error}</p>
