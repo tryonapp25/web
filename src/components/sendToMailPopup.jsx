@@ -3,77 +3,78 @@ const Lottie = React.lazy(() => import("lottie-react"));
 
 import emailIcon from "../assets/lottiefiles/email.json";
 import emailsent from "../assets/lottiefiles/sunrise.json";
-
-const pulse = {
-  animation: "popIn 0.6s ease-in-out infinite alternate",
-};
+import { t } from "i18next";
 
 export default function SendToMailPopup() {
-  const startRef = useRef(false);
-  const [open, setOpen] = useState(false);
+  const hasShown = useRef(false);
+  const [open, setOpen] = useState(true);
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  const sendEmail = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email.trim()) return;
 
-    if (!email) return;
-
-    setLoading(true);
+    setSending(true);
 
     try {
-      // TODO: connect to backend
-      console.log("Send to email:", email);
-
-      await new Promise((r) => setTimeout(r, 800)); // fake delay
-
+      // TODO: real API call here
+      console.log("Sending receipt to:", email);
+      await new Promise((r) => setTimeout(r, 900)); // simulate network
       setSent(true);
     } catch (err) {
       console.error(err);
+      // optionally: show error message to user
+    } finally {
+      setSending(false);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
-    if (startRef.current) return;
-    startRef.current = true;
-    const existing = sessionStorage.getItem("sendToMail");
-    if (existing) {
-      setOpen(false);
+    if (hasShown.current) return;
+    hasShown.current = true;
+
+    if (sessionStorage.getItem("sendToMail")) {
       return;
     }
-    setTimeout(() => setOpen(true), 700); // Show popup after 2 seconds
-    sessionStorage.setItem("sendToMail", "true");
+
+    const timer = setTimeout(() => {
+      setOpen(true);
+      sessionStorage.setItem("sendToMail", "true");
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (!open) return null;
 
   return (
     <div style={styles.overlay}>
-      <div style={styles.popup}>
+      <div style={styles.modal}>
         {!sent ? (
           <>
-            <button style={styles.close} onClick={() => setOpen(false)}>
+            <button style={styles.closeBtn} onClick={() => setOpen(false)}>
               ×
             </button>
 
-            <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
-              <Lottie 
-                animationData={emailIcon}
-                loop={true}
-                autoplay={true}
-                style={styles.icon}
-              />
-            </Suspense>
+            <div style={styles.iconWrapper}>
+              <Suspense fallback={<div style={styles.iconFallback} />}>
+                <Lottie
+                  animationData={emailIcon}
+                  loop
+                  autoplay
+                  style={styles.lottie}
+                />
+              </Suspense>
+            </div>
 
-            <h2 style={styles.title}>Send receipt to Email</h2>
-            <p style={styles.text}>
-              Enter your email to receive your receipt.
+            <h2 style={styles.title}>Email Receipt</h2>
+            <p style={styles.subtitle}>
+              Enter your email address to receive a copy of your receipt.
             </p>
 
-            <form onSubmit={sendEmail}>
+            <form onSubmit={handleSubmit}>
               <input
                 type="email"
                 placeholder="your@email.com"
@@ -81,39 +82,42 @@ export default function SendToMailPopup() {
                 onChange={(e) => setEmail(e.target.value)}
                 style={styles.input}
                 required
+                autoFocus
               />
 
               <button
                 type="submit"
                 style={{
-                  ...styles.button,
-                  opacity: email ? 1 : 0.5,
-                  cursor: email ? "pointer" : "not-allowed",
+                  ...styles.btn,
+                  opacity: email.trim() && !sending ? 1 : 0.6,
+                  cursor: email.trim() && !sending ? "pointer" : "not-allowed",
                 }}
-                disabled={!email || loading}
+                disabled={!email.trim() || sending}
               >
-                {loading ? "Sending..." : "Send"}
+                {sending ? "Sending…" : "Send Receipt"}
               </button>
             </form>
           </>
         ) : (
           <>
-            <Suspense fallback={ <div style={{width:92, height:92, borderRadius:"50%", background:"#22c55e", ...pulse}} />}>
-              <Lottie 
-                animationData={emailsent}
-                loop={true}
-                autoplay={true}
-                style={styles.icon}
-              />
-            </Suspense>
+            <div style={styles.iconWrapper}>
+              <Suspense fallback={<div style={styles.iconFallback} />}>
+                <Lottie
+                  animationData={emailsent}
+                  loop
+                  autoplay
+                  style={styles.lottie}
+                />
+              </Suspense>
+            </div>
 
-            <h2 style={styles.title}>Email Sent</h2>
-            <p style={styles.text}>
-              Your order details were sent successfully.
+            <h2 style={styles.title}>Sent Successfully</h2>
+            <p style={styles.subtitle}>
+              Your receipt has been sent to <strong>{email}</strong>
             </p>
 
-            <button style={styles.button} onClick={() => setOpen(false)}>
-              Close
+            <button style={styles.btn} onClick={() => setOpen(false)}>
+              Done
             </button>
           </>
         )}
@@ -123,85 +127,96 @@ export default function SendToMailPopup() {
 }
 
 const styles = {
-   overlay: {
+  overlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(0, 0, 0, 0.72)",
+    background: "rgba(0,0,0,0.65)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 9999,
+    zIndex: 2000,
     padding: "20px",
   },
 
-  popup: {
+  modal: {
     position: "relative",
     width: "100%",
-    maxWidth: "420px",
-    background: "#fff",
-    borderRadius: "22px",
-    padding: "32px 24px",
+    maxWidth: "400px",
+    background: "#ffffff",
+    borderRadius: "16px",
+    padding: "28px 24px",
     textAlign: "center",
-    fontFamily: "system-ui, sans-serif",
-    animation: "popIn .25s ease",
-    boxShadow: "0 20px 60px rgba(0,0,0,.35)",
+    fontFamily: "system-ui, -apple-system, sans-serif",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.18)",
     boxSizing: "border-box",
   },
 
-  close: {
+  closeBtn: {
     position: "absolute",
-    top: "10px",
-    right: "14px",
+    top: "12px",
+    right: "16px",
+    background: "none",
     border: "none",
-    background: "transparent",
-    fontSize: "26px",
+    fontSize: "28px",
+    color: "#999",
     cursor: "pointer",
+    lineHeight: 1,
   },
 
-  icon: {
-    width: "80px",
-    height: "80px",
+  iconWrapper: {
+    margin: "0 auto 20px",
+  },
+
+  lottie: {
+    width: 88,
+    height: 88,
+    margin: "0 auto",
+  },
+
+  iconFallback: {
+    width: 88,
+    height: 88,
     borderRadius: "50%",
-    color: "#fff",
-    fontSize: "38px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "0 auto 14px",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+    background: "#f0f0f0",
+    margin: "0 auto",
   },
 
   title: {
-    fontSize: "26px",
-    marginBottom: "10px",
-    color: "#111",
+    fontSize: "24px",
+    fontWeight: 600,
+    color: "#1a1a1a",
+    margin: "0 0 8px 0",
   },
 
-  text: {
-    fontSize: "16px",
-    marginBottom: "20px",
+  subtitle: {
+    fontSize: "15px",
     color: "#555",
+    margin: "0 0 24px 0",
+    lineHeight: 1.45,
   },
 
   input: {
     width: "100%",
-    boxSizing: "border-box",
-    padding: "14px",
+    padding: "13px 16px",
     fontSize: "16px",
-    borderRadius: "12px",
-    border: "1px solid #ddd",
+    border: "1px solid #d0d0d0",
+    borderRadius: "10px",
     marginBottom: "16px",
     outline: "none",
-  },
-  button: {
-    width: "100%",
+    transition: "border-color 0.2s",
     boxSizing: "border-box",
-    border: "none",
-    background: "#111",
-    color: "#fff",
+  },
+
+  btn: {
+    width: "100%",
     padding: "14px",
     fontSize: "16px",
-    borderRadius: "12px",
-    fontWeight: "600",
+    fontWeight: 600,
+    color: "#fff",
+    background: "#111111",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    transition: "background 0.2s",
   },
 };
