@@ -107,9 +107,9 @@ export default function Model3D({ model, images, config, allowShowModel = true }
           className={styles.poster}
         />
       )}
-      {posterUrl === null && !modelLoaded  &&
+      {/* {posterUrl === null && !modelLoaded  &&
         loadingModal()
-      }
+      } */}
 
       {/* MODEL */}
       {ready && (
