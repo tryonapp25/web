@@ -88,54 +88,53 @@ export default function RenderProductionMenu() {
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
-  const fetchTemplate = useCallback(async (isMountedRef) => {
-    setLoading(true);
-    setFetchFailed(false);
+  const fetchTemplate = useCallback(
+    async (isMountedRef) => {
+      setLoading(true);
+      setFetchFailed(false);
 
-    try {
-      const res = await http.get(
-        `/${type}/code/${code}/template/${id}/public/${publicCode}`
-      );
+      try {
+        const res = await http.get(
+          `/${type}/code/${code}/template/${id}/public/${publicCode}`
+        );
 
-      if (!isMountedRef.current) return;
+        if (!isMountedRef.current) return;
 
-      if (res?.data?.success && res?.data?.data) {
-        setTemplate(res.data.data);
-      } else {
+        if (res?.data?.success && res?.data?.data) {
+          setTemplate(res.data.data);
+        } else {
+          setTemplate(null);
+          setFetchFailed(true);
+        }
+      } catch (err) {
+        if (!isMountedRef.current) return;
+
+        console.error("fetchTemplate error:", err);
         setTemplate(null);
         setFetchFailed(true);
+        setMessage({
+          visible: true,
+          type: "error",
+          msg: httpMessage(err) || "Failed to load template. Please try again.",
+        });
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
-    } catch (err) {
-      if (!isMountedRef.current) return;
-
-      console.error("fetchTemplate error:", err);
-      setTemplate(null);
-      setFetchFailed(true);
-      setMessage({
-        visible: true,
-        type: "error",
-        msg: httpMessage(err) || "Failed to load template. Please try again.",
-      });
-    } finally {
-      if (isMountedRef.current) {
-        setLoading(false);
-      }
-    }
-  }, [type, code, id, publicCode]);
+    },
+    [type, code, id, publicCode]
+  );
 
   useEffect(() => {
     const isMountedRef = { current: true };
-
     fetchTemplate(isMountedRef);
-
     return () => {
       isMountedRef.current = false;
     };
   }, [fetchTemplate]);
 
   const handleSelectOrder = useCallback((order) => {
-    console.log("Ordering item:", order);
-
     setOrders((prevOrders) => {
       const existingIndex = prevOrders.findIndex(
         (item) => item.title === order?.data?.title
@@ -158,45 +157,37 @@ export default function RenderProductionMenu() {
 
   const handleUpdateQuantity = useCallback((index, newQuantity) => {
     if (newQuantity < 1) {
-      setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
+      setOrders((prev) => prev.filter((_, i) => i !== index));
       return;
     }
 
-    setOrders((prevOrders) =>
-      prevOrders.map((item, i) =>
+    setOrders((prev) =>
+      prev.map((item, i) =>
         i === index ? { ...item, quantity: newQuantity } : item
       )
     );
   }, []);
 
   const handleRemoveItem = useCallback((index) => {
-    setOrders((prevOrders) => prevOrders.filter((_, i) => i !== index));
+    setOrders((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   const handleRemoveExtra = useCallback((itemIndex, extraIndex) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((item, i) => {
+    setOrders((prev) =>
+      prev.map((item, i) => {
         if (i !== itemIndex) return item;
-
-        const newExtras = item.extras
-          ? item.extras.filter((_, j) => j !== extraIndex)
-          : [];
-
+        const newExtras = item.extras?.filter((_, j) => j !== extraIndex) ?? [];
         return { ...item, extras: newExtras };
       })
     );
   }, []);
 
   const handleRemoveIngredient = useCallback((itemIndex, ingredientIndex) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((item, i) => {
+    setOrders((prev) =>
+      prev.map((item, i) => {
         if (i !== itemIndex) return item;
-
-        const newIngredients = item.ingredients
-          ? item.ingredients.filter((_, j) => j !== ingredientIndex)
-          : [];
-
-        return { ...item, ingredients: newIngredients };
+        const newIngs = item.ingredients?.filter((_, j) => j !== ingredientIndex) ?? [];
+        return { ...item, ingredients: newIngs };
       })
     );
   }, []);
@@ -215,8 +206,7 @@ export default function RenderProductionMenu() {
       setLoading(true);
 
       if (!template?.uid || orders.length === 0) {
-        if (newTab) newTab.close();
-
+        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
@@ -225,20 +215,15 @@ export default function RenderProductionMenu() {
         return;
       }
 
-      const ordersWithTemplate = {
-        receiverId: template.uid,
-        orders,
-      };
-
+      const ordersWithTemplate = { receiverId: template.uid, orders };
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
-        if (newTab) newTab.close();
-
+        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
-          msg: create?.error || "Failed to place order. Please try again.",
+          msg: create?.error || "Failed to place order.",
         });
         return;
       }
@@ -258,24 +243,19 @@ export default function RenderProductionMenu() {
 
       clearAll();
     } catch (err) {
-      console.error("handleCheckout error:", err);
-
-      if (newTab) newTab.close();
-
+      console.error("Checkout error:", err);
+      newTab?.close();
       setMessage({
         visible: true,
         type: "error",
-        msg: httpMessage(err) || "Checkout failed. Please try again.",
+        msg: httpMessage(err) || "Checkout failed.",
       });
     } finally {
       setLoading(false);
     }
   }, [template, orders, clearAll]);
 
-  const key = template?.code
-    ? `../templates/menu/${template.code}.jsx`
-    : null;
-
+  const key = template?.code ? `../templates/menu/${template.code}.jsx` : null;
   const hasTemplateModule = !!(key && modules[key]);
 
   const Template = useMemo(() => {
@@ -294,13 +274,7 @@ export default function RenderProductionMenu() {
   const content = (
     <TemplateErrorBoundary>
       <Suspense
-        fallback={
-          <LoadingModal
-            open={true}
-            title="Menu"
-            subtitle="Loading template..."
-          />
-        }
+        fallback={<LoadingModal open={true} title="Menu" subtitle="Loading template..." />}
       >
         <Template
           data={template}
@@ -314,27 +288,26 @@ export default function RenderProductionMenu() {
     </TemplateErrorBoundary>
   );
 
-  const wrappedContent = isMobile ? (
-    content
-  ) : (
-    <PdfPageWrapper>{content}</PdfPageWrapper>
-  );
+  const wrappedContent = isMobile ? content : <PdfPageWrapper>{content}</PdfPageWrapper>;
+
+  // Generate a stable key that changes when the selected model item changes
+  const modelKey = selectedModel
+    ? `model-${selectedModel.id || selectedModel.data?.title || selectedModel.data?.model || "unknown"}`
+    : null;
 
   return (
     <div>
       {wrappedContent}
 
       {orderFeatureEnabled && isBusinessOpen && (
-        <CartBubble
-          count={orders.length}
-          onClick={() => setOrderModalOpen(true)}
-        />
+        <CartBubble count={orders.length} onClick={() => setOrderModalOpen(true)} />
       )}
 
       {!isBusinessOpen && orderFeatureEnabled && <CloseBubble />}
 
-      {modelOpen && (
+      {modelOpen && selectedModel && (
         <ModelShowcase
+          key={modelKey}                      // ← helps force clean remount
           open={modelOpen}
           item={selectedModel}
           onClose={() => setModelOpen(false)}

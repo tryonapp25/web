@@ -1,143 +1,113 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+// Model3D.jsx  — improved version
+import React,{ useEffect, useMemo, useRef, useState, Suspense } from "react";
 import styles from "../styles/Model3D.module.css";
-import React, { Suspense } from "react";
 const Lottie = React.lazy(() => import("lottie-react"));
 import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
-export default function Model3D({ model, images, config, allowShowModel = false }) {
+export default function Model3D({
+  model,
+  images,
+  config,
+  allowShowModel = false,
+}) {
   const [ready, setReady] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const viewerRef = useRef(null);
+  const containerRef = useRef(null);
 
   const posterUrl = useMemo(() => images?.[0] || null, [images]);
 
-  let modelViewerScriptPromise = null;
-
-  function loadModelViewerScript() {
-    if (customElements.get("model-viewer")) {
-      return Promise.resolve();
-    }
-
-    if (!modelViewerScriptPromise) {
-      modelViewerScriptPromise = new Promise((resolve, reject) => {
-        const existing = document.querySelector(
-          'script[data-model-viewer="true"]'
-        );
-
-        if (existing) {
-          existing.addEventListener("load", () => resolve(), { once: true });
-          existing.addEventListener("error", reject, { once: true });
-          return;
-        }
-
-        const script = document.createElement("script");
-        script.type = "module";
-        script.src =
-          "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
-        script.setAttribute("data-model-viewer", "true");
-
-        script.onload = () => resolve();
-        script.onerror = reject;
-
-        document.head.appendChild(script);
-      });
-    }
-
-    return modelViewerScriptPromise;
-  }
-
-
-  function loadingModal() {
-    return (
-      <Suspense fallback={<div style={{width:24,height:24}}/>}>
-        <Lottie 
-          animationData={loading}
-          loop={true}
-          autoplay={true}
-          className={styles.popModel}
-        />
-      </Suspense>
-    );
-  }
-
+  // Load script only once
   useEffect(() => {
-    let mounted = true;
-    if(!allowShowModel) return;
+    if (customElements.get("model-viewer")) {
+      setReady(true);
+      return;
+    }
 
-    setIsMobile(window.innerWidth < 768);
-
-    loadModelViewerScript()
-      .then(() => {
-        if (mounted) setReady(true);
-      })
-      .catch((err) => {
-        console.error("Failed to load model-viewer:", err);
-      });
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
+    script.onload = () => setReady(true);
+    script.onerror = (err) => console.error("model-viewer load failed", err);
+    document.head.appendChild(script);
 
     return () => {
-      mounted = false;
+      // Optional: don't remove script — it's shared
     };
   }, []);
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+  }, []);
+
+  // Track load
+  useEffect(() => {
     if (!viewerRef.current) return;
 
-    const handleLoad = () => {
-      setModelLoaded(true);
-    };
-
-    viewerRef.current.addEventListener("load", handleLoad);
+    const onLoad = () => setModelLoaded(true);
+    viewerRef.current.addEventListener("load", onLoad);
+    viewerRef.current.addEventListener("error", () => console.error("model-viewer error"));
 
     return () => {
-      viewerRef.current?.removeEventListener("load", handleLoad);
+      if (viewerRef.current) {
+        viewerRef.current.removeEventListener("load", onLoad);
+      }
+      setModelLoaded(false); // reset for next mount
     };
-  }, [ready]);
+  }, [ready, model]); // re-attach when model changes
 
-  if (!model) return null;
+  if (!allowShowModel || !model || !ready) {
+    return null; // or fallback image / nothing
+  }
 
   return (
-    <div className={styles.wrapper}>
-      
-      {/* IMAGE FIRST */}
-      {!modelLoaded && posterUrl !== null && (
-        <img
-          src={posterUrl}
-          alt="3D preview"
-          className={styles.poster}
-        />
+    <div ref={containerRef} className={styles.wrapper}>
+      {/* Poster while loading */}
+      {!modelLoaded && posterUrl && (
+        <img src={posterUrl} alt="3D preview" className={styles.popModel} />
       )}
-      {posterUrl === null && !modelLoaded  &&
-        <img
-          src="/logos/logo.png"
-          alt="3D preview"
-          className={styles.poster}
-        />
-      }
-
-      {/* MODEL */}
-      {ready && (
-        <model-viewer
-          ref={viewerRef}
-          src={model}
-          alt="3D model"
-          poster={posterUrl || ""}
-          camera-controls
-          touch-action="pan-y"
-          loading="eager"
-          reveal="auto"
-          interaction-prompt="auto"
-          environment-image="neutral"
-          shadow-intensity="0.7"
-          exposure="1"
-          camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
-          disable-pan
-          className={styles.popModel}
-          style={{ opacity: modelLoaded ? 1 : 0 }}
-          {...(!isMobile ? { "auto-rotate": true } : {})}
-        />
+      {!modelLoaded && !posterUrl && (
+        <img src="/logos/logo.png" alt="Placeholder" className={styles.popModel} />
       )}
 
+      {/* Loading animation */}
+      {!modelLoaded && (
+        <Suspense fallback={null}>
+          <Lottie
+            animationData={loading}
+            loop
+            autoplay
+            className={styles.popModel}
+          />
+        </Suspense>
+      )}
+
+      {/* model-viewer — key forces remount on model change */}
+      <model-viewer
+        key={`mv-${model}`} // ← critical: forces full destroy + recreate
+        ref={viewerRef}
+        src={model}
+        alt="3D model"
+        poster={posterUrl || ""}
+        camera-controls
+        touch-action="pan-y"
+        loading="eager"
+        reveal="auto"
+        interaction-prompt="auto"
+        environment-image="neutral"
+        shadow-intensity="0.7"
+        exposure="1"
+        camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
+        disable-pan
+        className={styles.popModel}
+        style={{
+          visibility: modelLoaded ? "visible" : "hidden", // better than opacity=0
+          width: "100%",
+          height: "100%",
+        }}
+        auto-rotate={!isMobile}
+      />
     </div>
   );
 }
