@@ -103,7 +103,7 @@ export default function RenderProductionMenuBook() {
         const result = response.data.data;
         setData(result);
         setCurrentContent(result?.contents?.[0] || null);
-        setAllowShowModel(!!result?.show3dModel);
+        setAllowShowModel(response?.data?.show3dModel);
       } else {
         setData(null);
         setCurrentContent(null);
