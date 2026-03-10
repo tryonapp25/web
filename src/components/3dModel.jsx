@@ -112,9 +112,6 @@ export default function Model3D({
         onError={(e) => console.error("model-viewer error:", e.detail)}
         onLoad={(e) => console.log("model-viewer model loaded:", e)}
       >
-        {/* Optional: custom progress bar / fallback content */}
-        <div slot="progress-bar" className={styles.progress}></div>
-        <div slot="ar-prompt"></div>
       </model-viewer>
     </div>
   );
