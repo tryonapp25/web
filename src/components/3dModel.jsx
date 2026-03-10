@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "../styles/Model3D.module.css";
 
+
 export default function Model3D({
   model,                    // string: URL to .glb / .gltf file
   images = [],              // array of poster image URLs
@@ -9,14 +10,14 @@ export default function Model3D({
   allowShowModel = false,   // boolean: whether to attempt showing 3D viewer
 }) {
   const [posterUrl, setPosterUrl] = useState(
-    images?.[0] ?? "/logos/logo.png"
+    images?.[0] ?? "/icons/noImage.png"
   );
   const [isViewerReady, setIsViewerReady] = useState(false);
   const scriptLoadedRef = useRef(false);
 
   // Update poster when images prop changes
   useEffect(() => {
-    setPosterUrl(images?.[0] ?? "/logos/logo.png");
+    setPosterUrl(images?.[0] ?? "/icons/noImage.png");
   }, [images]);
 
   // Load <model-viewer> web component script (only once)

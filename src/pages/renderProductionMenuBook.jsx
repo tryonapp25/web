@@ -86,6 +86,8 @@ export default function RenderProductionMenuBook() {
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [currentContent, setCurrentContent] = useState(null);
 
+  const [allowShowModel, setAllowShowModel] = useState(false);
+
   const fetchData = useCallback(async (mountedRef) => {
     setLoading(true);
     setFetchFailed(false);
@@ -101,6 +103,7 @@ export default function RenderProductionMenuBook() {
         const result = response.data.data;
         setData(result);
         setCurrentContent(result?.contents?.[0] || null);
+        setAllowShowModel(!!result?.show3dModel);
       } else {
         setData(null);
         setCurrentContent(null);
@@ -318,6 +321,7 @@ export default function RenderProductionMenuBook() {
           onOrder={handleSelectOrder}
           extras={data?.extras || []}
           data={currentContent}
+          allowShowModel={allowShowModel}
         />
       )}
 

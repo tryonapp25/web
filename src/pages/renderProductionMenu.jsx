@@ -88,6 +88,8 @@ export default function RenderProductionMenu() {
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
+  const [allowShowModel, setAllowShowModel] = useState(false);
+
   const fetchTemplate = useCallback(
     async (isMountedRef) => {
       setLoading(true);
@@ -102,6 +104,7 @@ export default function RenderProductionMenu() {
 
         if (res?.data?.success && res?.data?.data) {
           setTemplate(res.data.data);
+          setAllowShowModel(!!res.data.show3dModel);
         } else {
           setTemplate(null);
           setFetchFailed(true);
@@ -315,6 +318,7 @@ export default function RenderProductionMenu() {
           onOrder={handleSelectOrder}
           extras={template?.extras || []}
           data={template}
+          allowShowModel={allowShowModel}
         />
       )}
 

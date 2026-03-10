@@ -1,4 +1,3 @@
-// Payment.jsx
 import { useEffect, useState, useContext, useMemo } from "react";
 import styles from "../styles/BusinessPayment.module.css";
 import { UserContext } from "../ApiContext/userContext";
@@ -35,7 +34,6 @@ function Spinner({ size = 16 }) {
   );
 }
 
-/** Stripe Checkout Form (Payment Element) */
 function CheckoutForm({
   onClose,
   selected,
@@ -47,7 +45,6 @@ function CheckoutForm({
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState("");
-
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -83,8 +80,7 @@ function CheckoutForm({
         {selected?.price}
       </div>
 
-      {/* Scroll will happen inside the form, so PaymentElement can grow safely */}
-      <PaymentElement/>
+      <PaymentElement />
 
       <div className={styles.actions}>
         <button
@@ -136,24 +132,45 @@ export default function BusinessPayment() {
   const [message, setMessage] = useState(defaultMessage);
 
   useEffect(() => {
-    const fetchPricing = async () => {
+    const loadData = async () => {
       try {
-        const res = await http.get(`/business/pricing`);
-        if (res.data?.success) {
-          const data = res.data.data || [];
-          setPricing(data);
+        const [pricingRes, subscriptionRes] = await Promise.all([
+          http.get(`/business/pricing`),
+          http.get(`/business/${publicUser?.business?.id}/subscription`),
+        ]);
 
-          const hi = data.findIndex((x) => x.highlighted === true);
-          setHighlightedIndex(hi >= 0 ? hi : 0);
+        let pricingData = [];
+        let subscriptionId = null;
+
+        if (pricingRes.data?.success) {
+          pricingData = pricingRes.data.data || [];
         }
+
+        if (subscriptionRes.data?.success) {
+          subscriptionId = subscriptionRes.data.data?.subscriptionId;
+        }
+        
+        const updatedPricing = pricingData.map((p) => ({
+          ...p,
+          isActivated: Number(p.id) === Number(subscriptionId),
+        }));
+
+        setPricing(updatedPricing);
+
+        const hi = updatedPricing.findIndex((x) => x.highlighted === true);
+        setHighlightedIndex(hi >= 0 ? hi : 0);
       } catch (err) {
         console.error(err);
-        alert("Failed to load pricing.");
+        setMessage({
+          visible: true,
+          type: "error",
+          msg: "Failed to load pricing.",
+        });
       }
     };
 
-    fetchPricing();
-  }, []);
+    loadData();
+  }, [publicUser?.business?.id]);
 
   const onClose = () => {
     setOpenPay(false);
@@ -161,6 +178,7 @@ export default function BusinessPayment() {
   };
 
   const onChoose = async (plan) => {
+    if (plan?.isActivated) return;
     setSelected(plan);
     await createPaymentIntent(plan);
   };
@@ -221,7 +239,16 @@ export default function BusinessPayment() {
 
       if (res.data.success) {
         setPublicUser(res.data.data);
+
+        setPricing((prev) =>
+          prev.map((p) => ({
+            ...p,
+            isActivated: p.subscriptionId === selected?.subscriptionId,
+          }))
+        );
+
         setMessage({ visible: true, type: "success", msg: res.data.message });
+
         setTimeout(() => {
           navigate(`/business`);
         }, 700);
@@ -241,8 +268,6 @@ export default function BusinessPayment() {
     if (!clientSecret) return null;
     return {
       clientSecret,
-      // optional:
-      // appearance: { theme: "stripe" },
     };
   }, [clientSecret]);
 
@@ -263,11 +288,15 @@ export default function BusinessPayment() {
                 key={p.id || p.pack}
                 className={`${styles.card} ${
                   p.highlighted ? styles.highlight : ""
-                }`}
+                } ${p.isActivated ? styles.activatedCard : ""}`}
                 aria-label={p.pack}
               >
                 {idx === highlightedIndex && (
                   <div className={styles.ribbon}>Most Popular</div>
+                )}
+
+                {p.isActivated && (
+                  <div className={styles.activeBadge}>Active Plan</div>
                 )}
 
                 {idx !== highlightedIndex && (
@@ -300,7 +329,9 @@ export default function BusinessPayment() {
                       <span
                         style={{
                           color: "var(--text)",
-                          textDecoration: it?.included ? "none" : "line-through",
+                          textDecoration: it?.included
+                            ? "none"
+                            : "line-through",
                         }}
                       >
                         {it.description}
@@ -314,9 +345,11 @@ export default function BusinessPayment() {
                     p.highlighted ? styles.primaryBtn : styles.secondaryBtn
                   }
                   onClick={() => onChoose(p)}
-                  disabled={loading}
+                  disabled={loading || p.isActivated}
                 >
-                  {loading ? (
+                  {p.isActivated ? (
+                    "Current Plan"
+                  ) : loading ? (
                     <>
                       <Spinner />
                       Processing…
@@ -342,7 +375,6 @@ export default function BusinessPayment() {
         />
       </div>
 
-      {/* Payment modal */}
       {openPay && selected && elementsOptions && (
         <div className={styles.overlay} onClick={onClose}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>

@@ -11,6 +11,7 @@ export default function ModelShowcase({
   orderFeatureEnabled,
   extras = [],
   data,
+  allowShowModel,
 }) {
   if (!open) return null;
 
@@ -24,17 +25,21 @@ export default function ModelShowcase({
 
   const hasExtras = useMemo(() => Array.isArray(extras) && extras.length > 0, [extras]);
 
-  // Initialize data
+  // Initialize item data
   useEffect(() => {
     if (item?.data?.ingredients && Array.isArray(item.data.ingredients)) {
-      setIngredients(item.data.ingredients.map(ing => ({ ...ing, included: ing.included ?? true })));
+      setIngredients(
+        item.data.ingredients.map((ing) => ({
+          ...ing,
+          included: ing.included ?? true,
+        }))
+      );
     } else {
       setIngredients([]);
     }
 
     if (Array.isArray(item?.data?.data) && item.data.data.length > 0) {
       setPriceAndSize(item.data.data);
-      // Auto-select first if only one option exists
       setSelectedPriceIndex(item.data.data.length === 1 ? 0 : 0);
     } else {
       setPriceAndSize([]);
@@ -42,7 +47,7 @@ export default function ModelShowcase({
     }
   }, [item]);
 
-  // Reset extras
+  // Reset extras when extras prop changes
   useEffect(() => {
     if (extras?.length) {
       const init = {};
@@ -58,7 +63,7 @@ export default function ModelShowcase({
     }
   }, [extras]);
 
-  // Mount / unmount animation handling
+  // Animation mount/unmount handling
   useEffect(() => {
     if (open) setMounted(true);
   }, [open]);
@@ -67,16 +72,16 @@ export default function ModelShowcase({
     if (!open) setCurrentStep("model");
   }, [open]);
 
-  // Keep your original ESC + scroll lock effects here...
-
   const toggleIngredient = (index) => {
-    setIngredients(prev =>
-      prev.map((ing, i) => (i === index ? { ...ing, included: !ing.included } : ing))
+    setIngredients((prev) =>
+      prev.map((ing, i) =>
+        i === index ? { ...ing, included: !ing.included } : ing
+      )
     );
   };
 
   const toggleExtra = (catIndex, itemIndex) => {
-    setSelectedExtras(prev => ({
+    setSelectedExtras((prev) => ({
       ...prev,
       [catIndex]: {
         ...prev[catIndex],
@@ -99,49 +104,62 @@ export default function ModelShowcase({
 
   // ─── Price Calculation ──────────────────────────────────────
   const basePrice = useMemo(() => {
-    if (priceandsize.length === 0 || selectedPriceIndex >= priceandsize.length) return 0;
+    if (priceandsize.length === 0 || selectedPriceIndex >= priceandsize.length)
+      return 0;
     return Number(priceandsize[selectedPriceIndex]?.price || 0);
   }, [priceandsize, selectedPriceIndex]);
 
   const extrasTotal = useMemo(() => {
-    return getSelectedExtrasData().reduce((sum, ex) => sum + Number(ex.price || 0), 0);
-  }, [selectedExtras, extras]); // depend on selectedExtras & extras
+    return getSelectedExtrasData().reduce(
+      (sum, ex) => sum + Number(ex.price || 0),
+      0
+    );
+  }, [selectedExtras, extras]);
 
   const total = (basePrice + extrasTotal) * quantity;
 
   const currency = data?.currency || "€";
 
-  const isPriceStepValid = priceandsize.length === 0 || selectedPriceIndex >= 0;
+  const hasPriceOptions = priceandsize.length > 0;
+  const isPriceSelected = selectedPriceIndex >= 0 && selectedPriceIndex < priceandsize.length;
 
   // ─── Navigation ─────────────────────────────────────────────
   const handleNextClick = () => {
-    if (currentStep === "priceandsize" && !isPriceStepValid) return;
-
     if (currentStep === "model") {
-      if (priceandsize.length > 0) return setCurrentStep("priceandsize");
+      if (hasPriceOptions) return setCurrentStep("priceandsize");
       if (ingredients.length > 0) return setCurrentStep("ingredients");
       if (hasExtras) return setCurrentStep("extras");
+      // nothing to customize → directly order
+      onOrder?.(buildOrderPayload());
       return;
     }
+
     if (currentStep === "priceandsize") {
       if (ingredients.length > 0) return setCurrentStep("ingredients");
       if (hasExtras) return setCurrentStep("extras");
+      onOrder?.(buildOrderPayload());
       return;
     }
+
     if (currentStep === "ingredients") {
       if (hasExtras) return setCurrentStep("extras");
+      onOrder?.(buildOrderPayload());
       return;
+    }
+
+    if (currentStep === "extras") {
+      onOrder?.(buildOrderPayload());
     }
   };
 
   const handleBackClick = () => {
     if (currentStep === "extras") {
       if (ingredients.length > 0) return setCurrentStep("ingredients");
-      if (priceandsize.length > 0) return setCurrentStep("priceandsize");
+      if (hasPriceOptions) return setCurrentStep("priceandsize");
       return setCurrentStep("model");
     }
     if (currentStep === "ingredients") {
-      if (priceandsize.length > 0) return setCurrentStep("priceandsize");
+      if (hasPriceOptions) return setCurrentStep("priceandsize");
       return setCurrentStep("model");
     }
     if (currentStep === "priceandsize") {
@@ -150,16 +168,19 @@ export default function ModelShowcase({
   };
 
   const buildOrderPayload = () => {
-    const chosenOption = priceandsize[selectedPriceIndex] || null;
+    const chosenOption = hasPriceOptions ? priceandsize[selectedPriceIndex] : null;
+
     return {
       ...item,
+      quantity,                           // ← most carts read this top-level field
+      selectedSize: chosenOption?.size || null,
+      selectedPrice: chosenOption?.price || basePrice,
       data: {
         ...item?.data,
-        data: chosenOption ? [{ ...chosenOption, quantity }] : [],
-        ingredients,
+        data: chosenOption ? [{ ...chosenOption }] : [],
+        ingredients: ingredients.map((i) => ({ ...i })), // shallow copy
         extras: getSelectedExtrasData(),
       },
-      quantity, // helpful for cart display
     };
   };
 
@@ -175,11 +196,11 @@ export default function ModelShowcase({
   return (
     <div
       className={`${styles.overlay} ${open ? styles.overlayIn : styles.overlayOut}`}
-      onMouseDown={e => e.target === e.currentTarget && onClose?.()}
+      onMouseDown={(e) => e.target === e.currentTarget && onClose?.()}
       onAnimationEnd={() => !open && setMounted(false)}
     >
       <div className={styles.stage}>
-        {/* Top Bar – unchanged */}
+        {/* Top Bar */}
         <div className={styles.topBar}>
           <div className={styles.topLeft}>
             <span className={styles.stepPill}>{stepLabel}</span>
@@ -199,7 +220,7 @@ export default function ModelShowcase({
           </button>
         </div>
 
-        {/* Content – keep original structure */}
+        {/* Content */}
         <div className={styles.content}>
           {currentStep === "model" && (
             <>
@@ -208,7 +229,7 @@ export default function ModelShowcase({
                   model={item?.data?.model}
                   config={item?.config}
                   images={item?.data?.images}
-                  allowShowModel={true}
+                  allowShowModel={allowShowModel}
                 />
               </div>
               <div className={styles.panel}>
@@ -272,15 +293,13 @@ export default function ModelShowcase({
             </div>
           )}
 
-          {/* ingredients & extras steps – mostly unchanged, just keep your original markup */}
-
           {currentStep === "ingredients" && (
             <div className={styles.scrollArea}>
               <div className={styles.sectionHeader}>
                 <div className={styles.sectionHeaderTop}>
                   <h3 className={styles.sectionTitle}>Ingredients</h3>
                   <span className={styles.metaPill}>
-                    {ingredients.filter(i => i.included).length}/{ingredients.length} included
+                    {ingredients.filter((i) => i.included).length}/{ingredients.length} included
                   </span>
                 </div>
                 <p className={styles.sectionSubTitle}>Toggle items to customize your order.</p>
@@ -307,7 +326,9 @@ export default function ModelShowcase({
                       )}
                     </span>
                     <span className={styles.rowText}>
-                      <span className={`${styles.rowTitle} ${!ing.included ? styles.rowTitleOff : ""}`}>
+                      <span
+                        className={`${styles.rowTitle} ${!ing.included ? styles.rowTitleOff : ""}`}
+                      >
                         {ing.name}
                       </span>
                       <span className={styles.rowHint}>
@@ -367,10 +388,13 @@ export default function ModelShowcase({
                             </span>
                             <span className={styles.rowText}>
                               <span className={styles.rowTitle}>{extraItem.name}</span>
-                              <span className={styles.rowHint}>{checked ? "Added" : "Not added"}</span>
+                              <span className={styles.rowHint}>
+                                {checked ? "Added" : "Not added"}
+                              </span>
                             </span>
                             <span className={styles.pricePill}>
-                              {extraItem.price}{currency}
+                              {extraItem.price}
+                              {currency}
                             </span>
                           </label>
                         );
@@ -383,7 +407,7 @@ export default function ModelShowcase({
           )}
         </div>
 
-        {/* Footer – enhanced with total & quantity */}
+        {/* Footer */}
         {orderFeatureEnabled && (
           <div className={styles.footer}>
             {currentStep !== "model" ? (
@@ -394,36 +418,16 @@ export default function ModelShowcase({
               <div />
             )}
 
-            <div style={{ flex: 1, textAlign: "center" }}>
-              <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
-                {total.toFixed(2)}{currency}
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px" }}>
-                <button
-                  className={styles.secondaryBtn}
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  disabled={quantity <= 1}
-                  style={{ width: "36px", height: "36px", padding: 0 }}
-                >
-                  −
-                </button>
-                <span style={{ minWidth: "32px", textAlign: "center" }}>{quantity}</span>
-                <button
-                  className={styles.secondaryBtn}
-                  onClick={() => setQuantity(q => q + 1)}
-                  style={{ width: "36px", height: "36px", padding: 0 }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
             <div className={styles.footerRight}>
               {currentStep !== "extras" ? (
                 <button
                   className={styles.primaryBtn}
                   onClick={handleNextClick}
-                  disabled={currentStep === "priceandsize" && !isPriceStepValid}
+                  disabled={
+                    currentStep === "priceandsize" &&
+                    hasPriceOptions &&
+                    !isPriceSelected
+                  }
                 >
                   Next
                 </button>
