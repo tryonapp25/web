@@ -21,7 +21,7 @@ export default function Model3D({
   model,           // URL to .glb / .gltf
   images,          // poster images
   config = {},
-  allowShowModel = true,
+  allowShowModel = false,
 }) {
   const containerRef = useRef(null);
   const [error, setError] = useState(null);
