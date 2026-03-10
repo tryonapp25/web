@@ -21,6 +21,7 @@ export default function Model3D({
 
   // Load <model-viewer> web component script (only once)
   useEffect(() => {
+    if(!allowShowModel) return; // don't load script if we won't show model 
     if (scriptLoadedRef.current) return;
     if (customElements.get("model-viewer")) {
       setIsViewerReady(true);
@@ -82,7 +83,7 @@ export default function Model3D({
     <div className={styles.wrapper}>
       <model-viewer
         // Use src + poster as part of key → helps React re-create when model changes
-        key={`${model}-${posterUrl}`}
+        key={`${model}`}
 
         src={model}
         alt="3D product model"
