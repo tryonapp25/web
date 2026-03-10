@@ -107,6 +107,8 @@
   "payment": {
     "title": "Payment",
     "buyTokens": "Buy Tokens",
+    "setup": "Setup Prices",
+    "setupSubtitle": "Choose a pack and we’ll handle the setup for you.",
     "choosePackSubtitle": "Choose a pack and unlock more try-on previews anytime.",
     "selectPlan": "Select a plan",
     "tokens": "tokens",
