@@ -1,24 +1,18 @@
-// Model3D.jsx  — improved version
-import React,{ useEffect, useMemo, useRef, useState, Suspense } from "react";
+// Model3D.jsx — improved cleanup attempt
+import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import styles from "../styles/Model3D.module.css";
 const Lottie = React.lazy(() => import("lottie-react"));
 import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
-export default function Model3D({
-  model,
-  images,
-  config,
-  allowShowModel = false,
-}) {
+export default function Model3D({ model, images, config, allowShowModel = false }) {
   const [ready, setReady] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const viewerRef = useRef(null);
-  const containerRef = useRef(null);
 
   const posterUrl = useMemo(() => images?.[0] || null, [images]);
 
-  // Load script only once
+  // Load script once
   useEffect(() => {
     if (customElements.get("model-viewer")) {
       setReady(true);
@@ -29,85 +23,79 @@ export default function Model3D({
     script.type = "module";
     script.src = "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
     script.onload = () => setReady(true);
-    script.onerror = (err) => console.error("model-viewer load failed", err);
+    script.onerror = (err) => console.error("Failed to load model-viewer", err);
     document.head.appendChild(script);
 
-    return () => {
-      // Optional: don't remove script — it's shared
-    };
+    // Optional: preload models if same ones repeat often
+    // model-viewer supports <model-viewer preload src="..."> but needs separate elements
   }, []);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+    setIsMobile(/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent) || window.innerWidth < 768);
   }, []);
 
-  // Track load
   useEffect(() => {
     if (!viewerRef.current) return;
 
     const onLoad = () => setModelLoaded(true);
+    const onError = (e) => console.error("model-viewer error", e);
+
     viewerRef.current.addEventListener("load", onLoad);
-    viewerRef.current.addEventListener("error", () => console.error("model-viewer error"));
+    viewerRef.current.addEventListener("error", onError);
 
     return () => {
-      if (viewerRef.current) {
-        viewerRef.current.removeEventListener("load", onLoad);
-      }
-      setModelLoaded(false); // reset for next mount
+      viewerRef.current?.removeEventListener("load", onLoad);
+      viewerRef.current?.removeEventListener("error", onError);
+      setModelLoaded(false);
     };
-  }, [ready, model]); // re-attach when model changes
+  }, [model]); // Re-attach on model change
 
-  if (!allowShowModel || !model || !ready) {
-    return null; // or fallback image / nothing
-  }
+  if (!allowShowModel || !model || !ready) return null;
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
-      {/* Poster while loading */}
+    <div className={styles.wrapper}>
+      {/* Poster / fallback */}
       {!modelLoaded && posterUrl && (
-        <img src={posterUrl} alt="3D preview" className={styles.popModel} />
+        <img src={posterUrl} alt="3D preview" className={styles.poster} />
       )}
       {!modelLoaded && !posterUrl && (
-        <img src="/logos/logo.png" alt="Placeholder" className={styles.popModel} />
+        <img src="/logos/logo.png" alt="Placeholder" className={styles.poster} />
       )}
 
-      {/* Loading animation */}
+      {/* Loading spinner */}
       {!modelLoaded && (
         <Suspense fallback={null}>
-          <Lottie
-            animationData={loading}
-            loop
-            autoplay
-            className={styles.popModel}
-          />
+          <Lottie animationData={loading} loop autoplay className={styles.popModel} />
         </Suspense>
       )}
 
-      {/* model-viewer — key forces remount on model change */}
-      <model-viewer
-        key={`mv-${model}`} // ← critical: forces full destroy + recreate
-        ref={viewerRef}
-        src={model}
-        alt="3D model"
-        poster={posterUrl || ""}
-        camera-controls
-        touch-action="pan-y"
-        loading="eager"
-        reveal="auto"
-        interaction-prompt="auto"
-        environment-image="neutral"
-        shadow-intensity="0.7"
-        exposure="1"
-        camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
-        disable-pan
-        className={styles.popModel}
-        style={{
-          visibility: modelLoaded ? "visible" : "hidden", // better than opacity=0
-          width: "100%",
-          height: "100%",
-        }}
-        auto-rotate={!isMobile}
-      />
+      {/* Critical: key forces full destroy + recreate */}
+      {ready && (
+        <model-viewer
+          key={`modelviewer-${model}`} // ← forces browser to kill old instance
+          ref={viewerRef}
+          src={model}
+          alt="3D model"
+          poster={posterUrl || ""}
+          camera-controls
+          touch-action="pan-y"
+          loading="eager"
+          reveal="auto"
+          interaction-prompt="auto"
+          environment-image="neutral"
+          shadow-intensity="0.7"
+          exposure="1"
+          camera-orbit={config?.camera_orbit || "0deg 75deg auto"}
+          disable-pan
+          className={styles.popModel}
+          style={{
+            visibility: modelLoaded ? "visible" : "hidden", // better than opacity=0 for resource release
+            width: "100%",
+            height: "100%",
+          }}
+          auto-rotate={!isMobile}
+        />
+      )}
     </div>
   );
 }
