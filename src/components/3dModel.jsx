@@ -1,3 +1,10 @@
+import { useEffect, useRef, useState } from "react";
+import styles from "../styles/Model3D.module.css";
+import React, { Suspense } from "react";
+const Lottie = React.lazy(() => import("lottie-react"));
+import loading from "../assets/lottiefiles/cat-Mark-loading.json";
+
+
 // ────────────────────────────────────────────────────────────────
 export default function Model3D({ model, images, config, allowShowModel = false }) {
   const [shouldLoad, setShouldLoad] = useState(false);

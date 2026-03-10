@@ -117,7 +117,7 @@ export default function Receipt() {
                 )}
             </div>
             
-            <SendToMailPopup /> {/* user need to interact with the page to create the click event than when popup mesage showing the sound will able to play */ }
+            {order && order?.status === "COMPLETED" && <SendToMailPopup />} {/* user need to interact with the page to create the click event than when popup mesage showing the sound will able to play */ }
             {ratingOpen && <RatingModal/>}
             <PopupMessage open={onReady.visible} onClose={() => {setOnReady({...onReady, visible: false}), setRatingOpen(true)}} title={onReady.title} text={onReady.text} subText={onReady.subText} type={onReady.type} />
             <FlashMessage message={message.msg} type={message.type} visible={message.visible} onClose={() => setMessage({visible: false, msg: "", type: ""})} />
