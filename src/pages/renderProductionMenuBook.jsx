@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useContext,
   useCallback,
+  useRef,
 } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import http from "../http/http";
@@ -63,6 +64,7 @@ class RenderErrorBoundary extends React.Component {
 export default function RenderProductionMenuBook() {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const checkoutWindowRef = useRef(null);
 
   const { orderFeatureEnabled } = useContext(SocketContext);
   const { isBusinessOpen } = useContext(BusinessContext);
@@ -199,13 +201,14 @@ export default function RenderProductionMenuBook() {
   }, [clearAll]);
 
   const handleCheckout = useCallback(async () => {
-    const newTab = window.open("", "_blank");
+    let checkoutWindow = checkoutWindowRef.current;
 
     try {
       setLoading(true);
 
       if (!data?.uid || orders.length === 0) {
-        newTab?.close();
+        checkoutWindow?.close();
+
         setMessage({
           visible: true,
           type: "error",
@@ -214,15 +217,20 @@ export default function RenderProductionMenuBook() {
         return;
       }
 
-      const ordersWithTemplate = { receiverId: data.uid, orders };
+      const ordersWithTemplate = {
+        receiverId: data.uid,
+        orders,
+      };
+
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
-        newTab?.close();
+        checkoutWindow?.close();
+
         setMessage({
           visible: true,
           type: "error",
-          msg: create?.error || "Failed to place order.",
+          msg: create?.error || "Failed to place order. Please try again.",
         });
         return;
       }
@@ -230,30 +238,28 @@ export default function RenderProductionMenuBook() {
       const payment = create?.payment || {};
       payment.orderId = create?.data?.id;
 
-      const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${
-        payment.paymentIntentId || ""
-      }&orderId=${payment.orderId || ""}`;
-
-      if (newTab) {
-        newTab.location.href = url;
-      } else {
-        window.location.href = url;
+      // create or reuse tab
+      if (!checkoutWindow || checkoutWindow.closed) {
+        checkoutWindow = window.open("", "checkout-tab");
+        checkoutWindowRef.current = checkoutWindow;
       }
 
-      clearAll();
-    } catch (err) {
-      console.error("Checkout error:", err);
-      newTab?.close();
+      handlePaymentSuccess(payment, checkoutWindow);
+
+    } catch (error) {
+      console.error("checkout error:", error);
+
+      checkoutWindow?.close();
+
       setMessage({
         visible: true,
         type: "error",
-        msg: httpMessage(err) || "Checkout failed.",
+        msg: httpMessage(error) || error?.message || "Failed to place order.",
       });
     } finally {
       setLoading(false);
     }
-  }, [data, orders, clearAll]);
-
+  }, [data, orders, handlePaymentSuccess]);
 
   const templateMap = useMemo(() => {
     const out = {};
