@@ -1,7 +1,7 @@
 // Model3D.jsx — improved cleanup attempt
-import { useEffect, useMemo, useRef, useState, Suspense } from "react";
+import { useEffect, useMemo, useRef, useState, Suspense, lazy } from "react";
 import styles from "../styles/Model3D.module.css";
-const Lottie = React.lazy(() => import("lottie-react"));
+const Lottie = lazy(() => import("lottie-react"));
 import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
 export default function Model3D({ model, images, config, allowShowModel = false }) {
