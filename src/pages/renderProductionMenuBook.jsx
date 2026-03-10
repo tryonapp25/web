@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useContext,
   useCallback,
-  useRef,
 } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import http from "../http/http";
@@ -64,7 +63,6 @@ class RenderErrorBoundary extends React.Component {
 export default function RenderProductionMenuBook() {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const checkoutWindowRef = useRef(null);
 
   const { orderFeatureEnabled } = useContext(SocketContext);
   const { isBusinessOpen } = useContext(BusinessContext);
@@ -201,13 +199,13 @@ export default function RenderProductionMenuBook() {
   }, [clearAll]);
 
   const handleCheckout = useCallback(async () => {
-    let checkoutWindow = checkoutWindowRef.current;
+    const newTab = window.open("", "_blank", "noopener,noreferrer");
 
     try {
       setLoading(true);
 
       if (!data?.uid || orders.length === 0) {
-        checkoutWindow?.close();
+        if (newTab) newTab.close();
 
         setMessage({
           visible: true,
@@ -225,7 +223,7 @@ export default function RenderProductionMenuBook() {
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
-        checkoutWindow?.close();
+        if (newTab) newTab.close();
 
         setMessage({
           visible: true,
@@ -238,18 +236,11 @@ export default function RenderProductionMenuBook() {
       const payment = create?.payment || {};
       payment.orderId = create?.data?.id;
 
-      // create or reuse tab
-      if (!checkoutWindow || checkoutWindow.closed) {
-        checkoutWindow = window.open("", "checkout-tab");
-        checkoutWindowRef.current = checkoutWindow;
-      }
-
-      handlePaymentSuccess(payment, checkoutWindow);
-
+      handlePaymentSuccess(payment, newTab);
     } catch (error) {
       console.error("checkout error:", error);
 
-      checkoutWindow?.close();
+      if (newTab) newTab.close();
 
       setMessage({
         visible: true,

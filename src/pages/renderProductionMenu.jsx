@@ -6,7 +6,6 @@ import React, {
   useState,
   useContext,
   useCallback,
-  useRef,
 } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
@@ -67,8 +66,6 @@ class TemplateErrorBoundary extends React.Component {
 export default function RenderProductionMenu() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const checkoutWindowRef = useRef(null);
-
 
   const { orderFeatureEnabled } = useContext(SocketContext);
   const { isBusinessOpen } = useContext(BusinessContext);
@@ -206,10 +203,13 @@ export default function RenderProductionMenu() {
   }, []);
 
   const handleCheckout = useCallback(async () => {
+    const newTab = window.open("", "_blank");
+
     try {
       setLoading(true);
 
       if (!template?.uid || orders.length === 0) {
+        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
@@ -222,6 +222,7 @@ export default function RenderProductionMenu() {
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
+        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
@@ -237,19 +238,16 @@ export default function RenderProductionMenu() {
         payment.paymentIntentId || ""
       }&orderId=${payment.orderId || ""}`;
 
-      let checkoutWindow = checkoutWindowRef.current;
-
-      if (!checkoutWindow || checkoutWindow.closed) {
-        checkoutWindow = window.open(url, "checkout-tab");
-        checkoutWindowRef.current = checkoutWindow;
+      if (newTab) {
+        newTab.location.href = url;
       } else {
-        checkoutWindow.location.href = url;
-        checkoutWindow.focus();
+        window.location.href = url;
       }
 
       clearAll();
     } catch (err) {
       console.error("Checkout error:", err);
+      newTab?.close();
       setMessage({
         visible: true,
         type: "error",
