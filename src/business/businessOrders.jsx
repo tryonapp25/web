@@ -1,213 +1,254 @@
-import styles from "../styles/BusinessOrder.module.css";
-import { useContext, useEffect, useState, useRef } from "react";
-import { UserContext } from "../ApiContext/userContext.jsx";
-import { useTheme } from "../ApiContext/themeContext";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-
-import httpMessage from "../http/httpMessage";
-import { SocketContext } from "../ApiContext/socketContext";
-import { getFeatureFlags } from "../featureFlags/featureFlags.js";
-import Socket from "../model/socket";
-import http_order from "../http/http_order";
 import { useTranslation } from "react-i18next";
+
+import { UserContext } from "../ApiContext/userContext.jsx";
+import { SocketContext } from "../ApiContext/socketContext";
+import { useTheme } from "../ApiContext/themeContext";
+
+import http_order from "../http/http_order";
+import httpMessage from "../http/httpMessage";
+import { getFeatureFlags } from "../featureFlags/featureFlags.js";
 
 import Sidebar from "../components_business/businessSidebar";
 import LoadingModal from "../components/loading";
 import FlashMessage from "../components/flashMessage";
 import OrdersGrid from "../components_business/ordersGrid";
 
+import styles from "../styles/BusinessOrder.module.css";
 
 export default function BusinessOrders() {
-  const navigation = useNavigate();
-  const { socketRef, connected, orderFeatureEnabled } = useContext(SocketContext);
-  const { publicUser } = useContext(UserContext);
-  const { forceTheme, restoreTheme } = useTheme();
-  const socketContext = useContext(SocketContext);
-  const connectingRef = useRef(false);
-  const flagRef = useRef(false);
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Force light mode for business pages
-  useEffect(() => {
-    forceTheme("light");
-    return () => restoreTheme();
-  }, []);
-  
-  const [orderFlag, setOrderFlag] = useState(null);
-  const [orders, setOrders] = useState([]);
+  const { publicUser } = useContext(UserContext);
+  const { forceTheme, restoreTheme } = useTheme();
+  const { socketRef, connected, orderFeatureEnabled } = useContext(SocketContext);
 
+  const [orders, setOrders] = useState([]);
+  const [featureFlag, setFeatureFlag] = useState(null); // null = loading, true/false = known
   const [message, setMessage] = useState({ visible: false, type: "", msg: "" });
   const [loading, setLoading] = useState(false);
 
+  const connectingRef = useRef(false);
+
+  // Force light theme on business pages
   useEffect(() => {
-    if(flagRef.current) return;
-    flagRef.current = true;
-    fetchTodayOrders();
-    getFlag(); 
-  }, []); 
+    forceTheme("light");
+    return () => restoreTheme();
+  }, [forceTheme, restoreTheme]);
 
-
-  // ✅ Establish socket connection and event listeners based on feature flag and connection status
+  // Fetch feature flag + initial orders (only once)
   useEffect(() => {
-    if (!orderFeatureEnabled) return; // Don't connect if feature is disabled
-    if(!connected) return; // Don't set up listeners if not connected
-    const socket = socketRef.current;
-    if (!socket) return;
+    let isMounted = true;
 
-    console.log("✅ Socket connected, setting up event listeners...");
-    const handleNewOrder = (order, ack) => {
-      console.log("✅ Received new order:", order);
-      setOrders(prev => [order, ...prev]);  // if you want to add it
-      setMessage({ visible: true, type: "success", msg: "New order received!" });
-      if (ack) ack({ success: true }); // Acknowledge receipt to server
+    const init = async () => {
+      setLoading(true);
+
+      try {
+        // 1. Feature flag
+        const flag = await getFeatureFlags("ORDER_FEATURE").catch(() => false);
+        if (isMounted) setFeatureFlag(flag);
+
+        // 2. Today's preparing orders
+        if (!publicUser?.business?.id) throw new Error("No business ID");
+
+        const res = await http_order.get(
+          `/business/${publicUser.business.id}/orders/status/PREPARING/today`
+        );
+
+        if (res.data?.success && isMounted) {
+          setOrders(res.data.data || []);
+        }
+      } catch (err) {
+        console.error("Init failed:", err);
+        if (isMounted) {
+          setMessage({
+            visible: true,
+            type: "error",
+            msg: httpMessage(err) || "Failed to load orders. Please try again.",
+          });
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     };
 
-    // pick the correct event name
-    socket.on("new_order", handleNewOrder);
+    init();
 
+    return () => {
+      isMounted = false;
+    };
+  }, [publicUser?.business?.id]);
+
+  // Socket listeners – only when feature is enabled & socket is connected
+  useEffect(() => {
+    if (!orderFeatureEnabled || !connected || !socketRef.current) return;
+
+    const socket = socketRef.current;
+
+    const handleNewOrder = (newOrder, ack) => {
+      console.log("New order received:", newOrder);
+      setOrders((prev) => [newOrder, ...prev]);
+      setMessage({ visible: true, type: "success", msg: t("New order received!") });
+      if (ack) ack({ success: true });
+    };
+
+    socket.on("new_order", handleNewOrder);
 
     return () => {
       socket.off("new_order", handleNewOrder);
     };
-  }, [connected, orderFeatureEnabled]); // <- key change
-  
-  async function fetchTodayOrders() {
+  }, [connected, orderFeatureEnabled, socketRef, t]);
+
+  const handleUpdateStatus = useCallback(async (order) => {
+    if (!order?.id) return false;
+
+    setLoading(true);
+
     try {
-      console.log(publicUser);
-      setLoading(true);
-      const res = await http_order.get(`/business/${publicUser?.business?.id}/orders/status/PREPARING/today`);
-      if(res.data.success){
-        console.log("Fetched today's orders successfully:", res.data.data);
-        setOrders(res.data.data);
+      const payload = {
+        ...order,
+        business: publicUser.business,
+      };
+
+      const res = await http_order.put("/order/status", payload);
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || "Update failed");
       }
-    }
-    catch (err) {
-      setMessage({ visible: true, type: "error", msg: "Failed to fetch today's orders. Please try again." });
-      console.error("Error fetching today's orders:", err);
-    }
-    finally {
+
+      setOrders((prev) =>
+        prev
+          .map((o) =>
+            o.id === order.id
+              ? order.status === "COMPLETED"
+                ? null
+                : { ...o, status: order.status, updatedAt: new Date().toISOString() }
+              : o
+          )
+          .filter(Boolean)
+      );
+
+      return true;
+    } catch (err) {
+      const msg = httpMessage(err) || "Failed to update order status";
+      setMessage({ visible: true, type: "error", msg });
+      console.error("Status update failed:", err);
+      return false;
+    } finally {
       setLoading(false);
     }
-  }
+  }, [publicUser?.business]);
 
-  const getFlag = async() => {
-    const flag = await getFeatureFlags("ORDER_FEATURE").catch((err) => {
-      console.error("Failed to fetch feature flag", err);
-    });
-    setOrderFlag(flag);
-    return flag;
-  }
+  const handleEnableFeature = () => {
+    navigate("/business/setting");
+  };
 
-  const handleEnableOrderOnline = () => {
-    // TODO: Implement socket enable logic
-    console.log("Enable order online feature clicked");
-    navigation("/business/setting");
-  }; 
+  const handleReconnect = async () => {
+    if (connected || connectingRef.current) return;
 
-  const handleReconnect = async() => {
+    connectingRef.current = true;
+    setLoading(true);
+
     try {
-      setLoading(true);
-      if (connected) return;
-      if(connectingRef.current) return; // Prevent multiple simultaneous connection attempts
-      connectingRef.current = true;
-      const socketIo = new Socket(socketContext); // ✅ pass value
+      const Socket = (await import("../model/socket")).default; // dynamic if needed
+      const socketIo = new Socket({ ...useContext(SocketContext) });
       socketIo.connect();
     } catch (err) {
-      console.error("Reconnection failed", err);
-      setMessage({ visible: true, type: "error", msg: "Failed to reconnect. Please try again." });
+      setMessage({
+        visible: true,
+        type: "error",
+        msg: "Failed to reconnect. Please try again.",
+      });
     } finally {
       setLoading(false);
       connectingRef.current = false;
     }
   };
 
-  const handleUpdateStatus = async (order) => {
-      try {
-          setLoading(true);
-          order.business = publicUser.business
-          const res = await http_order.put(`/order/status`, order);
-          if(res.data.success){
-              console.log("update order status successfully:", res.data.data);
-              if(order.status === "COMPLETED"){
-                setOrders((prev) =>
-                  prev.filter((order) => order.id !== order.id)
-                );
-                return true;
-              }
-              if(order?.status === "COMPLETED"){
-                setOrders((prev) =>
-                  prev.filter((o) => o.id !== order.id)
-                );
-                return true;
-              }
-              setOrders((prev) =>
-                prev.map((order) =>
-                  order.id === order.id
-                    ? {
-                        ...order,
-                        status: order.status,
-                        updatedAt: new Date().toISOString(), // current time
-                      }
-                    : order
-              )
-          );
-          }
-      } catch (err) {
-          setMessage({visible: true, msg: httpMessage(err), type: "error"});
-          console.error("Error fetching order details:", err);
-      }
-      finally {
-          setLoading(false);
-      }
-  }
+  // ──────────────────────────────────────────────
+  //  Derived UI states
+  // ──────────────────────────────────────────────
+
+  const showFeatureDisabledOverlay =
+    featureFlag === false || (!orderFeatureEnabled && featureFlag === true);
+
+  const showReconnectOverlay = connected === false && orderFeatureEnabled && featureFlag !== false;
+
+  const isLoadingInitial = featureFlag === null || loading;
 
   return (
     <div className={styles.shell}>
       <Sidebar />
+
       <main className={styles.main}>
-        {orderFlag !== null && !orderFlag && (
+        {/* Overlays – highest priority first */}
+        {isLoadingInitial && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
-              <h2>Order Online Feature Disabled</h2>
-              <p>Enable this feature to receive online orders in real-time.</p>
-              <button className={styles.enableButton} onClick={() => console.log("Redirect to settings to enable")}>
-                 Online Orders is Disabled by Admin. Please contact admin to enable this feature.
-              </button>
+              <h2>Loading...</h2>
+              <p>Please wait while we fetch your orders and settings.</p>
             </div>
           </div>
         )}
-        {!orderFeatureEnabled && orderFlag && (
+
+        {showFeatureDisabledOverlay && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
-              <h2>Order Online Feature Disabled</h2>
-              <p>Enable this feature to receive online orders in real-time.</p>
-              <button className={styles.enableButton} onClick={handleEnableOrderOnline}>
-                Enable Online Orders
-              </button>
+              <h2>Online Orders Disabled</h2>
+              <p>Contact your administrator or enable the feature in settings.</p>
+
+              {orderFeatureEnabled && featureFlag === true ? (
+                <button className={styles.enableButton} onClick={handleEnableFeature}>
+                  Enable Online Orders
+                </button>
+              ) : (
+                <p className={styles.disabledNote}>
+                  This feature is disabled by the platform admin.
+                </p>
+              )}
             </div>
           </div>
         )}
-        {!connected && orderFeatureEnabled && orderFlag && (
+
+        {showReconnectOverlay && (
           <div className={styles.overlay}>
             <div className={styles.overlayContent}>
               <h2>Connection Lost</h2>
-              <p>Your connection appears to be unstable. Please reconnect to continue.</p>
+              <p>Real-time order updates are currently unavailable.</p>
               <button className={styles.enableButton} onClick={handleReconnect}>
-                Reconnect
+                Reconnect Now
               </button>
             </div>
           </div>
         )}
+
+        {/* Status bar */}
         <div className={styles.socketStatus}>
           <span className={`${styles.statusDot} ${connected ? styles.online : styles.offline}`} />
-          <span className={styles.statusText}>{connected ? "Live — Connected" : "Disconnected"}</span>
+          <span>{connected ? "Live — Connected" : "Disconnected"}</span>
         </div>
-        <h3>{t('business.orders')}: {orders.length}</h3>
+
+        <h3>
+          {t("business.orders")}: {orders.length}
+        </h3>
+
         <OrdersGrid orders={orders} onUpdateStatus={handleUpdateStatus} />
       </main>
 
-      <LoadingModal open={loading} title="Reconnecting…" subtitle="Attempting to reconnect to the server." />
-      <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage({ visible: false, type: "", msg: "" })} />
+      <LoadingModal
+        open={loading && !isLoadingInitial}
+        title="Processing…"
+        subtitle="Updating order status or reconnecting…"
+      />
+
+      <FlashMessage
+        show={message.visible}
+        type={message.type}
+        message={message.msg}
+        onClose={() => setMessage({ visible: false, type: "", msg: "" })}
+      />
     </div>
   );
 }

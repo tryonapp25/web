@@ -108,6 +108,8 @@
     "title": "Betaling",
     "buyTokens": "Køb Tokens",
     "choosePackSubtitle": "Vælg en pakke og lås op for flere prøve-previews når som helst.",
+    "setup": "Opsætningspris",
+    "setupSubtitle": "Vælg en pakke, så klarer vi opsætningen for dig.",
     "selectPlan": "Vælg en plan",
     "tokens": "tokens",
     "perMonth": "pr. måned",

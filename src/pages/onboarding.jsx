@@ -434,7 +434,7 @@ export default function Onboarding() {
                 <div className={styles.pricingPrice}>
                   {plan.currency === "usd" ? "$" : plan.currency === "euro" ? "€" : plan.currency}
                   {plan.price}
-                  <span>/ month</span>
+                  <span>/ One-Time</span>
                 </div>
 
                 <ul className={styles.pricingFeatures}>

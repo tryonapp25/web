@@ -251,8 +251,8 @@ export default function BusinessPayment() {
       <div className={styles.wrap}>
         <div className={styles.head}>
           <div>
-            <h1 className={styles.title}>{t("payment.buyTokens")}</h1>
-            <p className={styles.subtitle}>{t("payment.choosePackSubtitle")}</p>
+            <h1 className={styles.title}>{t("payment.setup")}</h1>
+            <p className={styles.subtitle}>{t("payment.setupSubtitle")}</p>
           </div>
         </div>
 
