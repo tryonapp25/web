@@ -2,12 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js"; // ← Add this
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js"; // ← Add for HDR env
 import styles from "../styles/Model3D.module.css";
 
 // Loading fallback
-function LoadingFallback({posterUrl}) {
+function LoadingFallback({ posterUrl }) {
   return (
     <img
       src={posterUrl}
@@ -41,7 +42,7 @@ export default function Model3D({
     try {
       // ─── Scene setup ───
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xf8f9fa);
+      scene.background = new THREE.Color(0xf8f9fa); // light gray like model-viewer neutral
 
       camera = new THREE.PerspectiveCamera(
         50,
@@ -62,16 +63,42 @@ export default function Model3D({
       );
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.shadowMap.enabled = false;
+      renderer.shadowMap.enabled = false; // disable for perf (or enable later)
+      renderer.toneMapping = THREE.ACESFilmicToneMapping; // close to model-viewer "neutral"
+      renderer.toneMappingExposure = 0.7; // matches exposure="1"
       containerRef.current.appendChild(renderer.domElement);
 
-      // Lights
-      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-      dirLight.position.set(5, 10, 5);
-      scene.add(dirLight);
+      // ─── Neutral-like lighting (match model-viewer "neutral") ───
+      // Option 1: HDR environment (best match – recommended)
+      const rgbeLoader = new RGBELoader();
+      rgbeLoader.load(
+        "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_03_1k.hdr", // neutral studio HDR
+        (texture) => {
+          texture.mapping = THREE.EquirectangularReflectionMapping;
+          scene.environment = texture; // PBR lighting + reflections
+          // scene.background = texture; // optional – shows environment as bg
+        },
+        undefined,
+        (err) => console.warn("HDR load failed, using fallback lights", err)
+      );
 
-      // Controls
+      // Option 2: Fallback manual lights (if HDR fails or you want lighter bundle)
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8)); // strong ambient for even fill
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
+      keyLight.position.set(5, 10, 7);
+      scene.add(keyLight);
+
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.9);
+      fillLight.position.set(-4, 8, -5);
+      scene.add(fillLight);
+
+      // Optional rim for product pop
+      const rimLight = new THREE.DirectionalLight(0xfff5e1, 1.0);
+      rimLight.position.set(0, 5, -8);
+      scene.add(rimLight);
+
+      // Controls (same as before)
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
@@ -84,11 +111,9 @@ export default function Model3D({
 
       // ─── Draco + GLTF Loader ───
       const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/"); // Reliable Google CDN
-      // Alternative: copy draco files to public/draco/ and use "/draco/"
-
+      dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
       const loader = new GLTFLoader();
-      loader.setDRACOLoader(dracoLoader); // ← This removes the warning!
+      loader.setDRACOLoader(dracoLoader);
 
       loader.load(
         model,
@@ -111,7 +136,7 @@ export default function Model3D({
             box.max.y - box.min.y,
             box.max.z - box.min.z
           );
-          const scale = 3 / maxDim; // Adjust as needed
+          const scale = 3 / maxDim;
           modelObj.scale.multiplyScalar(scale);
 
           scene.add(modelObj);
@@ -132,7 +157,7 @@ export default function Model3D({
       };
       animate();
 
-      // Resize
+      // Resize handler
       const onResize = () => {
         if (!containerRef.current) return;
         camera.aspect =
@@ -172,7 +197,7 @@ export default function Model3D({
           scene.clear();
         }
 
-        dracoLoader?.dispose?.(); // Clean up Draco too
+        dracoLoader?.dispose?.();
       };
     } catch (err) {
       console.error("Three.js error:", err);
@@ -186,7 +211,7 @@ export default function Model3D({
 
   return (
     <div ref={containerRef} className={styles.wrapper}>
-      {!loaded && !error && <LoadingFallback images={posterUrl} />}
+      {!loaded && !error && <LoadingFallback posterUrl={posterUrl} />}
       {error && (
         <div className={styles.errorOverlay}>
           <p>{error}</p>
