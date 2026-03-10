@@ -4,6 +4,8 @@
   position: relative;
   overflow: hidden;
   background: transparent;           /* ← critical */
+  touch-action: manipulation;  /* or pan-y pan-x pinch-zoom — allows gestures */
+  -webkit-user-select: none;   /* prevents text selection interfering */
 }
 
 .wrapper canvas {
@@ -18,6 +20,8 @@
   object-fit: contain;
   pointer-events: none;
   background-color: transparent;
+  display: block;              /* important for full area touch */
+  touch-action: manipulation;
 }
 
 .loadingOverlay {
