@@ -52,32 +52,41 @@ export default function Template({ data = {}, pressable, onPress, onClickModel, 
   return (
     <main
       style={{
-        position: "relative",   // ✅ needed for absolute arrows
+        position: "relative",
         overflow: "hidden",
         width: "100%",
-        minHeight: "100vh",  
-        cursor: "pointer",   // ✅ so arrows have space even if template is small
+        height: "100%",
+        cursor: "pointer",
       }}
       onClick={onSelectedTemplate}
     >
-      <ContentItem content={contents[currentIndex]} currentIndex={currentIndex} onClickModel={(d) => onClickModel(d)}/>
+      <ContentItem
+        content={contents[currentIndex]}
+        currentIndex={currentIndex}
+        onClickModel={(d) => onClickModel(d)}
+      />
 
-      {/* LEFT ARROW */}
       <button
-        onClick={prev}
+        onClick={(e) => {
+          e.stopPropagation();
+          prev();
+        }}
         disabled={currentIndex === 0}
         style={{
           position: "absolute",
           top: "50%",
           left: "12px",
           transform: "translateY(-50%)",
-          zIndex: 9999,
+          zIndex: 99,
           background: "black",
           color: "white",
           border: "none",
           borderRadius: "999px",
           width: "44px",
           height: "44px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           cursor: "pointer",
           opacity: currentIndex === 0 ? 0.4 : 1,
         }}
@@ -85,22 +94,27 @@ export default function Template({ data = {}, pressable, onPress, onClickModel, 
         ◀
       </button>
 
-      {/* RIGHT ARROW */}
       <button
-        onClick={next}
+        onClick={(e) => {
+          e.stopPropagation();
+          next();
+        }}
         disabled={currentIndex === contents.length - 1}
         style={{
           position: "absolute",
           top: "50%",
           right: "12px",
           transform: "translateY(-50%)",
-          zIndex: 9999,
+          zIndex: 999,
           background: "black",
           color: "white",
           border: "none",
           borderRadius: "999px",
           width: "44px",
           height: "44px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           cursor: "pointer",
           opacity: currentIndex === contents.length - 1 ? 0.4 : 1,
         }}
