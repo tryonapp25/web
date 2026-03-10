@@ -3,11 +3,11 @@ const Lottie = React.lazy(() => import("lottie-react"));
 
 import emailIcon from "../assets/lottiefiles/email.json";
 import emailsent from "../assets/lottiefiles/sunrise.json";
-import { t } from "i18next";
+
 
 export default function SendToMailPopup() {
   const hasShown = useRef(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);

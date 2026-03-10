@@ -199,14 +199,13 @@ export default function RenderProductionMenuBook() {
   }, [clearAll]);
 
   const handleCheckout = useCallback(async () => {
-    const newTab = window.open("", "_blank", "noopener,noreferrer");
+    const newTab = window.open("", "_blank");
 
     try {
       setLoading(true);
 
       if (!data?.uid || orders.length === 0) {
-        if (newTab) newTab.close();
-
+        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
@@ -215,20 +214,15 @@ export default function RenderProductionMenuBook() {
         return;
       }
 
-      const ordersWithTemplate = {
-        receiverId: data.uid,
-        orders,
-      };
-
+      const ordersWithTemplate = { receiverId: data.uid, orders };
       const create = await createOrder(ordersWithTemplate);
 
       if (!create?.success) {
-        if (newTab) newTab.close();
-
+        newTab?.close();
         setMessage({
           visible: true,
           type: "error",
-          msg: create?.error || "Failed to place order. Please try again.",
+          msg: create?.error || "Failed to place order.",
         });
         return;
       }
@@ -236,21 +230,30 @@ export default function RenderProductionMenuBook() {
       const payment = create?.payment || {};
       payment.orderId = create?.data?.id;
 
-      handlePaymentSuccess(payment, newTab);
-    } catch (error) {
-      console.error("checkout error:", error);
+      const url = `${VITE_PUBLIC_CHECKOUT_URL}/checkout?paymentIntentId=${
+        payment.paymentIntentId || ""
+      }&orderId=${payment.orderId || ""}`;
 
-      if (newTab) newTab.close();
+      if (newTab) {
+        newTab.location.href = url;
+      } else {
+        window.location.href = url;
+      }
 
+      clearAll();
+    } catch (err) {
+      console.error("Checkout error:", err);
+      newTab?.close();
       setMessage({
         visible: true,
         type: "error",
-        msg: httpMessage(error) || error?.message || "Failed to place order.",
+        msg: httpMessage(err) || "Checkout failed.",
       });
     } finally {
       setLoading(false);
     }
-  }, [data, orders, handlePaymentSuccess]);
+  }, [data, orders, clearAll]);
+
 
   const templateMap = useMemo(() => {
     const out = {};

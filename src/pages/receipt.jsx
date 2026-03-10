@@ -77,9 +77,7 @@ export default function Receipt() {
             setLoading(true);
             const res = await http_order.get(`/order/${orderId}`);
             if(res.data.success){
-                console.log("get order details successfully:");
                 setOrder(res.data.data);
-                console.log(res.data.data);
             }
         } catch (err) {
             setMessage({visible: true, msg: httpMessage(err), type: "error"});
