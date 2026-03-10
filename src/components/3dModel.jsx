@@ -2,10 +2,12 @@
 import { useEffect, useState } from "react";
 import styles from "../styles/Model3D.module.css";
 
-export default function Model3D({ model, images, config = {} }) {
+export default function Model3D({ model, images, config = {}, allowShowModel = false }) {
   const [posterUrl] = useState(
     images && images.length > 0 ? images[0] : "/fallback-poster.jpg"
   );
+
+  if(!allowShowModel) return;
 
   useEffect(() => {
     // Load model-viewer script only once
