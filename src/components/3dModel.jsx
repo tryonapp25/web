@@ -4,7 +4,7 @@ import React, { Suspense } from "react";
 const Lottie = React.lazy(() => import("lottie-react"));
 import loading from "../assets/lottiefiles/cat-Mark-loading.json";
 
-export default function Model3D({ model, images, config, allowShowModel = true }) {
+export default function Model3D({ model, images, config, allowShowModel = false }) {
   const [ready, setReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
