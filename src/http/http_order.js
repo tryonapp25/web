@@ -1,4 +1,5 @@
 import axios from "axios";
+import { genGuestToken } from "../utils/socketio";
 
 const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 
@@ -7,10 +8,16 @@ const http_order = axios.create({
 });
 
 http_order.interceptors.request.use(
-  (config) => {
+  async (config) => {
     let token;
     // First check sessionStorage
     token = sessionStorage.getItem("token");
+    if(!token) {
+      // If not found, check localStorage
+      await genGuestToken().then((guestToken) => {
+        token = guestToken;
+      });
+    }
     if (token && token !== "null" && token !== "undefined") {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
