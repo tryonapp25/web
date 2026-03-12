@@ -8,7 +8,7 @@ const http_order = axios.create({
 });
 
 http_order.interceptors.request.use(
-  (config) => {
+  async (config) => {
     let token;
     // First check sessionStorage
     token = sessionStorage.getItem("token");
@@ -16,7 +16,12 @@ http_order.interceptors.request.use(
       // If not found, check localStorage
       token = localStorage.getItem("token");
     }
-
+    if(!token) {
+      // If not found, check localStorage
+      await genGuestToken().then((guestToken) => {
+        token = guestToken;
+      });
+    }
     if (token && token !== "null" && token !== "undefined") {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
