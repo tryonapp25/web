@@ -30,8 +30,8 @@ export default function BusinessLogin() {
         password: password
       });
       if(res.data.success){
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.data));
+        sessionStorage.setItem("token", res.data.token);
+        sessionStorage.setItem("user", JSON.stringify(res.data.data));
         setPublicUser(res.data.data);
         navigate("/menu")
       }

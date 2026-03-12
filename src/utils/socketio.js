@@ -8,13 +8,9 @@ const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 //const publicCode = new URLSearchParams(window.location.search).get("public");
 
 function getToken() {
-  let token = localStorage.getItem("token");
+  let token = sessionStorage.getItem("token");
   if (!token) {
-    token = sessionStorage.getItem("token");
-  }
-  if (!token || token === "null" || token === "undefined") {
-    console.error("No valid token found in storage");
-    return null;
+    token = localStorage.getItem("token");
   }
   return token;
 }
@@ -88,13 +84,13 @@ function generateGuestId(length = 12) {
 }
 
 async function getFCMToken() {
-  let token = localStorage.getItem("fcmToken");
+  let token = sessionStorage.getItem("fcmToken");
   if (token) return token;
 
   try {
     const newToken = await setupNotifications();
-    localStorage.setItem("fcmToken", newToken);
-    console.log("FCM token stored in localStorage:", newToken);
+    sessionStorage.setItem("fcmToken", newToken);
+    console.log("FCM token stored in sessionStorage:", newToken);
     return newToken;
   } catch (err) {
     console.error("Failed to get FCM token:", err);
@@ -116,7 +112,7 @@ export async function genGuestToken() {
           }
         });
         if(res.data?.success){
-            sessionStorage.setItem("token", res.data.token); // Store in sessionStorage for persistence
+            localStorage.setItem("token", res.data.token); // Store in localStorage for persistence
             return res.data.token;
         }
     } catch (err) {
@@ -143,7 +139,7 @@ export const createOrder = async (order) => {
     });
     if(res.data.success){
       console.log("Order sent successfully:");
-      sessionStorage.setItem("token", res.data.token);
+      localStorage.setItem("token", res.data.token);
       return res?.data;
     }
   } catch (err) {
