@@ -12,6 +12,10 @@ http_order.interceptors.request.use(
     let token;
     // First check sessionStorage
     token = sessionStorage.getItem("token");
+    if (!token) {
+      // If not found, check localStorage
+      token = localStorage.getItem("token");
+    }
     if(!token) {
       // If not found, check localStorage
       await genGuestToken().then((guestToken) => {
