@@ -13,6 +13,7 @@ import LoadingModal from "../components/loading";
 import PdfPageWrapper from "../components/pdfPageWrapper";
 import useIsMobile from "../utils/deviceCheck";
 import ModelShowcase from "../components/modelShowcase";
+import clearTokens from "../utils/clearTokens";
 
 const modules = import.meta.glob("../templates/**/*.jsx");
 
@@ -100,6 +101,7 @@ export default function RenderProductionPoster() {
     const mountedRef = { current: true };
 
     fetchTemplate(mountedRef);
+    clearTokens();
 
     return () => {
       mountedRef.current = false;
