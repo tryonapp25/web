@@ -34,7 +34,7 @@ class SocketManager {
     console.log("Connecting to guest socket...");
     if (this.connected) return;
     try {
-      await this.connectGuest(this.user);
+      await this.connectGuest();
     } catch (err) {
       console.error("connectGuest failed", err);
     }

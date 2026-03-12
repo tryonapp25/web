@@ -10,7 +10,11 @@ const ORDER_SERVER = import.meta.env.VITE_ORDER_SERVER;
 function getToken() {
   let token = localStorage.getItem("token");
   if (!token) {
-    token = localStorage.getItem("token");
+    token = sessionStorage.getItem("token");
+  }
+  if (!token || token === "null" || token === "undefined") {
+    console.error("No valid token found in storage");
+    return null;
   }
   return token;
 }
@@ -101,6 +105,7 @@ async function getFCMToken() {
 export async function genGuestToken() {
     try {
         console.log("Generating guest token...");
+        sessionStorage.removeItem("token"); // Clear any existing token
         let fcmToken = await getFCMToken();
         if(!fcmToken) {
           console.error("No FCM token available for guest token generation");
@@ -112,7 +117,7 @@ export async function genGuestToken() {
           }
         });
         if(res.data?.success){
-            sessionStorage.setItem("token", res.data.token); // Store in localStorage for persistence
+            sessionStorage.setItem("token", res.data.token); // Store in sessionStorage for persistence
             return res.data.token;
         }
     } catch (err) {
