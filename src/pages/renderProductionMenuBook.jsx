@@ -12,7 +12,6 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import defaultMessage from "../utils/defaultMessage";
 import useIsMobile from "../utils/deviceCheck";
-import clearTokens from "../utils/clearTokens";
 import { createOrder } from "../utils/socketio";
 
 import ModelShowcase from "../components/modelShowcase";
@@ -133,7 +132,7 @@ export default function RenderProductionMenuBook() {
     const mountedRef = { current: true };
 
     fetchData(mountedRef);
-    clearTokens();
+
     return () => {
       mountedRef.current = false;
     };
