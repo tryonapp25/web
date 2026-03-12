@@ -41,10 +41,11 @@ import EditPricing from "./admin/editPricing";
 
 // Business //
 import BusinessPage from "./business/index";
-import  BusinessProducts from "./business/businessProducts";
+import BusinessProducts from "./business/businessProducts";
 import BusinessOrders from "./business/businessOrders";
 import BusinessPayment from "./business/businessPayments";
 import BusinessSetting from "./business/businessSetting";
+import BusinessSummary from "./business/summary";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
@@ -107,6 +108,7 @@ export default function App() {
                   <Route path="/business" element={<BusinessPage />} />
                   <Route path="/business/orders" element={<BusinessOrders />} />
                   <Route path="/business/products" element={<BusinessProducts />} />
+                  <Route path="/business/summary" element={<BusinessSummary />} />
                   <Route path="/business/setting" element={<BusinessSetting />} />
                 </Route>
               </Route>

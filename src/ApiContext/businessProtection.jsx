@@ -80,7 +80,7 @@ export default function BusinessProtection() {
     // Only do this for business users or customers (your original logic)
     if (publicUser?.business || publicUser?.isCustomer === true) {
       const isCompleted = isCompletedSetup(publicUser?.business);
-      console.log("Business setup completed?", isCompleted);
+      console.log("Business setup completed?: ", isCompleted);
 
       // IMPORTANT: don't navigate if already there (prevents loop)
       if (!isCompleted && location.pathname !== "/business/setting") {
