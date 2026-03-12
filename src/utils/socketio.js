@@ -105,7 +105,6 @@ async function getFCMToken() {
 export async function genGuestToken() {
     try {
         console.log("Generating guest token...");
-        sessionStorage.removeItem("token"); // Clear any existing token
         let fcmToken = await getFCMToken();
         if(!fcmToken) {
           console.error("No FCM token available for guest token generation");

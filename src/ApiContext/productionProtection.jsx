@@ -4,9 +4,9 @@ import { useContext, useRef, useEffect } from "react";
 import { SocketContext } from "./socketContext";
 import { BusinessContext } from "./businessContext";
 import ThemeContext from "./themeContext";
+import clearTokens from "../utils/clearTokens";
 
 import http from "../http/http";
-import { t } from "i18next";
 const publicCode = new URLSearchParams(window.location.search).get("public");
 
 
@@ -21,7 +21,7 @@ export default function ProductionProtection() {
   useEffect(() => {
     if (startupRef.current) return;
     startupRef.current = true;
-    
+    clearTokens(); // Clear tokens on initial load to ensure fresh state
     if (location.pathname.startsWith("/menubook")) {
       productionMenuBookCheck();
       return;
