@@ -13,7 +13,7 @@ export default function BusinessProtection() {
   const { connected } = useContext(SocketContext);
 
   const { publicUser } = useContext(UserContext);
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // ----------------------------
   // 1) SOCKET: connect once
@@ -105,7 +105,7 @@ export default function BusinessProtection() {
   // ----------------------------
   // 3) ROUTE PROTECTION
   // ----------------------------
-  if (!user) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/business/login" replace />;
   if (!user?.isCustomer) return <Navigate to="/business/payment" replace />;
 
   return (

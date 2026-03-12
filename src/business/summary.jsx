@@ -6,6 +6,7 @@ import httpMessage from "../http/httpMessage";
 import { UserContext } from "../ApiContext/userContext";
 
 import FlashMessage from "../components/flashMessage";
+import LoadingModal from "../components/loading";
 import SummaryBoard from "./summary_components/summaryBoard";
 
 
@@ -13,16 +14,21 @@ export default function BusinessSummary() {
     const fetchRef = useRef(false);
     const { publicUser } = useContext(UserContext);
     const [summaryData, setSummaryData] = useState({});
+
     const [message, setMessage] = useState({visible: false, msg: "", type: ""});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchSummaryData = async () => {
         try {
+            setLoading(true);
             const response = await http.get(`/business/${publicUser?.business?.id}/summary`);
             setSummaryData(response.data?.data);
         } catch (error) {
             console.error("Error fetching summary data:", error);
             setMessage({visible: true, msg: httpMessage.getErrorMessage(error), type: "error"});
+        } finally {
+            setLoading(false);
         }
         };
 
@@ -46,6 +52,7 @@ export default function BusinessSummary() {
                 type={message.type}
                 onClose={() => setMessage({visible: false, msg: "", type: ""})}
             />
+            <LoadingModal open={loading} />
         </div>
     );
 }

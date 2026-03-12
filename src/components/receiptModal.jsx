@@ -166,21 +166,29 @@ function Receipt({ order }) {
 
       <div className={styles.hrDashed} />
 
-      <section className={styles.metaGrid}>
-        <div className={styles.metaRow}>
-          <span className={styles.metaKey}>PaymentId</span>
-          <span className={styles.metaVal}>{order?.paymentIntentId || "—"}</span>
-        </div>
-      </section>
-
-      <div className={styles.hrDashed} />
-
       <div className={styles.totalRow}>
         <span className={styles.totalLabel}>TOTAL</span>
         <span className={`${styles.totalValue} ${styles.mono}`}>
           {computedTotal == null ? "—" : formatMoney(computedTotal, currency)}
         </span>
       </div>
+      <div className={styles.metaRow}>
+          <span className={styles.metaKey}>Tax / VAT (25%)</span>
+          <span className={styles.metaVal}>{computedTotal * 0.25}{currency}</span>
+      </div>
+
+      <div className={styles.hrDashed} />
+
+      <section className={styles.metaGrid}>
+        <div className={styles.itemsHeader}>
+          <span>PAYMENT</span>
+        </div>
+
+        <div className={styles.metaRow}>
+          <span className={styles.metaKey}>PaymentId</span>
+          <span className={styles.metaVal}>{order?.paymentIntentId || "—"}</span>
+        </div>
+      </section>
 
       {notes ? (
         <>
@@ -193,8 +201,8 @@ function Receipt({ order }) {
       ) : null}
 
       <footer className={styles.footer}>
-        <div className={styles.center}>THANK YOU!</div>
-        <div className={styles.centerSmall}>{footerText}</div>
+        <div className={styles.center}>Powered by</div>
+        <div className={styles.centerSmall}>Tryon</div>
       </footer>
     </div>
   );
@@ -248,15 +256,6 @@ export default function ReceiptModal({
               {printing ? "Printing…" : "Receipt details and summary."}
             </div>
           </div>
-
-          {/* <button
-            type="button"
-            className={styles.btnGhost}
-            onClick={onSendTomail}
-            aria-label="Close receipt modal"
-          >
-            Send to mail
-          </button> */}
         </div>
 
         <div className={styles.viewer}>

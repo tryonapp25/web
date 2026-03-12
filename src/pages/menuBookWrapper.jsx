@@ -27,6 +27,7 @@ export default function MenuBookWraper() {
   const menubookCode = searchParams.get("code");
 
   const editable = type === "production" ? true : false;
+  const allowShowModel = true; // allow show model for both demo and production
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -164,7 +165,7 @@ export default function MenuBookWraper() {
         )}
       </Suspense>
 
-      <ModelShowcase open={modelOpen} item={selectedModel} onClose={() => setModelOpen(false)}/>
+      <ModelShowcase open={modelOpen} item={selectedModel} onClose={() => setModelOpen(false)} allowShowModel={allowShowModel}/>
         
       <FlashMessage show={message.visible} type={message.type} message={message.msg} onClose={() => setMessage(defaultMessage)}/>
       <LoadingModal open={loading} message="Loading Menu Book..." />;

@@ -11,12 +11,6 @@ http_order.interceptors.request.use(
     let token;
     // First check sessionStorage
     token = sessionStorage.getItem("token");
-    if(token){
-      localStorage.setItem("token", token); // Sync token to localStorage
-    }
-    if(!token){
-      token = localStorage.getItem("token"); // Check localStorage if not in sessionStorage
-    }
     if (token && token !== "null" && token !== "undefined") {
       config.headers.Authorization = `Bearer ${token}`;
     } else {

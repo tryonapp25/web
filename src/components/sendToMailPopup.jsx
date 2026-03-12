@@ -35,13 +35,13 @@ export default function SendToMailPopup() {
     if (hasShown.current) return;
     hasShown.current = true;
 
-    if (sessionStorage.getItem("sendToMail")) {
+    if (localStorage.getItem("sendToMail")) {
       return;
     }
 
     const timer = setTimeout(() => {
       setOpen(true);
-      sessionStorage.setItem("sendToMail", "true");
+      localStorage.setItem("sendToMail", "true");
     }, 2000);
 
     return () => clearTimeout(timer);

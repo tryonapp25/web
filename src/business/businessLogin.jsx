@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 
 const defaultMessage = { visible: false, type: "", msg: ""};
 
-export default function Login() {
+export default function BusinessLogin() {
   const navigate  = useNavigate();
   const { t } = useTranslation();
   const { publicUser, setPublicUser } = useContext(UserContext);
@@ -25,7 +25,7 @@ export default function Login() {
     e.preventDefault();
     try{
       setLoading(true);
-      const res = await http.post(`/login`,{
+      const res = await http.post(`/business/login`,{
         email: email,
         password: password
       });
