@@ -13,6 +13,7 @@ import {
   Tag,
   Receipt,
   Settings,
+  LayoutDashboard,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -57,7 +58,7 @@ export default function BusinessSidebar() {
   const { t } = useTranslation();
 
   const [items, setItems] = useState([
-    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders" }
+    { id: "orders", label: t('business.orders'), icon: ClipboardList, to: "/business/orders" },
   ]);
 
   const POS = [
@@ -179,18 +180,32 @@ export default function BusinessSidebar() {
       {/* Footer */}
       <div className={styles.footer}>
         <NavLink
+          to="/business/summary"
+          className={({ isActive }) =>
+            `${styles.profile} ${isActive ? styles.navItemActive : ""}`
+          }
+          aria-label="Summary"
+        >
+          <LayoutDashboard
+            className={styles.icon}
+            size={22}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+        </NavLink>
+
+        <NavLink
           to="/business/setting"
           className={({ isActive }) =>
             `${styles.profile} ${isActive ? styles.navItemActive : ""}`
           }
-          aria-label="Profil"
+          aria-label="Settings"
         >
           <Settings
             className={styles.icon}
             size={22}
             strokeWidth={2}
             aria-hidden="true"
-            color="#000"
           />
         </NavLink>
       </div>

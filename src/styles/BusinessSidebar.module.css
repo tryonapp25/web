@@ -71,25 +71,63 @@
 .footer {
   margin-top: auto;
   width: 100%;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
 }
 
 .profile {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid var(--line);
   background: var(--card-solid);
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  color: var(--muted);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile:visited {
+  color: var(--muted);
 }
 
 .profile:hover {
   background: var(--card);
+  color: var(--text);
+  border-color: var(--text);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.profile:active {
+  transform: translateY(0);
+}
+
+.profile.navItemActive {
+  background: var(--card);
+  color: var(--text);
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.profile .icon {
+  color: inherit;
+  opacity: 0.9;
+}
+
+.profile.navItemActive .icon {
+  opacity: 1;
 }
 
 .srOnly {
