@@ -46,6 +46,7 @@ import BusinessOrders from "./business/businessOrders";
 import BusinessPayment from "./business/businessPayments";
 import BusinessSetting from "./business/businessSetting";
 import BusinessSummary from "./business/summary";
+import BusinessLogin from "./business/businessLogin";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
@@ -70,6 +71,7 @@ export default function App() {
               <Routes>
               <Route path="/" element={<Onboarding />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/business/login" element={<BusinessLogin />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/demo" element={<Demo />} />
 

@@ -105,7 +105,7 @@ export default function BusinessProtection() {
   // ----------------------------
   // 3) ROUTE PROTECTION
   // ----------------------------
-  if (!user) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/business/login" replace />;
   if (!user?.isCustomer) return <Navigate to="/business/payment" replace />;
 
   return (

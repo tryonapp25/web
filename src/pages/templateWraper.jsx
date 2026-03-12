@@ -44,6 +44,7 @@ export default function TemplateWraper() {
   const [selectedModel, setSelectedModel] = useState(null);
 
   const editable = type === "demo" ? false : true;
+  const allowShowModel = true;
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
@@ -139,7 +140,7 @@ export default function TemplateWraper() {
         </PdfPageWrapper>
       }
 
-      <ModelShowcase open={modelOpen} item={selectedModel} onClose={() => setModelOpen(false)}/>
+      <ModelShowcase open={modelOpen} item={selectedModel} onClose={() => setModelOpen(false)} allowShowModel={allowShowModel}/>
 
       <LoadingModal open={loading} title="Menu" subtitle="Loading template..." />
       <FlashMessage
