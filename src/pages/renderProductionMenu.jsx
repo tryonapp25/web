@@ -7,6 +7,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+import clearTokens from "../utils/clearTokens";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import styles from "../styles/renderProductionMenu.module.css";
 import http from "../http/http";
@@ -132,6 +133,7 @@ export default function RenderProductionMenu() {
   useEffect(() => {
     const isMountedRef = { current: true };
     fetchTemplate(isMountedRef);
+    clearTokens();
     return () => {
       isMountedRef.current = false;
     };
