@@ -4,7 +4,7 @@ export const BusinessContext = createContext(null);
 
 export function BusinessProvider({ children }) {
   const [publicUser, setPublicUser] = useState(() => {
-    const stored = localStorage.getItem("user");
+    const stored = sessionStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
 
@@ -12,12 +12,12 @@ export function BusinessProvider({ children }) {
   const [isBusinessOpen, setIsBusinessOpen] = useState(false);
   const [isPOSEnabled, setIsPOSEnabled] = useState(false);
  
-  // keep localStorage in sync
+  // keep sessionStorage in sync
   useEffect(() => {
     if (publicUser) {
-      localStorage.setItem("user", JSON.stringify(publicUser));
+      sessionStorage.setItem("user", JSON.stringify(publicUser));
     } else {
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
     }
   }, [publicUser]);
 

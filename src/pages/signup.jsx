@@ -36,7 +36,7 @@ export default function Signup() {
       });
 
       if (res.data.success) {
-        localStorage.setItem("token", res.data.token);
+        sessionStorage.setItem("token", res.data.token);
         navigate("/login");
       }
     } catch (err) {

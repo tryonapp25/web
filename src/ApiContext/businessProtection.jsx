@@ -13,7 +13,7 @@ export default function BusinessProtection() {
   const { connected } = useContext(SocketContext);
 
   const { publicUser } = useContext(UserContext);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   // ----------------------------
   // 1) SOCKET: connect once

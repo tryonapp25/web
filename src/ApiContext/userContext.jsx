@@ -4,16 +4,16 @@ export const UserContext = createContext(null);
 
 export function UserProvider({ children }) {
   const [publicUser, setPublicUser] = useState(() => {
-    const stored = localStorage.getItem("user");
+    const stored = sessionStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
 
-  // keep localStorage in sync
+  // keep sessionStorage in sync
   useEffect(() => {
     if (publicUser) {
-      localStorage.setItem("user", JSON.stringify(publicUser));
+      sessionStorage.setItem("user", JSON.stringify(publicUser));
     } else {
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
     }
   }, [publicUser]);
 
