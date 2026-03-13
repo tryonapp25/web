@@ -10,6 +10,8 @@ export default function TopStatsRow({data = []}) {
           title={item.title}
           value={item.value}
           icon={item.icon}
+          isCurrency={item.isCurrency}
+          description={item.description}
           large
         />
       ))}
