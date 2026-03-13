@@ -1,6 +1,10 @@
 import styles from "../SummaryBoard.module.css";
+import { useContext } from "react";
+import {UserContext} from "../../../ApiContext/userContext";
 
 export default function StatCard({ title, value, icon, large = false }) {
+  const { publicUser } = useContext(UserContext);
+
   return (
     <article
       className={`${styles.statCard} ${large ? styles.statCardLarge : styles.statCardSmall}`}
@@ -14,7 +18,7 @@ export default function StatCard({ title, value, icon, large = false }) {
         <div className={styles.statIconCircle}>{icon}</div>
       </div>
 
-      <div className={styles.statValue}>{value}</div>
+      <div className={styles.statValue}>{Number(value).toFixed(2)} {publicUser?.currency}</div>
     </article>
   );
 }
