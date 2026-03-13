@@ -25,15 +25,21 @@ export default function BusinessLogin() {
     e.preventDefault();
     try{
       setLoading(true);
-      const res = await http.post(`/business/login`,{
+      const res = await http.post(`/login`,{
         email: email,
         password: password
       });
       if(res.data.success){
-        sessionStorage.setItem("token", res.data.token);
-        sessionStorage.setItem("user", JSON.stringify(res.data.data));
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.data));
         setPublicUser(res.data.data);
-        navigate("/menu")
+        const user = res.data.data;
+        if(user.isCustomer === true && user?.business !== null){
+          navigate("/business");
+        }
+        else{
+          navigate("/menu");
+        }
       }
     }
     catch (err) {
