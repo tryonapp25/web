@@ -16,9 +16,7 @@ export function BusinessProvider({ children }) {
   useEffect(() => {
     if (publicUser) {
       localStorage.setItem("user", JSON.stringify(publicUser));
-    } else {
-      localStorage.removeItem("user");
-    }
+    };
   }, [publicUser]);
 
   return (
