@@ -21,6 +21,8 @@ export default function BusinessPage() {
   }, []);
 
   useEffect(() => {
+    if (checkerRef.current) return; // Prevent multiple executions
+    checkerRef.current = true;
     if(publicUser?.business || publicUser?.isCustomer === true) {
       const isCompleted = isCompletedSetup(publicUser?.business);
       if(isCompleted) {

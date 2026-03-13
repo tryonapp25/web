@@ -52,8 +52,6 @@ import BusinessLogin from "./business/businessLogin";
 /* import TestTemplate from "./templates/testTemplate";  */
 /*import TestPage from "./test/testPage";*/
 
-
-
 export default function App() {
   const startRef = useRef(false);
   useEffect(() => {
