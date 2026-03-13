@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { BusinessProvider } from "./businessContext";
 import { SocketContext } from "./socketContext";
 import { UserContext } from "./userContext";
@@ -10,10 +10,28 @@ export default function BusinessProtection() {
   const navigate = useNavigate();
 
   const socketContext = useContext(SocketContext);
-  const { connected } = useContext(SocketContext);
+  const { connected } = socketContext;
 
   const { publicUser } = useContext(UserContext);
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  // ----------------------------
+  // 0) LOAD USER FROM LOCALSTORAGE
+  // ----------------------------
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+      setUser(parsedUser);
+    } catch (error) {
+      console.error("Failed to parse user from localStorage:", error);
+      setUser(null);
+    } finally {
+      setLoadingUser(false);
+    }
+  }, []);
 
   // ----------------------------
   // 1) SOCKET: connect once
@@ -21,10 +39,13 @@ export default function BusinessProtection() {
   const socketStartedRef = useRef(false);
 
   useEffect(() => {
-    // Avoid double-run in React StrictMode (dev) + any re-renders
+    if (loadingUser) return;
+    if (!user?.uid) return;
+
+    // Avoid double-run in React StrictMode (dev) + re-renders
     if (socketStartedRef.current) return;
 
-    // If already connected, no need to create/connect
+    // If already connected, do nothing
     if (connected) {
       socketStartedRef.current = true;
       console.log("Socket already connected");
@@ -37,18 +58,20 @@ export default function BusinessProtection() {
     socket.connect();
 
     console.log("Connecting socket (business protection)...");
-  }, [connected, socketContext]);
+  }, [connected, socketContext, loadingUser, user]);
 
   // ----------------------------
   // 2) BUSINESS SETUP CHECK
   // ----------------------------
-  const lastCheckKeyRef = useRef(""); // stops repeated checks for same state
+  const lastCheckKeyRef = useRef("");
 
   useEffect(() => {
+    if (loadingUser) return;
+    if (!user?.uid) return;
     if (!publicUser) return;
 
-    // Build a small "key" so we only re-run when meaningful input changes
     const business = publicUser?.business;
+
     const key = JSON.stringify({
       path: location.pathname,
       userId: publicUser?.id || publicUser?._id || null,
@@ -59,7 +82,9 @@ export default function BusinessProtection() {
             address: business.address || "",
             phone: business.phone || "",
             email: business.email || "",
-            openHoursKeys: business.openHours ? Object.keys(business.openHours) : [],
+            openHoursKeys: business.openHours
+              ? Object.keys(business.openHours)
+              : [],
           }
         : null,
     });
@@ -72,18 +97,16 @@ export default function BusinessProtection() {
     } catch (err) {
       console.error("Error during checkBusinessSetup", err);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, publicUser]);
+  }, [location.pathname, publicUser, loadingUser, user]);
 
   const checkBusinessSetup = () => {
-    if(location.pathname === "/business/setting") return;
-    // Only do this for business users or customers (your original logic)
+    if (location.pathname === "/business/setting") return;
+
     if (publicUser?.business || publicUser?.isCustomer === true) {
       const isCompleted = isCompletedSetup(publicUser?.business);
-      console.log("Business setup completed?: ", isCompleted);
+      console.log("Business setup completed?:", isCompleted);
 
-      // IMPORTANT: don't navigate if already there (prevents loop)
-      if (!isCompleted && location.pathname !== "/business/setting") {
+      if (!isCompleted) {
         navigate("/business/setting", { replace: true });
       }
     }
@@ -97,16 +120,32 @@ export default function BusinessProtection() {
     if (!business.address) return false;
     if (!business.phone) return false;
     if (!business.email) return false;
-    if (!business.openHours || Object.keys(business.openHours).length === 0) return false;
+    if (!business.openHours || Object.keys(business.openHours).length === 0) {
+      return false;
+    }
 
     return true;
   };
 
   // ----------------------------
-  // 3) ROUTE PROTECTION
+  // 3) WAIT UNTIL USER IS LOADED
   // ----------------------------
-  if (!user) return <Navigate to="/business/login" replace />;
-  if (!user?.isCustomer) return <Navigate to="/business/payment" replace />;
+  if (loadingUser) {
+    return <div>Loading...</div>;
+  }
+
+  // ----------------------------
+  // 4) ROUTE PROTECTION
+  // ----------------------------
+  console.log("BusinessProtection - user:", user);
+
+  if (!user?.uid) {
+    return <Navigate to="/business/login" replace />;
+  }
+
+  if (!user?.isCustomer) {
+    return <Navigate to="/business/payment" replace />;
+  }
 
   return (
     <BusinessProvider>
