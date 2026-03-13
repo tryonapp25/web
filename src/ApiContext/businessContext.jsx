@@ -15,9 +15,9 @@ export function BusinessProvider({ children }) {
   // keep sessionStorage in sync
   useEffect(() => {
     if (publicUser) {
-      sessionStorage.setItem("user", JSON.stringify(publicUser));
+      localStorage.setItem("user", JSON.stringify(publicUser));
     } else {
-      sessionStorage.removeItem("user");
+      localStorage.removeItem("user");
     }
   }, [publicUser]);
 

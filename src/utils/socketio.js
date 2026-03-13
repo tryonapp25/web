@@ -84,13 +84,13 @@ function generateGuestId(length = 12) {
 }
 
 async function getFCMToken() {
-  let token = sessionStorage.getItem("fcmToken");
+  let token = localStorage.getItem("fcmToken");
   if (token) return token;
 
   try {
     const newToken = await setupNotifications();
-    sessionStorage.setItem("fcmToken", newToken);
-    console.log("FCM token stored in sessionStorage:", newToken);
+    localStorage.setItem("fcmToken", newToken);
+    console.log("FCM token stored in localStorage:", newToken);
     return newToken;
   } catch (err) {
     console.error("Failed to get FCM token:", err);
@@ -101,15 +101,16 @@ async function getFCMToken() {
 export async function genGuestToken() {
     try {
         console.log("Generating guest token...");
-        let fcmToken = await getFCMToken();
-        if(!fcmToken) {
+        let guestId = await getFCMToken();
+        if(!guestId) {
           console.error("No FCM token available for guest token generation");
-          fcmToken = generateGuestId(); // Fallback to random guest ID if FCM token is not available
+          guestId = generateGuestId(); // Fallback to random guest ID if FCM token is not available
         }
         const res = await axios.get(`${ORDER_SERVER}/gen-guest-token`,{
           params: {
-            guestId: fcmToken,
-          }
+            guestId: guestId,
+          },
+          withCredentials: true
         });
         if(res.data?.success){
             localStorage.setItem("token", res.data.token); // Store in localStorage for persistence
@@ -123,7 +124,7 @@ export async function genGuestToken() {
 
 export const createOrder = async (order) => {
   try {
-    let token = sessionStorage.getItem("token");
+    let token = localStorage.getItem("token");
     if (!token) {
       token = await genGuestToken();
     }
