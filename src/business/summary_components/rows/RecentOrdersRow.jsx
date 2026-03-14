@@ -3,6 +3,7 @@ import SectionCard from "../ui/SectionCard";
 
 
 export default function RecentOrdersRow({data = []}) {
+  console.log("RecentOrdersRow data:", data);
   return (
     <section className={styles.fullRow}>
       <SectionCard title="Recent Orders">
@@ -11,20 +12,20 @@ export default function RecentOrdersRow({data = []}) {
             <thead>
               <tr>
                 <th>Order</th>
-                <th>Customer</th>
+                <th>CustomerId</th>
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Time</th>
               </tr>
             </thead>
             <tbody>
-              {data.length > 0 && data?.recentOrders.map((order) => (
+              {data.length > 0 && data?.map((order) => (
                 <tr key={order.id}>
                   <td>{order.id}</td>
-                  <td>{order.customer}</td>
-                  <td>{order.amount}</td>
+                  <td>{order.customerId.slice(-10)}</td>
+                  <td>{order.totalPrice}{order.currency}</td>
                   <td>{order.status}</td>
-                  <td>{order.time}</td>
+                  <td>{new Date(order.createdAt).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

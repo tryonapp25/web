@@ -6,7 +6,8 @@ import RecentOrdersRow from "./rows/RecentOrdersRow";
 
 
 export default function Dashboard({data}) {
-  const { topStatsRow, secondaryStatsRow, sales} = data;
+  const { topStatsRow, secondaryStatsRow, sales, recentOrders} = data;
+  console.log("SummaryBoard data:", data);
 
   return (
     <main className={styles.page}>
@@ -16,7 +17,7 @@ export default function Dashboard({data}) {
         <TopStatsRow data={topStatsRow} />
         <SecondaryStatsRow data={secondaryStatsRow} /> 
         <SalesChartRow data={sales} />
-        <RecentOrdersRow/>
+        <RecentOrdersRow data={recentOrders} />
       </div>
     </main>
   );
