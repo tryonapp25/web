@@ -4,7 +4,7 @@ import http from "../http/http";
 import httpMessage from "../http/httpMessage";
 import { UserContext } from "../ApiContext/userContext";
 
-import Loading from "../components/Loading";
+import LoadingModal from "../components/loading";
 import Sidebar from "../components_business/businessSidebar";
 
 export default function BusinessPaymentMethod() {
@@ -145,7 +145,7 @@ export default function BusinessPaymentMethod() {
                 </div>
             </div>
 
-            <Loading open={loading} />
+            <LoadingModal open={loading} />
         </div>
     );
 }
