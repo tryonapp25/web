@@ -82,16 +82,6 @@ export default function BusinessPaymentMethod() {
         }
     };
 
-    if(stripeAccount === null) return(
-        <div className={styles.shell}>
-            <Sidebar />
-
-            <div className={styles.main}>
-               <h1 className={styles.loadingText}>Loading payment information...</h1>
-            </div>
-        </div>
-    )
-
     return (
         <div className={styles.shell}>
             <Sidebar />

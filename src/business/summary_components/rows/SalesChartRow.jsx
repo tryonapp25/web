@@ -31,6 +31,7 @@ export default function SalesChartRow({ data = [] }) {
   const openHours = publicUser?.business?.openHours || {};
   const todayHours = openHours[todayStr];
 
+
   const xLabels = useMemo(() => getHourlyLabels(todayHours), [todayHours]);
 
   const values = useMemo(() => {
