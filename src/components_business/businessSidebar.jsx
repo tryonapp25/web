@@ -13,6 +13,7 @@ import {
   Tag,
   Receipt,
   Settings,
+  Banknote,
   LayoutDashboard,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -187,6 +188,21 @@ export default function BusinessSidebar() {
           aria-label="Summary"
         >
           <LayoutDashboard
+            className={styles.icon}
+            size={22}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+        </NavLink>
+
+        <NavLink
+          to="/business/payment-method"
+          className={({ isActive }) =>
+            `${styles.profile} ${isActive ? styles.navItemActive : ""}`
+          }
+          aria-label="Payment Method"
+        >
+          <Banknote
             className={styles.icon}
             size={22}
             strokeWidth={2}
