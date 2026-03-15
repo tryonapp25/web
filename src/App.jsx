@@ -47,6 +47,7 @@ import BusinessPayment from "./business/businessPayments";
 import BusinessSetting from "./business/businessSetting";
 import BusinessSummary from "./business/summary";
 import BusinessLogin from "./business/businessLogin";
+import BusinessPaymentMethod from "./business/businessPaymentMethod";
 
 
 /* import TestTemplate from "./templates/testTemplate";  */
@@ -110,6 +111,7 @@ export default function App() {
                   <Route path="/business/products" element={<BusinessProducts />} />
                   <Route path="/business/summary" element={<BusinessSummary />} />
                   <Route path="/business/setting" element={<BusinessSetting />} />
+                  <Route path="/business/payment-method" element={<BusinessPaymentMethod />} />
                 </Route>
               </Route>
               
