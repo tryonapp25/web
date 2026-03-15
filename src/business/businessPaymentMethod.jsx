@@ -2,24 +2,30 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import styles from "../styles/BusinessPaymentMethod.module.css";
 import http from "../http/http";
 import httpMessage from "../http/httpMessage";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../ApiContext/userContext";
 
 import LoadingModal from "../components/loading";
+import FlashMessage from "../components/flashMessage";
 import Sidebar from "../components_business/businessSidebar";
 
 export default function BusinessPaymentMethod() {
     const { publicUser } = useContext(UserContext);
     const fetchRef = useRef(false);
+    const navigate = useNavigate();
+
 
     const [stripeAccount, setStripeAccount] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState({visible: false, type: "", msg: ""});
+
     const [isComplete, setIsComplete] = useState(false);
 
     useEffect(() => {
         if (fetchRef.current) return;
         fetchRef.current = true;
         fetchBusinessAccountStatus();
-    }, []);
+    }, [navigate]);
 
     const handleCreateStripeAccount = async () => {
         try {
@@ -27,9 +33,12 @@ export default function BusinessPaymentMethod() {
             const res = await http.post("/stripe/create/business-account", publicUser);
             if (res.data.success) {
                 setStripeAccount(res.data.data);
+                console.log("Stripe account created:", res.data.data);
+                setMessage({visible: true, type: "success", msg: "Stripe account created successfully."});
             }
         } catch (err) {
             console.error(httpMessage(err));
+            setMessage({visible: true, type: "error", msg: "Failed to create Stripe account."});
         } finally {
             setLoading(false);
         }
@@ -48,6 +57,7 @@ export default function BusinessPaymentMethod() {
             }
         } catch (err) {
             console.error(httpMessage(err));
+            setMessage({visible: true, type: "error", msg: "Failed to fetch onboarding link."});
         } finally {
             setLoading(false);
         }
@@ -71,6 +81,16 @@ export default function BusinessPaymentMethod() {
             setLoading(false);
         }
     };
+
+    if(stripeAccount === null) return(
+        <div className={styles.shell}>
+            <Sidebar />
+
+            <div className={styles.main}>
+               <h1 className={styles.loadingText}>Loading payment information...</h1>
+            </div>
+        </div>
+    )
 
     return (
         <div className={styles.shell}>
@@ -102,8 +122,9 @@ export default function BusinessPaymentMethod() {
                         <div className={styles.body}>
                             <div className={styles.infoBox}>
                                 <p className={styles.label}>
-                                    Account status - {stripeAccount?.stripeAccountId}
+                                    Account status
                                 </p>
+                                <p>acc_id: {stripeAccount?.stripeAccountId}</p>
 
                                 <p className={styles.statusText}>
                                     {isComplete
@@ -144,7 +165,13 @@ export default function BusinessPaymentMethod() {
                     </div>
                 </div>
             </div>
-
+        
+            <FlashMessage
+                show={message.visible}
+                type={message.type}
+                message={message.msg}
+                onClose={() => setMessage({...message, visible: false})}
+            />
             <LoadingModal open={loading} />
         </div>
     );
