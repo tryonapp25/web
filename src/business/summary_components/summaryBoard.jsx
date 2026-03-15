@@ -16,7 +16,7 @@ export default function Dashboard({data}) {
 
         <TopStatsRow data={topStatsRow} />
         <SecondaryStatsRow data={secondaryStatsRow} /> 
-        <SalesChartRow data={sales} />
+        <SalesChartRow data={sales ?? []} />
         <RecentOrdersRow data={recentOrders} />
       </div>
     </main>
