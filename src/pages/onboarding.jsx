@@ -521,10 +521,10 @@ export default function Onboarding() {
           <div className={styles.footerBrand}>
             <img
               src={`${import.meta.env.BASE_URL}logos/logo.png`}
-              alt="TryOn"
+              alt="Taply"
               className={styles.footerLogo}
             />
-            <span className={styles.footerName}>TryOn</span>
+            <span className={styles.footerName}>Taply</span>
           </div>
 
           <div className={styles.footerLinks}>
@@ -544,7 +544,7 @@ export default function Onboarding() {
           </div>
 
           <p className={styles.footerCopy}>
-            © {new Date().getFullYear()} TryOn. All rights reserved.
+            © {new Date().getFullYear()} Taply. All rights reserved.
           </p>
         </div>
       </footer>

@@ -25,11 +25,11 @@ export default function Navbar() {
   return (
     <div className={`${styles.wrap} ${scrolled ? styles.scrolled : ""}`}>
       <nav className={styles.nav}>
-        <a className={styles.brand} href="#top" onClick={(e) => scrollToSection(e, "top")} aria-label="TryOn home">
+        <a className={styles.brand} href="#top" onClick={(e) => scrollToSection(e, "top")} aria-label="Taply home">
           <div className={styles.logo} aria-hidden="true">
             <img className={styles.Icon} src={`${import.meta.env.BASE_URL}logos/logo.png`}/>
           </div>
-          <span className={styles.brandText}>TryOn</span>
+          <span className={styles.brandText}>Scan • Tap • Order</span>
         </a>
 
         <div className={styles.links}>

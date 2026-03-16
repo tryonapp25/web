@@ -30,24 +30,26 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   text-decoration: none;
   color: var(--text);
   font-weight: 900;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .logo {
-  width: 26px;
-  height: 26px;
-  border-radius: 10px;
-  border: 1px solid var(--card-border);
-  background: var(--card);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
 }
 
 .Icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 14px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
 }
 
 .brandText {
