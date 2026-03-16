@@ -202,7 +202,7 @@ function Receipt({ order }) {
 
       <footer className={styles.footer}>
         <div className={styles.center}>Powered by</div>
-        <div className={styles.centerSmall}>Tryon</div>
+        <div className={styles.centerSmall}>Taply</div>
       </footer>
     </div>
   );

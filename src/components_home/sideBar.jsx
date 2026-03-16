@@ -55,7 +55,7 @@ export default function Sidebar({items}) {
             style={{ width: "100%", height: "100%", borderRadius: "100%" }}
           />
         </div>
-        <div className={styles.logoText}>TryOn</div>
+        <div className={styles.logoText}>Taply</div>
       </div>
 
       {/* MAIN */}
