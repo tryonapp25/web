@@ -18,6 +18,7 @@ function getToken() {
 export async function HandeleSocketConnect() {
   try {
     const socketIO = io(SOCKET_SERVER, {
+      path: "/order-socket/socket.io",
       transports: ["polling", "websocket"],
       forceNew: true,
       reconnection: true,
